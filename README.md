@@ -1,2 +1,2 @@
-# CSCI 420 (Spring 2021) Team 1 UML Editor
+# CSCI 420 (Spring 2021) MontyPython UML Editor
 
