@@ -8,12 +8,16 @@ class Class():
             self.attributeDict = {}
             
         def rename(self, oldName, newName):
-        
+            #Todo
+            pass
         def addAttribute(self, name):
-            
+            #Todo
+            pass
 
         def deleteAttribute(self, name):
-            
+            #Todo
+            pass
        
         def renameAttribute(self, oldName, newName):
-           
+            #Todo
+            pass

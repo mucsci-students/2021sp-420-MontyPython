@@ -23,7 +23,7 @@ class ClassCollection():
         ##
         ## Ex:   collection1.addClass("ClassX")
         def addClass(self, name):
-            
+            pass
 
         ## Cast the user's name input to a string, search 
         ## for the dictionary entry with that name, and remove
@@ -32,7 +32,7 @@ class ClassCollection():
         ##
         ## Ex:   collection1.deleteClass("ClassX")
         def deleteClass(self, name):
-            
+            pass
         ## Cast the user's name input to a string, search 
         ## for the dictionary entry with that name. Pop &
         ## re-add the entry under the new name. Change the
@@ -43,20 +43,25 @@ class ClassCollection():
         ##
         ## Ex:   collection1.renameClass("ClassX", "ClassY")
         def renameClass(self, oldName, newName):        
-
+            pass
 
 
         def addRelationship(self, firstClassName, secondClassName):
-        
+            #Todo
+            pass
         def deleteRelationship(self, firstClassName, secondClassName):
-            
+            #Todo
+            pass
 
            
         def addAttribute(self, className, attributeName):
-        
+            #Todo
+            pass
         def deleteAttribute(self, className, attributeName):
-            
+            #Todo
+            pass
         def renameAttribute(self, className, oldAttributeName, newAttributeName):
-
+            #Todo
+            pass
 
 
