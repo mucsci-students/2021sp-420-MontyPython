@@ -23,9 +23,7 @@ class ClassCollection():
         ##
         ## Ex:   collection1.addClass("ClassX")
         def addClass(self, name):
-            stringName = str(name)
-            for x in self.classDict:
-                if x == name:
+            if name in self.classDict:
                     print("Error: Name is already used") 
                     return
             self.classDict[stringName] = Class(stringName)
@@ -37,11 +35,10 @@ class ClassCollection():
         ##
         ## Ex:   collection1.deleteClass("ClassX")
         def deleteClass(self, name):
-            stringName = str(name)
-            for x in self.relationshipDict:
-                if x == name:
-                    print("Error: Name is already used") 
-                    return
+            #for x in self.relationshipDict:
+                #if x == name:
+                   
+                    #return
 
 
             self.classDict.pop(name)
@@ -57,9 +54,6 @@ class ClassCollection():
         ##
         ## Ex:   collection1.renameClass("ClassX", "ClassY")
         def renameClass(self, oldName, newName):
-
-            stringOldName = str(oldName)
-            stringNewName = str(newName)
 
 
 
