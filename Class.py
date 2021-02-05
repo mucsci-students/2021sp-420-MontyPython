@@ -7,9 +7,9 @@ class Class():
             self.name = name
             self.attributeDict = {}
             
-        def rename(self, oldName, newName):
-            #Todo
-            pass
+        def rename(self, newName):
+            self.name = newName
+            
         def addAttribute(self, name):
             #Todo
             pass
