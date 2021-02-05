@@ -26,7 +26,7 @@ class ClassCollection():
             if name in self.classDict:
                     print("Error: Name is already used") 
                     return
-            self.classDict[stringName] = Class(stringName)
+            self.classDict[name] = Class(name)
 
         ## Cast the user's name input to a string, search 
         ## for the dictionary entry with that name, and remove
