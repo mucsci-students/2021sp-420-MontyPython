@@ -1,7 +1,7 @@
 ### File: ClassCollection.py
 ### Classes defined: ClassCollection
 
-import Class
+from Class import Class
 
 class ClassCollection():
 
@@ -23,7 +23,12 @@ class ClassCollection():
         ##
         ## Ex:   collection1.addClass("ClassX")
         def addClass(self, name):
-            pass
+            stringName = str(name)
+            for x in self.classDict:
+                if x == name:
+                    print("Error: Name is already used") 
+                    return
+            self.classDict[stringName] = Class(stringName)
 
         ## Cast the user's name input to a string, search 
         ## for the dictionary entry with that name, and remove
@@ -32,7 +37,16 @@ class ClassCollection():
         ##
         ## Ex:   collection1.deleteClass("ClassX")
         def deleteClass(self, name):
-            pass
+            stringName = str(name)
+            for x in self.relationshipDict:
+                if x == name:
+                    print("Error: Name is already used") 
+                    return
+
+
+            self.classDict.pop(name)
+
+
         ## Cast the user's name input to a string, search 
         ## for the dictionary entry with that name. Pop &
         ## re-add the entry under the new name. Change the
@@ -42,8 +56,11 @@ class ClassCollection():
         ## implemented.
         ##
         ## Ex:   collection1.renameClass("ClassX", "ClassY")
-        def renameClass(self, oldName, newName):        
-            pass
+        def renameClass(self, oldName, newName):
+
+            stringOldName = str(oldName)
+            stringNewName = str(newName)
+
 
 
         def addRelationship(self, firstClassName, secondClassName):
@@ -64,4 +81,5 @@ class ClassCollection():
             #Todo
             pass
 
-
+collection1 = ClassCollection()
+collection1.addClass("testClass")
