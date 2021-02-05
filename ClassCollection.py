@@ -74,6 +74,3 @@ class ClassCollection():
         def renameAttribute(self, className, oldAttributeName, newAttributeName):
             #Todo
             pass
-
-collection1 = ClassCollection()
-collection1.addClass("testClass")
