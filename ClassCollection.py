@@ -35,13 +35,14 @@ class ClassCollection():
         ##
         ## Ex:   collection1.deleteClass("ClassX")
         def deleteClass(self, name):
-            #for x in self.relationshipDict:
-                #if x == name:
-                   
-                    #return
+            if name not in self.classDict:
+                print("Error: Class does not exist") 
+                return
 
-
-            self.classDict.pop(name)
+            for theTuple in self.relationshipDict.keys():
+                if name in theTuple:
+                    del self.relationshipDict[theTuple]
+            del self.classDict[name]
 
 
         ## Cast the user's name input to a string, search 
@@ -55,6 +56,28 @@ class ClassCollection():
         ## Ex:   collection1.renameClass("ClassX", "ClassY")
         def renameClass(self, oldName, newName):
 
+            if oldName not in self.classDict:
+                print("Error: Old name does not exist") 
+                return
+            
+            if newName in self.classDict:
+                print("Error: New name is already used") 
+                return
+
+            self.classDict[newName] = self.classDict.pop(oldName)
+
+            for theTuple in self.relationshipDict.keys():
+                if oldName in theTuple:
+                    (name1, name2) = theTuple
+                    if name1 == oldName:
+                        self.addRelationship(newName,name2)
+                        self.deleteRelationship(oldName, name2)
+                    else:
+                        self.addRelationship(newName,name1)
+                        self.deleteRelationship(oldName, name1)
+
+            self.classDict.get(newName).rename(newName)
+                    
 
 
         def addRelationship(self, firstClassName, secondClassName):
