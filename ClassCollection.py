@@ -24,8 +24,8 @@ class ClassCollection():
         ## Ex:   collection1.addClass("ClassX")
         def addClass(self, name):
             if name in self.classDict:
-                    print("Error: Name is already used") 
-                    return
+                print("Error: Name is already used") 
+                return
             self.classDict[name] = Class(name)
 
         ## Cast the user's name input to a string, search 
@@ -97,3 +97,10 @@ class ClassCollection():
         def renameAttribute(self, className, oldAttributeName, newAttributeName):
             #Todo
             pass
+        
+        def getClass(self, name):
+            if name not in self.classDict:
+                print(f"Error: {name} does not exist")
+                return None
+
+            return self.classDict[name]
