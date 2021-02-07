@@ -14,6 +14,8 @@ class ClassCollection():
             self.classDict = {}
             self.relationshipDict = {}
 
+        # ---------------------------- ( Class ) ---------------------------- #
+        
         # self.getClass(name).addAttribute(attributeName)
         # self.addAttribute(className, attributeName) -> className.addAttribute(attributeName)
 
@@ -24,8 +26,8 @@ class ClassCollection():
         ## Ex:   collection1.addClass("ClassX")
         def addClass(self, name):
             if name in self.classDict:
-                    print("Error: Name is already used") 
-                    return
+                print("Error: Name is already used") 
+                return
             self.classDict[name] = Class(name)
 
         ## Cast the user's name input to a string, search 
@@ -77,8 +79,8 @@ class ClassCollection():
                         self.deleteRelationship(oldName, name1)
 
             self.classDict.get(newName).rename(newName)
-                    
 
+        # ------------------------ ( Relationship ) ------------------------- #
 
         def addRelationship(self, firstClassName, secondClassName):
             #Todo
@@ -87,13 +89,37 @@ class ClassCollection():
             #Todo
             pass
 
-           
+        # -------------------------- ( Attribute ) -------------------------- #
+
         def addAttribute(self, className, attributeName):
-            #Todo
-            pass
+            self.classDict[className].addAttribute(attributeName)
+
         def deleteAttribute(self, className, attributeName):
-            #Todo
-            pass
+            self.classDict[className].deleteAttribute(attributeName)
+
         def renameAttribute(self, className, oldAttributeName, newAttributeName):
             #Todo
             pass
+
+        
+        # ---------------------- ( Helper Functions ) ----------------------- #
+
+        # Used in unit tests
+        # Returns if the provided name exists within classDict
+        def getClass(self, name):
+            if name not in self.classDict:
+                print(f"Error: {name} does not exist")
+                return None
+
+            return self.classDict[name]
+
+        # Used in unit tests
+        # Returns if the attribute name exists within the provided class
+        def getAttribute(self, className, attributeName):
+            #Todo
+            pass
+        
+        # Used in unit tests
+        # Returns all attributes that exist within the provided class
+        def getAttributes(self, className):
+            return self.classDict[className].getAttributes()
