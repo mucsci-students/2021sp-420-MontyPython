@@ -16,9 +16,6 @@ class ClassCollection():
 
         # ---------------------------- ( Class ) ---------------------------- #
         
-        # self.getClass(name).addAttribute(attributeName)
-        # self.addAttribute(className, attributeName) -> className.addAttribute(attributeName)
-
         ## Cast the user's name input to a string, creates
         ## a new dictionary entry for that name and assigns
         ## it the value of the class Object
@@ -90,6 +87,7 @@ class ClassCollection():
             pass
 
         # -------------------------- ( Attribute ) -------------------------- #
+        ## Wrapper functions for dealing with attributes of a specific class.
 
         def addAttribute(self, className, attributeName):
             self.classDict[className].addAttribute(attributeName)
@@ -98,9 +96,7 @@ class ClassCollection():
             self.classDict[className].deleteAttribute(attributeName)
 
         def renameAttribute(self, className, oldAttributeName, newAttributeName):
-            #Todo
-            pass
-
+            self.classDict[className].renameAttribute(oldAttributeName, newAttributeName)
         
         # ---------------------- ( Helper Functions ) ----------------------- #
 
@@ -112,12 +108,6 @@ class ClassCollection():
                 return None
 
             return self.classDict[name]
-
-        # Used in unit tests
-        # Returns if the attribute name exists within the provided class
-        def getAttribute(self, className, attributeName):
-            #Todo
-            pass
         
         # Used in unit tests
         # Returns all attributes that exist within the provided class

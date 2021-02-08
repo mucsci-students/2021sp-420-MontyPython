@@ -7,14 +7,12 @@ from Class import Class
 
 class AttributeTest(unittest.TestCase):
     # Checks if attribute is added successfully using Class.py addAttribute()
-    @unittest.SkipTest
     def testAddValidAttribute(self):
         classA = Class("A")
         classA.addAttribute("count")
         self.assertIn("count", classA.getAttributes())
 
     # Checks if attribute is added successfully using ClassCollection.py addAttribute()
-    @unittest.SkipTest
     def testAddValidAttributeFromCollection(self):
         collection = ClassCollection()
         collection.addClass("A")
@@ -22,21 +20,17 @@ class AttributeTest(unittest.TestCase):
         self.assertIn("count", collection.getAttributes("A"))
 
     # Checks case of adding attribute that already exists through Class.py addAttribute()
-    @unittest.SkipTest
     def testAddInvalidAttribute(self):
         classA = Class("A")
         classA.addAttribute("count")
-        with self.assertRaises(KeyError, classA.addAttribute, "count") as contextManager:
-            self.assertEqual(contextManager.exception.message, "count attribute already exists in class A")
+        self.assertRaises(KeyError, classA.addAttribute, "count")
 
     # Checks case of adding attribute that already exists through ClassCollection.py addAttribute()
-    @unittest.SkipTest
     def testAddInvalidAttributeFromCollection(self):
         collection = ClassCollection()
         collection.addClass("A")
         collection.addAttribute("A", "count")
-        with self.assertRaises(KeyError, collection.addAttribute, "A", "count") as contextManager:
-            self.assertEqual(contextManager.exception.message, "count attribute already exists in class A")
+        self.assertRaises(KeyError, collection.addAttribute, "A", "count")
 
     # Checks if attribute is deleted successfully using Class.py deleteAttribute()
     def testDeleteValidAttribute(self):
@@ -65,7 +59,6 @@ class AttributeTest(unittest.TestCase):
         self.assertRaises(KeyError, collection.deleteAttribute, "A", "count")
     
     # Checks if attribute is renamed successfully using Class.py renameAttribute()
-    @unittest.SkipTest
     def testRenameValidAttribute(self):
         classA = Class("A")
         classA.addAttribute("oldName")
@@ -73,10 +66,8 @@ class AttributeTest(unittest.TestCase):
         classA.renameAttribute("oldName", "newName")
         self.assertIn("newName", classA.getAttributes())
         self.assertNotIn("oldName", classA.getAttributes())
-        pass
 
     # Checks if attribute is renamed successfully using ClassCollection.py renameAttribute()
-    @unittest.SkipTest
     def testRenameValidAttributeFromCollection(self):
         collection = ClassCollection()
         collection.addClass("A")
@@ -87,18 +78,15 @@ class AttributeTest(unittest.TestCase):
         self.assertNotIn("oldName", collection.getAttributes("A"))
 
     # Checks case where attribute to rename does not exist when using Class.py renameAttribute()
-    @unittest.SkipTest
     def testRenameInvalidAttribute(self):
         classA = Class("A")
-        with self.assertRaises(KeyError, classA.renameAttribute, "oldName", "newName") as contextManager:
-            self.assertEqual(contextManager.exception.message, "oldName attribute does not exist in class A")
+        self.assertRaises(KeyError, classA.renameAttribute, "oldName", "newName")
 
     # Checks case where attribute to rename does not exist when using ClassCollection.py renameAttribute()
-    @unittest.SkipTest
     def testRenameInvalidAttributeFromCollection(self):
         collection = ClassCollection()
         collection.addClass("A")
         self.assertRaises(KeyError, collection.renameAttribute, "A", "oldName", "newName")
-
+    
 if __name__ == '__main__':
     unittest.main()
