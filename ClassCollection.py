@@ -109,6 +109,9 @@ class ClassCollection():
 
             return self.classDict[name]
         
+        def getAttribute(self, className, attributeName):
+            return self.classDict[className].getAttribute(attributeName)
+
         # Used in unit tests
         # Returns all attributes that exist within the provided class
         def getAttributes(self, className):
