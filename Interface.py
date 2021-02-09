@@ -1,4 +1,5 @@
 import json
+import sys
 ### Interface.py
 
 ### List classes
@@ -72,5 +73,4 @@ def help():
 
 ### Exit
 def exit():
-    #todo
-    pass
+    sys.exit()
