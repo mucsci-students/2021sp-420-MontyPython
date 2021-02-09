@@ -80,8 +80,18 @@ class ClassCollection():
         # ------------------------ ( Relationship ) ------------------------- #
 
         def addRelationship(self, firstClassName, secondClassName):
-            #Todo
-            pass
+            # check if classes exist
+            if firstClassName not in self.classDict:
+                raise KeyError(f"{firstClassName} does not exist")
+            
+            if secondClassName not in self.classDict:
+                raise KeyError(f"{secondClassName} does not exist")
+
+            if (firstClassName, secondClassName) in self.relationshipDict:
+                raise KeyError(f"Relationship, {firstClassName}, {secondClassName}, already exists")
+
+            self.relationshipDict[(firstClassName, secondClassName)] = ""
+        
         def deleteRelationship(self, firstClassName, secondClassName):
             #Todo
             pass
@@ -116,3 +126,10 @@ class ClassCollection():
         # Returns all attributes that exist within the provided class
         def getAttributes(self, className):
             return self.classDict[className].getAttributes()
+
+        def getRelationship(self, firstClassName, secondClassName):
+            if (firstClassName, secondClassName) not in self.relationshipDict:
+                print(f"Error: relationship, {firstClassName}, {secondClassName} does not exist")
+                return None
+            
+            return self.relationshipDict[(firstClassName, secondClassName)]
