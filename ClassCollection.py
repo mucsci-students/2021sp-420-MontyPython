@@ -80,8 +80,8 @@ class ClassCollection():
                     self.addRelationship(newName,name2)
                     self.deleteRelationship(oldName, name2)
                 else:
-                    self.addRelationship(newName,name1)
-                    self.deleteRelationship(oldName, name1)
+                    self.addRelationship(name1, newName)
+                    self.deleteRelationship(name1, oldName)
 
 
             self.classDict.get(newName).rename(newName)
