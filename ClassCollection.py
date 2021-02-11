@@ -93,8 +93,14 @@ class ClassCollection():
             self.relationshipDict[(firstClassName, secondClassName)] = ""
         
         def deleteRelationship(self, firstClassName, secondClassName):
-            #Todo
-            pass
+            # check if classes exist
+            if firstClassName not in self.classDict:
+                raise KeyError(f"{firstClassName} does not exist")
+            
+            if secondClassName not in self.classDict:
+                raise KeyError(f"{secondClassName} does not exist")
+
+            del self.relationshipDict[(firstClassName, secondClassName)]
 
         # -------------------------- ( Attribute ) -------------------------- #
         ## Wrapper functions for dealing with attributes of a specific class.
