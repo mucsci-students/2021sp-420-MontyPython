@@ -19,8 +19,8 @@ def listClass(collection, name):
 
 ### List relationships
 def listRelationships(collection):
-    #todo
-    pass
+    for relationship in collection.relationshipDict:
+        print(f"\t{relationship[0]} -> {relationship[1]}")
 
 ### Save
         # name list = class.name for class in classDict
