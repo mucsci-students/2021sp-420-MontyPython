@@ -11,19 +11,16 @@ class RelationshipTest(unittest.TestCase):
     def testAddRelationshipNoFirstClass(self):
         collection = ClassCollection()
         collection.addClass("foo")
-        with self.assertRaises(KeyError, collection.addRelationship, "bar", "foo") as contextManager:
-            self.assertEqual(contextManager.exception.message, "bar does not exist")
+        self.assertRaises(KeyError, collection.addRelationship, "bar", "foo")
 
     def testAddRelationshipNoSecondClass(self):
         collection = ClassCollection()
         collection.addClass("bar")
-        with self.assertRaises(KeyError, collection.addRelationship, "bar", "foo") as contextManager:
-            self.assertEqual(contextManager.exception.message, "foo does not exist")
+        self.assertRaises(KeyError, collection.addRelationship, "bar", "foo")
     
     def testAddRelationshipNeitherClassExist(self):
         collection = ClassCollection()
-        with self.assertRaises(KeyError, collection.addRelationship, "bar", "foo") as contextManager:
-            self.assertEqual(contextManager.exception.message, "foo and bar do not exist")
+        self.assertRaises(KeyError, collection.addRelationship, "bar", "foo")
 
     # Adding a relationship that already exists
     def testAddRelationshipAlreadyExists(self):
@@ -31,33 +28,33 @@ class RelationshipTest(unittest.TestCase):
         collection.addClass("foo")
         collection.addClass("bar")
         collection.addRelationship("bar", "foo")
-        with self.assertRaises(KeyError, collection.addRelationship, "bar", "foo") as contextManager:
-            self.assertEqual(contextManager.exception.message, "Relationship bar, foo, already exists")
+        self.assertRaises(KeyError, collection.addRelationship, "bar", "foo")
 
     def testRelationshipAddedSuccesfully(self):
         collection = ClassCollection()
         collection.addClass("foo")
         collection.addClass("bar")
         collection.addRelationship("foo", "bar")
-        self.assertTrue(collection.checkRelationshipExists("foo", "bar"))
+        self.assertIsNotNone(collection.getRelationship("foo", "bar"))
 
+    @unittest.SkipTest
     def testDeleteRelationshipNoFirstClass(self):
         collection = ClassCollection()
         collection.addClass("foo")
-        with self.assertRaises(KeyError, collection.deleteRelationship, "bar", "foo") as contextManager:
-            self.assertEqual(contextManager.exception.message, "bar does not exist")
+        self.assertRaises(KeyError, collection.deleteRelationship, "bar", "foo")
 
+    @unittest.SkipTest
     def testDeleteRelationshipNoSecondClass(self):
         collection = ClassCollection()
         collection.addClass("bar")
-        with self.assertRaises(KeyError, collection.deleteRelationship, "bar", "foo") as contextManager:
-            self.assertEqual(contextManager.exception.message, "foo does not exist")
+        self.assertRaises(KeyError, collection.deleteRelationship, "bar", "foo")
     
+    @unittest.SkipTest
     def testDeleteRelationshipNeitherClassExist(self):
         collection = ClassCollection()
-        with self.assertRaises(KeyError, collection.deleteRelationship, "bar", "foo") as contextManager:
-            self.assertEqual(contextManager.exception.message, "foo and bar do not exist")
+        self.assertRaises(KeyError, collection.deleteRelationship, "bar", "foo")
 
+    @unittest.SkipTest
     def testRelationshipDeletedSuccesfully(self):
         #todo
         pass

@@ -14,9 +14,8 @@ class ClassCollection():
             self.classDict = {}
             self.relationshipDict = {}
 
-        # self.getClass(name).addAttribute(attributeName)
-        # self.addAttribute(className, attributeName) -> className.addAttribute(attributeName)
-
+        # ---------------------------- ( Class ) ---------------------------- #
+        
         ## Cast the user's name input to a string, creates
         ## a new dictionary entry for that name and assigns
         ## it the value of the class Object
@@ -77,30 +76,60 @@ class ClassCollection():
                         self.deleteRelationship(oldName, name1)
 
             self.classDict.get(newName).rename(newName)
-                    
 
+        # ------------------------ ( Relationship ) ------------------------- #
 
         def addRelationship(self, firstClassName, secondClassName):
-            #Todo
-            pass
+            # check if classes exist
+            if firstClassName not in self.classDict:
+                raise KeyError(f"{firstClassName} does not exist")
+            
+            if secondClassName not in self.classDict:
+                raise KeyError(f"{secondClassName} does not exist")
+
+            if (firstClassName, secondClassName) in self.relationshipDict:
+                raise KeyError(f"Relationship, {firstClassName}, {secondClassName}, already exists")
+
+            self.relationshipDict[(firstClassName, secondClassName)] = ""
+        
         def deleteRelationship(self, firstClassName, secondClassName):
             #Todo
             pass
 
-           
+        # -------------------------- ( Attribute ) -------------------------- #
+        ## Wrapper functions for dealing with attributes of a specific class.
+
         def addAttribute(self, className, attributeName):
-            #Todo
-            pass
+            self.classDict[className].addAttribute(attributeName)
+
         def deleteAttribute(self, className, attributeName):
-            #Todo
-            pass
+            self.classDict[className].deleteAttribute(attributeName)
+
         def renameAttribute(self, className, oldAttributeName, newAttributeName):
-            #Todo
-            pass
+            self.classDict[className].renameAttribute(oldAttributeName, newAttributeName)
         
+        # ---------------------- ( Helper Functions ) ----------------------- #
+
+        # Used in unit tests
+        # Returns if the provided name exists within classDict
         def getClass(self, name):
             if name not in self.classDict:
                 print(f"Error: {name} does not exist")
                 return None
 
             return self.classDict[name]
+        
+        def getAttribute(self, className, attributeName):
+            return self.classDict[className].getAttribute(attributeName)
+
+        # Used in unit tests
+        # Returns all attributes that exist within the provided class
+        def getAttributes(self, className):
+            return self.classDict[className].getAttributes()
+
+        def getRelationship(self, firstClassName, secondClassName):
+            if (firstClassName, secondClassName) not in self.relationshipDict:
+                print(f"Error: relationship, {firstClassName}, {secondClassName} does not exist")
+                return None
+            
+            return self.relationshipDict[(firstClassName, secondClassName)]
