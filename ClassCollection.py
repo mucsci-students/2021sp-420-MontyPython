@@ -23,7 +23,7 @@ class ClassCollection():
         ## Ex:   collection1.addClass("ClassX")
         def addClass(self, name):
             if name in self.classDict:
-                print("Error: Name is already used") 
+                print(f"Error: {name} already exists")
                 return
             self.classDict[name] = Class(name)
 
@@ -35,13 +35,18 @@ class ClassCollection():
         ## Ex:   collection1.deleteClass("ClassX")
         def deleteClass(self, name):
             if name not in self.classDict:
-                print("Error: Class does not exist") 
+                print(f"Error: {name} does not exist")
                 return
 
+            toDelete = []
             for theTuple in self.relationshipDict.keys():
                 if name in theTuple:
-                    del self.relationshipDict[theTuple]
-            del self.classDict[name]
+                    toDelete.append(theTuple)
+                               
+            for temp in toDelete:
+                del self.relationshipDict[temp]
+
+            del self.classDict[name]     
 
 
         ## Cast the user's name input to a string, search 
@@ -56,24 +61,28 @@ class ClassCollection():
         def renameClass(self, oldName, newName):
 
             if oldName not in self.classDict:
-                print("Error: Old name does not exist") 
+                print(f"Error: {oldName} does not exist") 
                 return
             
             if newName in self.classDict:
-                print("Error: New name is already used") 
+                print(f"Error: {newName} is already used")
                 return
 
             self.classDict[newName] = self.classDict.pop(oldName)
-
+            toChange = []
             for theTuple in self.relationshipDict.keys():
                 if oldName in theTuple:
-                    (name1, name2) = theTuple
-                    if name1 == oldName:
-                        self.addRelationship(newName,name2)
-                        self.deleteRelationship(oldName, name2)
-                    else:
-                        self.addRelationship(newName,name1)
-                        self.deleteRelationship(oldName, name1)
+                    toChange.append(theTuple)            
+                               
+            for theTuple in toChange:
+                (name1, name2) = theTuple
+                if name1 == oldName:
+                    self.addRelationship(newName,name2)
+                    self.deleteRelationship(oldName, name2)
+                else:
+                    self.addRelationship(name1, newName)
+                    self.deleteRelationship(name1, oldName)
+
 
             self.classDict.get(newName).rename(newName)
 
