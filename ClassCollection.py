@@ -68,7 +68,8 @@ class ClassCollection():
                 print(f"Error: {newName} is already used")
                 return
 
-            self.classDict[newName] = self.classDict.pop(oldName)
+            self.classDict[newName] = self.classDict[oldName]
+
             toChange = []
             for theTuple in self.relationshipDict.keys():
                 if oldName in theTuple:
@@ -83,7 +84,7 @@ class ClassCollection():
                     self.addRelationship(name1, newName)
                     self.deleteRelationship(name1, oldName)
 
-
+            self.classDict.pop(oldName)
             self.classDict.get(newName).rename(newName)
 
         # ------------------------ ( Relationship ) ------------------------- #
