@@ -142,22 +142,3 @@ class ClassCollection():
                 return None
             
             return self.relationshipDict[(firstClassName, secondClassName)]
-
-col = ClassCollection()
-
-col.addClass('one')
-col.addClass('two')
-col.addClass('three')
-col.addClass('four')
-
-col.addRelationship('one', 'three')
-col.addRelationship('two', 'one')
-col.addRelationship('two','four')
-col.renameClass("one","bigboi")
-
-
-#col.deleteClass('two')
-
-
-print(col.classDict)
-print(col.relationshipDict)
