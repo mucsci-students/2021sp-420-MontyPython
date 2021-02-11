@@ -39,7 +39,9 @@ def loadFile(collection, fileName):
         
 ### Help
 def help():
-    pass
+    with open('Help.txt') as helpFile:
+        helpText = helpFile.read()
+    print(helpText)
 
 ### Exit
 def exit():
