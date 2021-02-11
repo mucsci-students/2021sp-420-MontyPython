@@ -37,29 +37,27 @@ class RelationshipTest(unittest.TestCase):
         collection.addRelationship("foo", "bar")
         self.assertIsNotNone(collection.getRelationship("foo", "bar"))
 
-    @unittest.SkipTest
     def testDeleteRelationshipNoFirstClass(self):
         collection = ClassCollection()
         collection.addClass("foo")
         self.assertRaises(KeyError, collection.deleteRelationship, "bar", "foo")
 
-    @unittest.SkipTest
     def testDeleteRelationshipNoSecondClass(self):
         collection = ClassCollection()
         collection.addClass("bar")
         self.assertRaises(KeyError, collection.deleteRelationship, "bar", "foo")
     
-    @unittest.SkipTest
     def testDeleteRelationshipNeitherClassExist(self):
         collection = ClassCollection()
         self.assertRaises(KeyError, collection.deleteRelationship, "bar", "foo")
 
-    @unittest.SkipTest
     def testRelationshipDeletedSuccesfully(self):
-        #todo
-        pass
+        collection = ClassCollection()
+        collection.addClass("foo")
+        collection.addClass("bar")
+        collection.addRelationship("foo", "bar")
+        self.assertRaises(KeyError, collection.deleteRelationship, "foo", "bar")
         
-
 if __name__ == '__main__':
     unittest.main()
     
