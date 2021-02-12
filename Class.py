@@ -1,5 +1,6 @@
 ### File: Class.py
 ### Classes defined: Class
+from Attribute import Attribute
 
 class Class():
 
@@ -11,13 +12,24 @@ class Class():
             self.name = newName
             
         def addAttribute(self, name):
-            #Todo
-            pass
+            if name in self.attributeDict:
+                raise KeyError(f"{name} does not exist in class {self.name}")
+            self.attributeDict[name] = Attribute(name)
 
         def deleteAttribute(self, name):
-            #Todo
-            pass
-       
+            if name not in self.attributeDict:
+                raise KeyError(f"{name} does not exist in class {self.name}")
+            del self.attributeDict[name]
+
         def renameAttribute(self, oldName, newName):
-            #Todo
-            pass
+            if oldName not in self.attributeDict:
+                raise KeyError(f"{oldName} does not exist in class {self.name}")
+            self.attributeDict[newName] = self.attributeDict.pop(oldName)
+
+        # Helper function for unit tests
+        def getAttribute(self, name):
+            return self.attributeDict[name]
+
+        # Helper function for unit tests
+        def getAttributes(self):
+            return self.attributeDict

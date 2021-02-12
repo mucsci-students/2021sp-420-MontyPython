@@ -1,6 +1,7 @@
 import unittest
 import os
 import Interface
+import filecmp
 from ClassCollection import ClassCollection
 
 ### Save test cases
@@ -32,13 +33,14 @@ class InterfaceTest(unittest.TestCase):
         self.assertTrue(os.path.isfile("file1.monty"))
 
     def testSaveCorrectFileContents(self):
-        comparisonString = "[{\"foo\": {}, \"bar\": {}}, {\"foo, bar\": {}}]"
+        comparisonString = "[{\"foo\": {\"buzz\": \"buzz\"}, \"bar\": {}}, {\"foo, bar\": \"\"}]"
         collection = ClassCollection()
         collection.addClass("foo")
         collection.addClass("bar")
         collection.addRelationship("foo", "bar")
-        Interface.saveFile(collection, "file2")
-        with open("file2.monty", "r") as f:
+        collection.addAttribute("foo", "buzz")
+        Interface.saveFile(collection, "file1")
+        with open("file1.monty", "r") as f:
             lines = f.readlines()
             print(lines[0])
             self.assertTrue((lines[0] == comparisonString) and (len(lines) == 1))
@@ -65,7 +67,8 @@ class InterfaceTest(unittest.TestCase):
         Interface.saveFile(collection, "file1")
         collectionLoaded = ClassCollection()
         Interface.loadFile(collectionLoaded, "file1")
-        self.assertEqual(collection, collectionLoaded)
+        Interface.saveFile(collectionLoaded, "file2")
+        self.assertTrue(filecmp.cmp("file1.monty", "file2.monty"))
 
     
 if __name__ == '__main__':
