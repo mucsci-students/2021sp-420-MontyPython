@@ -1,6 +1,7 @@
 import unittest
 import os
-from Interface import Interface
+import Interface
+import filecmp
 from ClassCollection import ClassCollection
 
 ### Save test cases
@@ -17,39 +18,46 @@ class InterfaceTest(unittest.TestCase):
     def testSaveNoName(self):
         collection = ClassCollection()
         collection.addClass("foo")
-        with self.assertRaises(KeyError, Interface.saveFile(collection)) as contextManager:
-            self.assertEqual(contextManager.exception.message, "no file name given for save")        
+        with self.assertRaises(ValueError):
+            Interface.saveFile(collection)       
 
+    #WARNING: deletes file1.monty in current directory to ensure file creation
     def testCreatedSuccessfully(self):
-        collection = ClassCollection()
-        collection.addClass("foo")
-        collection.addClass("bar")
-        collection.addRelationship("foo", "bar")
-        self.assertTrue(Interface.saveFile(collection))
-
-    def testSaveCorrectFileContents(self):
-
-        comparisonString = "[{\"foo\": {}, \"bar\": {}}, {\"foo, bar\": {}}]"
+        if os.path.isfile("file1.monty"):
+            os.remove("file1.monty")
         collection = ClassCollection()
         collection.addClass("foo")
         collection.addClass("bar")
         collection.addRelationship("foo", "bar")
         Interface.saveFile(collection, "file1")
+        self.assertTrue(os.path.isfile("file1.monty"))
+
+    def testSaveCorrectFileContents(self):
+        comparisonString = "[{\"foo\": {\"buzz\": \"buzz\"}, \"bar\": {}}, {\"foo, bar\": \"\"}]"
+        collection = ClassCollection()
+        collection.addClass("foo")
+        collection.addClass("bar")
+        collection.addRelationship("foo", "bar")
+        collection.addAttribute("foo", "buzz")
+        Interface.saveFile(collection, "file1")
         with open("file1.monty", "r") as f:
             lines = f.readlines()
+            print(lines[0])
             self.assertTrue((lines[0] == comparisonString) and (len(lines) == 1))
 
         
     def testLoadNoName(self):
-        with self.assertRaises(KeyError, Interface.loadFile()) as contextManager:
-            self.assertEqual(contextManager.exception.message, "no file name given for load")
-    
+        collection = ClassCollection()
+        with self.assertRaises(ValueError):
+            Interface.loadFile(collection)
+
+    #WARNING: deletes file1.monty in current directory to ensure file does not exist
     def testLoadFileNotFound(self):
         collection = ClassCollection()
-        collection.addClass("foo")
-        Interface.saveFile(collection, "file1")
-        with self.assertRaises(KeyError, Interface.saveFile(collection)) as contextManager:
-            self.assertEqual(Interface.loadFile(collection, "file1"), "no file of given name found")    
+        if os.path.isfile("file1.monty"):
+            os.remove("file1.monty")
+        with self.assertRaises(OSError):
+            Interface.loadFile(collection, "file1")   
 
     def testLoadCorrectFileContents(self):
         collection = ClassCollection()
@@ -59,7 +67,8 @@ class InterfaceTest(unittest.TestCase):
         Interface.saveFile(collection, "file1")
         collectionLoaded = ClassCollection()
         Interface.loadFile(collectionLoaded, "file1")
-        self.assertEqual(collection, collectionLoaded)
+        Interface.saveFile(collectionLoaded, "file2")
+        self.assertTrue(filecmp.cmp("file1.monty", "file2.monty"))
 
     
 if __name__ == '__main__':
