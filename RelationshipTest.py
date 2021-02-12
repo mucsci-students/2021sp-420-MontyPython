@@ -56,7 +56,8 @@ class RelationshipTest(unittest.TestCase):
         collection.addClass("foo")
         collection.addClass("bar")
         collection.addRelationship("foo", "bar")
-        self.assertIn(("foo", "bar"), collection.relationshipDict)
+        self.assertNotIn(("foo", "bar"), collection.relationshipDict)
+
 if __name__ == '__main__':
     unittest.main()
     
