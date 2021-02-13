@@ -88,5 +88,17 @@ class AttributeTest(unittest.TestCase):
         collection.addClass("A")
         self.assertRaises(KeyError, collection.renameAttribute, "A", "oldName", "newName")
     
+    def testAddWithInvalidClass(self):
+        collection = ClassCollection()
+        self.assertRaises(KeyError, collection.addAttribute, "A", "someAttribute")
+    
+    def testRemoveWithInvalidClass(self):
+        collection = ClassCollection()
+        self.assertRaises(KeyError, collection.deleteAttribute, "A", "someAttribute")
+    
+    def testRenameWithInvalidClass(self):
+        collection = ClassCollection()
+        self.assertRaises(KeyError, collection.renameAttribute, "A", "oldAttributeName", "newAwesomeName")
+    
 if __name__ == '__main__':
     unittest.main()
