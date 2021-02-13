@@ -23,8 +23,7 @@ class ClassCollection():
         ## Ex:   collection1.addClass("ClassX")
         def addClass(self, name):
             if name in self.classDict:
-                print(f"Error: {name} already exists")
-                return
+                raise KeyError(f"{name} already exists")
             self.classDict[name] = Class(name)
 
         ## Cast the user's name input to a string, search 
@@ -35,8 +34,7 @@ class ClassCollection():
         ## Ex:   collection1.deleteClass("ClassX")
         def deleteClass(self, name):
             if name not in self.classDict:
-                print(f"Error: {name} does not exist")
-                return
+                raise KeyError(f"{name} does not exists")
 
             toDelete = []
             for theTuple in self.relationshipDict.keys():
@@ -59,14 +57,11 @@ class ClassCollection():
         ##
         ## Ex:   collection1.renameClass("ClassX", "ClassY")
         def renameClass(self, oldName, newName):
-
             if oldName not in self.classDict:
-                print(f"Error: {oldName} does not exist") 
-                return
+                raise KeyError(f"old{oldName} does not exists")
             
             if newName in self.classDict:
-                print(f"Error: {newName} is already used")
-                return
+                raise KeyError(f"{newName} already exists")
 
             self.classDict[newName] = self.classDict[oldName]
 
