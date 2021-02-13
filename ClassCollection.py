@@ -116,12 +116,18 @@ class ClassCollection():
         ## Wrapper functions for dealing with attributes of a specific class.
 
         def addAttribute(self, className, attributeName):
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
             self.classDict[className].addAttribute(attributeName)
 
         def deleteAttribute(self, className, attributeName):
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
             self.classDict[className].deleteAttribute(attributeName)
 
         def renameAttribute(self, className, oldAttributeName, newAttributeName):
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
             self.classDict[className].renameAttribute(oldAttributeName, newAttributeName)
         
         # ---------------------- ( Helper Functions ) ----------------------- #
