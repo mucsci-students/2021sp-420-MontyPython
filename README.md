@@ -4,12 +4,12 @@ This command line program creates a text representation of a UML diagram though 
 
 ## Prerequisites
 1. To run the program, [Python 3.9.1](https://www.python.org/downloads/) needs to be installed.
-1. During installation, check the box labeled "Add Python 3.9 to PATH" so Python programs can be run by typing `Python` in a terminal.
+1. During installation, check the box labeled "Add Python 3.9 to PATH" so Python programs can be run by typing `python` in a terminal.
 
 ## Running the program
 1. Download the program from our [repository](https://github.com/mucsci-students/2021sp-420-MontyPython).
 1. In a terminal, navigate to the directory the repository download has been saved in.
-1. Type `Python REPL.py` to launch the command line program.
+1. Type `python REPL.py` to launch the command line program.
 1. Follow the program’s prompts to create, load, or save a text representation of a UML diagram. Type `help` to view possible commands. 
 
 ### Example Image:  
