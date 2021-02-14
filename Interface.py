@@ -109,7 +109,7 @@ def loadFile(collection, fileName=None):
         for name, attributes in classesDictionary.items():
             collection.addClass(name)
             for attribute in attributes.keys():
-                collection[name].addAttribute(attribute)
+                collection.addAttribute(name, attribute)
         
     #Raises an OS Error if the file does not exist
     else:
