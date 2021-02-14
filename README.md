@@ -12,7 +12,7 @@ This command line program creates a text representation of a UML diagram though 
 1. Type `Python REPL.py` to launch the command line program.
 1. Follow the program’s prompts to create, load, or save a text representation of a UML diagram. Type `help` to view possible commands. 
 
-## Example Image From Program:  
+### Example Image:  
 ![Example Image](https://i.imgur.com/3SAMIFe.png)
 
 ## Files
