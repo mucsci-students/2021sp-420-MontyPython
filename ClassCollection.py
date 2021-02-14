@@ -58,7 +58,7 @@ class ClassCollection():
         ## Ex:   collection1.renameClass("ClassX", "ClassY")
         def renameClass(self, oldName, newName):
             if oldName not in self.classDict:
-                raise KeyError(f"old{oldName} does not exists")
+                raise KeyError(f"{oldName} does not exist")
             
             if newName in self.classDict:
                 raise KeyError(f"{newName} already exists")
@@ -104,6 +104,9 @@ class ClassCollection():
             
             if secondClassName not in self.classDict:
                 raise KeyError(f"{secondClassName} does not exist")
+
+            if (firstClassName, secondClassName) not in self.relationshipDict:
+                raise KeyError("Relationship does not exist")
 
             del self.relationshipDict[(firstClassName, secondClassName)]
 
