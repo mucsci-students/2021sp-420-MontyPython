@@ -1,19 +1,18 @@
 # CSCI 420 (Spring 2021) MontyPython UML Editor
 
-## ----Not done yet----
-
 This command line program creates a text representation of a UML diagram though user input. The program’s capabilities include adding, deleting, displaying, and modifying UML diagram elements. It also supports the ability to save and load diagrams.
 
 ## Prerequisites
-To run the program, [Python 3.9.1](https://www.python.org/downloads/) needs to be installed.
+1. To run the program, [Python 3.9.1](https://www.python.org/downloads/) needs to be installed.
+1. During installation, check the box labeled "Add Python 3.9 to PATH" so Python programs can be run by typing `Python` in a terminal.
 
 ## Running the program
 1. Download the program from our [repository](https://github.com/mucsci-students/2021sp-420-MontyPython).
-1. In a terminal, navigate to the directory our repository download has been saved in.
+1. In a terminal, navigate to the directory the repository download has been saved in.
 1. Type `Python REPL.py` to launch the command line program.
 1. Follow the program’s prompts to create, load, or save a text representation of a UML diagram. Type `help` to view possible commands. 
 
-### Example:  
+## Example Image From Program:  
 ![Example Image](https://i.imgur.com/3SAMIFe.png)
 
 ## Files
@@ -23,7 +22,7 @@ To run the program, [Python 3.9.1](https://www.python.org/downloads/) needs to b
 
 **ClassCollection.py:** Contains both the class dictionary and the relationship dictionary used to store the UML diagram. Also includes functions to add, delete, display, and modify UML elements. 
 
-**Help.txt:** Contains the help text that displays when a user types ‘<help>’ in the terminal.
+**Help.txt:** Contains the help text that displays when a user types `help` in the terminal.
   
 **Interface.py:** Contains code for save, load, and other interface functions.
 
