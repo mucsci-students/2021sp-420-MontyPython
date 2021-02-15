@@ -1,0 +1,41 @@
+
+------------------------------
+This program accepts user input to add, delete, display, and modify elements of a text representation of a UML diagram.
+
+This program accepts the following commands:
+
+--------- Interface ---------
+Exit: Exits the application.
+
+Help: Displays this text.
+
+List Relationships: Displays all relationships that exist between classes within the current UML diagram.
+
+List Classes: Lists the contents of all classes within the current UML diagram.
+
+List Class: Asks for the name of the class in the current UML diagram and lists the contents of that class.
+
+--------- Save/Load ---------
+Save: Asks for the name of the file and saves the contents of the current UML diagram under that file name.
+
+Load: Asks for the name of the file to load from and loads the contents of that file as the current UML diagram.
+
+--------- Classes ---------
+Add Class: Asks for the name of the new class and adds that class to the current UML diagram.
+
+Delete Class: Asks for the name of the class and deletes that class from the current UML diagram.
+
+Rename Class: Asks for the original name and new name of the class in the current UML diagram.  Changes the old name of the class to the new name.
+
+--------- Relationships ---------
+Add Relationship: Asks for a source and destination class in the current UML diagram. Adds a relationship between the two classes.
+
+Delete Relationship: Asks for a source and destination class in the current UML diagram and deletes their relationship if one exists.
+
+--------- Attributes ---------
+Add Attribute: Asks for the name of the class in the UML diagram to add an attribute to, and the attribute name. Creates an attribute within that class.
+
+Delete Attribute: Asks for the name of the class in the UML diagram that the attribute is in, and the name of the attribute. Deletes the attribute from the specified class. 
+
+Rename Attribute: Asks for the class name, the old attribute name, and the new attribute name. Adds the attribute to the specified class in the current UML diagram.
+------------------------------
