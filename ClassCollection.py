@@ -139,6 +139,24 @@ class ClassCollection():
         def renameMethod(self, className, returnType, name, parameters):
             pass
 
+         # --------------------------- ( Field ) ----------------------------- #
+         #error checking is done in Class.py
+        def addField(self, className, name, dataType):
+            self.classDict[className].addField(name,dataType)
+
+        def deleteField(self, className, name):
+            self.classDict[className].deleteField(name)
+        
+        def renameField(self, className, oldName, newName):
+            self.classDict[className].renameField(oldName,newName)
+
+        def getField(self, className, name):
+            if name not in self.classDict[className].fieldDict:
+                print(f"Error: {name} does not exist in {className}")
+                return None
+            return self.classDict[className].getField(name)
+
+
         # ---------------------- ( Helper Functions ) ----------------------- #
 
         # Used in unit tests
