@@ -34,6 +34,12 @@ class Class():
         def renameMethod(self, name, returnType, parameters, newName):
             pass
 
+        # ----------------------------( Parameters ) ------------------------ #
+        def addParameter(self, method, type, name):
+            pass
+
+        def removeParameter(self, method, type, name):
+            pass
 
         # --------------------------- ( Field ) ----------------------------- #
         def addField(self, name, dataType):

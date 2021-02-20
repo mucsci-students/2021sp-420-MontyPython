@@ -139,6 +139,13 @@ class ClassCollection():
         def renameMethod(self, className, returnType, name, parameters):
             pass
 
+        # --------------------------- ( Parameter ) ----------------------------- #
+        def addParameter(self, className, methodName, type, name):
+            pass
+
+        def removeParameter(self, className, methodName, type, name):
+            pass
+
          # --------------------------- ( Field ) ----------------------------- #
          #error checking is done in Class.py
         def addField(self, className, name, dataType):
