@@ -1,6 +1,7 @@
 ### File: Class.py
 ### Classes defined: Class
 from Attribute import Attribute
+from Field import Field
 
 class Class():
 
@@ -16,10 +17,14 @@ class Class():
         #                     }
         # }
             self.methodDict = {}
-
+        # MethodDict structure
+        #     ('name'): {'feildObject'}
+            self.fieldDict = {}
+        
         def rename(self, newName):
             self.name = newName
         
+        # --------------------------- ( Method ) ----------------------------- #
         def addMethod(self, name, returnType):
             pass
 
@@ -29,6 +34,31 @@ class Class():
         def renameMethod(self, name, returnType, parameters, newName):
             pass
 
+
+        # --------------------------- ( Field ) ----------------------------- #
+        def addField(self, name, dataType):
+            if name in self.fieldDict:
+                raise KeyError(f"{name} is already an field")
+            self.fieldDict[name] = Field(name, dataType)
+
+        def deleteField(self, name):
+            if name not in self.fieldDict:
+                raise KeyError(f"{name} is not an field for {self.name}")
+            del self.fieldDict[name]
+        
+        def renameField(self, oldName, newName):
+            if oldName not in self.fieldDict:
+                raise KeyError(f"{oldName} is not a field for {self.name}")
+            if newName in self.fieldDict:
+                raise KeyError(f"{newName} is already a field for {self.name}")
+            self.fieldDict[newName] = self.fieldDict.pop(oldName)
+
+        def getField(self, name):
+            if name not in self.fieldDict:
+                raise KeyError(f"{name} is not an field for {self.name}")
+            return self.fieldDict[name]
+
+        # --------------------------- ( Attribute ) ----------------------------- #
         def addAttribute(self, name):
             if name in self.attributeDict:
                 raise KeyError(f"{name} is already an attribute for {self.name}")

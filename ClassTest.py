@@ -70,6 +70,17 @@ class ClassTests(unittest.TestCase):
         collection = ClassCollection()
         collection.addClass("A")
         self.assertRaises(KeyError, collection.renameClass, "C", "D")
-   
+
+    def testDeleteClassWithRelationshipandField(self):
+        collection = ClassCollection()
+        collection.addClass("A")
+        collection.addClass("B")
+        collection.addField("A", "name", "String")
+        collection.addField("B", "name", "String")
+        collection.addRelationship("A", "B")
+        collection.deleteClass("A")
+        collection.deleteClass("B")
+        #Ok as long as there are no errors
+
 if __name__ == '__main__':
     unittest.main()

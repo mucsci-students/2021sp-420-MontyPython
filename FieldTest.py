@@ -37,7 +37,7 @@ class FieldTests(unittest.TestCase):
         collection.addField("A", "name", "String")
         collection.renameField("A", "name", "surname")
         self.assertIsNone( collection.getField("A", "name"))
-        self.assertRaises(KeyError, collection.addField("A", "surname", "String"))
+        self.assertRaises(KeyError, collection.addField, "A", "surname", "String")
         collection.deleteField("A", "surname")
         self.assertIsNone( collection.getField("A", "name"))
         self.assertIsNone( collection.getField("A", "surname"))
@@ -47,13 +47,13 @@ class FieldTests(unittest.TestCase):
         collection = ClassCollection()
         collection.addClass("A")
         collection.addField("A", "name", "String")
-        self.assertRaises(KeyError, collection.addField("A", "name", "String"))
+        self.assertRaises(KeyError, collection.classDict["A"].addField, "name", "String")
     
     #test error on removing nonexisted classes
     def testRemoveNonExistentField(self):
         collection = ClassCollection() 
         collection.addClass("A")
-        self.assertRaises(KeyError, collection.deleteField("A", "name"))
+        self.assertRaises(KeyError, collection.deleteField,"A", "name")
 
     #test error on renaming duplicate classes
     def testRenameDuplicateField(self):
@@ -61,7 +61,7 @@ class FieldTests(unittest.TestCase):
         collection.addClass("A")
         collection.addField("A", "name", "String")
         collection.addField("A", "surname", "String")
-        self.assertRaises(KeyError,  collection.renameField("A", "name", "surname"))
+        self.assertRaises(KeyError,  collection.renameField,"A", "name", "surname")
 
     #test error on removing nonexisted classes
     def testRenameNonExistentField(self):
@@ -69,7 +69,7 @@ class FieldTests(unittest.TestCase):
         collection.addClass("A")
         collection.addField("A", "name", "String")
         collection.addField("A", "surname", "String")
-        self.assertRaises(KeyError,  collection.renameField("A", "joename", "surname"))
+        self.assertRaises(KeyError,  collection.renameField,"A", "joename", "surname")
    
 if __name__ == '__main__':
     unittest.main()
