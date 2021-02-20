@@ -128,6 +128,17 @@ class ClassCollection():
                 raise KeyError(f"{className} does not exist")
             self.classDict[className].renameAttribute(oldAttributeName, newAttributeName)
         
+        # --------------------------- ( Method ) ----------------------------- #
+
+        def addMethod(self, className, name, returnType):
+            pass
+
+        def deleteMethod(self, className, returnType, name, parameters):
+            pass
+        
+        def renameMethod(self, className, returnType, name, parameters):
+            pass
+
         # ---------------------- ( Helper Functions ) ----------------------- #
 
         # Used in unit tests
