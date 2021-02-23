@@ -9,15 +9,10 @@ class Class():
             self.name = name
             self.attributeDict = {}
         
-        # idea for methodDict structure
-        # {
-        #     ('age', 'int'): {'param1, param2, param3': methodObj1,
-        #                      'param1, param2': methodObj2,
-        #                      '': methodObj3
-        #                     }
-        # }
+        # methodDict structure
+        #     'methodName1': [method1, method2, ...]
             self.methodDict = {}
-        # MethodDict structure
+        # fieldDict structure
         #     ('name'): {'feildObject'}
             self.fieldDict = {}
         
@@ -25,13 +20,13 @@ class Class():
             self.name = newName
         
         # --------------------------- ( Method ) ----------------------------- #
-        def addMethod(self, name, returnType):
+        def addMethod(self, name, returnType, parameters = []):
             pass
 
-        def deleteMethod(self, name, returnType, parameters):
+        def deleteMethod(self, name, parameters):
             pass
         
-        def renameMethod(self, name, returnType, parameters, newName):
+        def renameMethod(self, oldName, parameters, newName):
             pass
 
 
