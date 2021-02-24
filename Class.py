@@ -35,13 +35,19 @@ class Class():
             pass
 
         # ----------------------------( Parameters ) ------------------------ #
-        def addParameter(self, method, paramList, type, name):
+        def addParameter(self, methodName, parameters, type, name):
             pass
 
-        def removeParameter(self, method, paramList, type, name):
+        def removeParameter(self, methodName, parameters, name):
             pass
 
-        def changeParameter(self, method, paramList, type, name, newName):
+        def removeAllParameters(self, methodName, parameters):
+            pass
+
+        def changeParameter(self, methodName, parameters, name, newType, newName):
+            pass
+
+        def changeAllParameters(self, methodName, parameters, newParameters):
             pass
 
         # --------------------------- ( Field ) ----------------------------- #

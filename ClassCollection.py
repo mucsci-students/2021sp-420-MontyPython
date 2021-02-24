@@ -140,12 +140,22 @@ class ClassCollection():
             pass
 
         # --------------------------- ( Parameter ) ----------------------------- #
-        def addParameter(self, className, methodName, type, name):
+        # "parameters" is the parameter lsit of the given method to distinguish it.
+        def addParameter(self, className, methodName, parameters, type, name):
             pass
 
-        def removeParameter(self, className, methodName, type, name):
+        def removeParameter(self, className, methodName, parameters, name):
             pass
 
+        def removeAllParameters(self, className, methodName, parameters):
+            pass
+
+        def changeParameter(self, className, methodName, parameters, name, newType, newName):
+            pass
+        
+        def changeAllParameters(self, className, methodName, parameters, newParameters):
+            pass
+        
          # --------------------------- ( Field ) ----------------------------- #
          #error checking is done in Class.py
         def addField(self, className, name, dataType):
