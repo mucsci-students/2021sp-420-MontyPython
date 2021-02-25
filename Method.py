@@ -11,3 +11,5 @@ class Method:
         # parameter structure
         # [(retType1, name1), (retType2, name2), ...]
         self.parameters = parameters
+    def __repr__(self):
+        return f'{self.name}, {self.parameters}'
