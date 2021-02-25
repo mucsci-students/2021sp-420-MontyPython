@@ -28,28 +28,32 @@ class MethodTest(unittest.TestCase):
         collection.addClass("Animal")
         collection.addMethod("Animal", "canEat", "bool", [("double", "timeSinceLastAte")])
         self.assertIn("canEat", collection.classDict["Animal"].methodDict)
-        self.assertIn(("double", "timeSinceLastAte"), collection.classDict["Animal"].methodDict["canEat"].parameters)
+
+        foundParam = False
+        for i in range(len(collection.classDict["Animal"].methodDict["canEat"])):
+            foundParam = foundParam or [("double", "timeSinceLastAte")] == collection.classDict["Animal"].methodDict["canEat"][i].parameters
+        self.assertTrue(foundParam)
     
     def testAddMethodAlreadyExists(self):
         # Class object w/ no params
         classA = Class("Person")
         classA.addMethod("age", "int")
-        self.assertRaises(KeyError, classA.addMethod("age", "int"))
+        self.assertRaises(KeyError, classA.addMethod, "age", "int")
 
         # Class object w/ params
         classB = Class("Pizza")
         classB.addMethod("addCheese", "void", ("string", "cheese"))
-        self.assertRaises(KeyError, classB.addMethod("addCheese", "void", ("string", "cheese")))
+        self.assertRaises(KeyError, classB.addMethod, "addCheese", "void", ("string", "cheese"))
 
         # ClassCollection
         collection = ClassCollection()
         collection.addClass("Animal")
         collection.addMethod("Animal", "getSpecies", "string")
-        self.assertRaises(KeyError, collection.addMethod("Animal", "getSpecies", "string"))
+        self.assertRaises(KeyError, collection.addMethod, "Animal", "getSpecies", "string")
 
     def testAddMethodInvalidClass(self):
         collection = ClassCollection()
-        self.assertRaises(KeyError, collection.addMethod("Animal", "getSpecies", "string"))
+        self.assertRaises(KeyError, collection.addMethod, "Animal", "getSpecies", "string")
 
     def testDeleteMethodSuccessful(self):
         # Class object, no params, single method
@@ -71,26 +75,26 @@ class MethodTest(unittest.TestCase):
 
     def testDeleteMethodInvalidName(self):
         classA = Class("Person")
-        self.assertRaises(KeyError, classA.deleteMethod("age", []))
+        self.assertRaises(KeyError, classA.deleteMethod, "age", [])
 
         collection = ClassCollection()
         collection.addClass("Animal")
-        self.assertRaises(KeyError, collection.deleteMethod("Animal", "age", []))
+        self.assertRaises(KeyError, collection.deleteMethod, "Animal", "age", [])
 
     def testDeleteMethodInvalidParams(self):
         classA = Class("Person")
         classA.addMethod("age", "unsigned")
-        self.assertRaises(KeyError, classA.deleteMethod("age", [("int", "year")]))
+        self.assertRaises(KeyError, classA.deleteMethod, "age", [("int", "year")])
         
         collection = ClassCollection()
         collection.addClass("Animal")
         collection.addMethod("Animal", "age", "unsigned")
-        self.assertRaises(KeyError, collection.deleteMethod("Animal", "age", [("int", "year")]))
+        self.assertRaises(KeyError, collection.deleteMethod, "Animal", "age", [("int", "year")])
     
     def testDeleteMethodInvalidClass(self):
         collection = ClassCollection()
         collection.addClass("Person")
-        self.assertRaises(KeyError, collection.deleteMethod("Fish", "age", [("int", "year")]))
+        self.assertRaises(KeyError, collection.deleteMethod, "Fish", "age", [("int", "year")])
 
     def testRenameMethodSuccessful(self):
         classA = Class("Pizza")
@@ -109,25 +113,25 @@ class MethodTest(unittest.TestCase):
     def testRenameMethodInvalidName(self):
         classA = Class("Pizza")
         classA.addMethod("topping", "void")
-        self.assertRaises(KeyError, classA.renameMethod("bruh", [], "someOtherName"))
+        self.assertRaises(KeyError, classA.renameMethod, "bruh", [], "someOtherName")
 
         collection = ClassCollection()
         collection.addClass("Instrument")
-        self.assertRaises(KeyError, collection.renameMethod("Instrument", "bruh", [], "newName"))
+        self.assertRaises(KeyError, collection.renameMethod, "Instrument", "bruh", [], "newName")
 
     def testRenameMethodInvalidParams(self):
         classA = Class("Pizza")
         classA.addMethod("topping", "void")
-        self.assertRaises(KeyError, classA.renameMethod("topping",  [("int", "errorparm")], "setTopping"))
+        self.assertRaises(KeyError, classA.renameMethod, "topping",  [("int", "errorparm")], "setTopping")
 
         collection = ClassCollection()
         collection.addClass("Instrument")
         collection.addMethod("Instrument", "isWind", "bool")
-        self.assertRaises(KeyError, collection.renameMethod("Instrument", "isWind", [("void*", "error")], "newName"))
+        self.assertRaises(KeyError, collection.renameMethod, "Instrument", "isWind", [("void*", "error")], "newName")
     
     def testRenameMethodInvalidClass(self):
         collection = ClassCollection()
-        self.assertRaises(collection.renameMethod("Instrument", "isWind", [], "isMayonaise"))
+        self.assertRaises(KeyError, collection.renameMethod, "Instrument", "isWind", [], "isMayonaise")
 
 if __name__ == "__main__":
     unittest.main()

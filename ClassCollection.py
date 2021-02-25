@@ -152,13 +152,19 @@ class ClassCollection():
         # --------------------------- ( Method ) ----------------------------- #
 
         def addMethod(self, className, methodName, returnType, parameters = []):
-            pass
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+            self.classDict[className].addMethod(methodName, returnType, parameters)
 
         def deleteMethod(self, className, methodName, parameters):
-            pass
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+            self.classDict[className].deleteMethod(methodName, parameters)
         
         def renameMethod(self, className, methodName, parameters, newName):
-            pass
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+            self.classDict[className].renameMethod(methodName, parameters, newName)
 
         # --------------------------- ( Parameter ) ----------------------------- #
         # "parameters" is the parameter lsit of the given method to distinguish it.

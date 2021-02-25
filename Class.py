@@ -2,6 +2,7 @@
 ### Classes defined: Class
 from Attribute import Attribute
 from Field import Field
+from Method import Method
 
 class Class():
 
@@ -21,13 +22,49 @@ class Class():
         
         # --------------------------- ( Method ) ----------------------------- #
         def addMethod(self, name, returnType, parameters = []):
-            pass
+            if name not in self.methodDict:
+                self.methodDict[name] = []
+            for m in self.methodDict[name]:
+                if m.parameters == parameters:
+                    raise KeyError(f"Cannot add method {name}. Method {name} already exists with parameters {parameters}")
+            self.methodDict[name].append(Method(name, returnType, parameters))
 
         def deleteMethod(self, name, parameters):
-            pass
-        
+            if name not in self.methodDict:
+                raise KeyError(f"Cannot delete method {name}. Method {name} does not exist in class {self.name}")
+            found = False
+            for i in range(len(self.methodDict[name])):
+                if self.methodDict[name][i].parameters == parameters:
+                    self.methodDict[name].pop(i)
+                    found = True
+                    break
+
+            if not found:
+                raise KeyError(f"Cannot delete method {name}. Method {name} does not exist with parameters {parameters}")
+            if len(self.methodDict[name]) == 0:
+                del self.methodDict[name]
         def renameMethod(self, oldName, parameters, newName):
-            pass
+            if oldName not in self.methodDict:
+                raise KeyError(f"Method {oldName} does not exist in class {self.name}")
+            found = False
+            methodIndex = 0
+            # Check to see method with these parameters exists
+            for i in range(len(self.methodDict[oldName])):
+                if self.methodDict[oldName][i].parameters == parameters:
+                    # self.methodDict[oldName].pop(i)
+                    methodIndex = i
+                    found = True
+                    break
+            if not found:
+                raise KeyError(f"Cannot rename method {oldName}. Method {oldName} does not exist with parameters {parameters}")
+            # Try to add method with newName BEFORE removing oldName instance just in case newName already exists.
+            try:
+                returnType = self.methodDict[oldName][methodIndex].returnType
+                self.addMethod(newName, returnType, parameters)
+            except KeyError:
+                raise KeyError(f"Cannot rename method {oldName}. Method {newName} already exists with parameters {parameters}")
+            
+            self.deleteMethod(oldName, parameters)
 
         # ----------------------------( Parameters ) ------------------------ #
         def addParameter(self, methodName, parameters, type, name):
