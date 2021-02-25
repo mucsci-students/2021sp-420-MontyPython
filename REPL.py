@@ -115,7 +115,7 @@ while (tokens[0].lower() != 'exit'):
                     addedTokens = requestParameters(paramList[start:])
                     tokens.extend(addedTokens)
                 # Deletes relationship
-                collection.addRelationship(tokens[2], tokens[3])
+                collection.deleteRelationship(tokens[2], tokens[3])
 
         # ------- Rename ------- #
         if tokens[0] == 'rename':
@@ -188,17 +188,18 @@ while (tokens[0].lower() != 'exit'):
         # If no name is given, but the file was previously loaded or saved,
         # the user is prompted if they wish to overwrite the file.
         if tokens[0] == 'save':
+            overwriteBool = True
             # If no file name is given and no recent file was saved or loaded,
             # requests file name from user
             if len(tokens) == 1 and recentFile == "":
                 paramList = ['file name']
-                returnTokens = requestParameters[paramList]
+                returnTokens = requestParameters(paramList)
                 tokens.extend(returnTokens)
 
             # Overwrite defaults to true. If there is no recent file, saves normally.
             # If there is a recent file and Y is selected, overwrites. If there is
             # a recent file and N is selected, does not save.
-            overwriteBool = True
+            
             elif len(tokens) == 1 and os.path.isfile(recentFile):
                 overwrite = input(f'Would you like to overwrite {recentFile}? Y/N\n')
                 overwriteTokens = overwrite.split()
