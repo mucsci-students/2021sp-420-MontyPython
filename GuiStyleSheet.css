@@ -1,0 +1,18 @@
+/*
+CSS style sheet for Gui.py
+*/
+
+/* Sets the style of the whole window */
+QWidget{
+    background-color: rgb(93, 105, 126); 
+    font-size: 15px;
+}
+
+/* This can be used for individual elements 
+QMenuBar{
+    color:aliceblue
+} 
+
+QMenuBar:hover{
+    background-color: yellow;
+} */
