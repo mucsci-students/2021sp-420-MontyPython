@@ -8,5 +8,6 @@ class Method:
         self.name = name
         self.returnType = returnType
 
-        # TODO: parameter structure
+        # parameter structure
+        # [(retType1, name1), (retType2, name2), ...]
         self.parameters = parameters

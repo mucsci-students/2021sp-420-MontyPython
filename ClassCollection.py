@@ -151,13 +151,13 @@ class ClassCollection():
         
         # --------------------------- ( Method ) ----------------------------- #
 
-        def addMethod(self, className, name, returnType):
+        def addMethod(self, className, methodName, returnType, parameters = []):
             pass
 
-        def deleteMethod(self, className, returnType, name, parameters):
+        def deleteMethod(self, className, methodName, parameters):
             pass
         
-        def renameMethod(self, className, returnType, name, parameters):
+        def renameMethod(self, className, methodName, parameters, newName):
             pass
 
         # --------------------------- ( Parameter ) ----------------------------- #
