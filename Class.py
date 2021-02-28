@@ -105,7 +105,7 @@ class Class():
                     break        
             if not found:
                 raise KeyError(f'Method {methodName} with parameters {parameters} not found')
-            # Get the type of the parameter (not parameter for simplicity)
+            # Get the type of the parameter (not a parameter for simplicity)
             typ = ""
             found = False
             for tup in self.methodDict[methodName][methodIndex].parameters:
