@@ -4,7 +4,7 @@ from ClassCollection import ClassCollection
 from Class import Class
 
 class ParameterTest(unittest.TestCase):
-           
+    
     def testAddParameterSuccessful(self):
         classA = Class("c1")
         classA.addMethod("m1", "int")
@@ -18,29 +18,42 @@ class ParameterTest(unittest.TestCase):
         classA.addParameter("m1", [("string", "paramZero")], "int", "paramOne")
         self.assertIn(("string", "paramZero"), classA.methodDict["m1"][0].parameters)
         self.assertIn(("int", "paramOne"), classA.methodDict["m1"][0].parameters)
+
+    def testAddParameterOverloading(self):
+        classA = Class("c1")
+        classA.addMethod("m1", "int")
+        # Add two parameters to first method
+        classA.addParameter("m1", [], "string", "paramZero")
+        classA.addParameter("m1", [("string", "paramZero")], "int", "paramTwo")
+        # Add the overloaded method
+        classA.addMethod("m1", "int")
+        classA.addParameter("m1", [], "int", "test1")
+        classA.addParameter("m1", [("int", "test1")], "string", "test2")
+        self.assertEqual([("string", "paramZero"), ("int", "paramTwo")], classA.methodDict["m1"][0].parameters)
+        self.assertEqual([("int", "test1"), ("string", "test2")], classA.methodDict["m1"][1].parameters)
     
     def testAddParameterNoType(self):
         collection = ClassCollection()
         collection.addClass("c1")
         collection.addMethod("c1", "m1", "int")
-        self.assertRaises(KeyError, collection.addParameter("c1", "m1", [], "", "name"))
+        self.assertRaises(KeyError, collection.addParameter, "c1", "m1", [], "", "name")
     
     def testAddParameterNoName(self):
         collection = ClassCollection()
         collection.addClass("c1")
         collection.addMethod("c1", "m1", "int")
-        self.assertRaises(KeyError, collection.addParameter("c1", "m1", [], "int", ""))
+        self.assertRaises(KeyError, collection.addParameter, "c1", "m1", [], "int", "")
     
     def testAddParameterInvalidMethod(self):
         classA = Class("c1")
-        classA.addMethod("c1", "m1", "int")
-        self.assertRaises(KeyError, classA.addParameter("badMethod", [], "int", "fail"))
+        classA.addMethod("m1", "int")
+        self.assertRaises(KeyError, classA.addParameter, "badMethod", [], "int", "fail")
     
     def testAddParameterAlreadyExists(self):
         classA = Class("c1")
         classA.addMethod("m1", "int")
         classA.addParameter("m1", [], "string", "badString")
-        self.assertRaises(KeyError, classA.addParameter("m1", [], "string", "badString"))
+        self.assertRaises(KeyError, classA.addParameter, "m1", [], "string", "badString")
 
     # --------------------------------------------------------------------------------------------- #
     
@@ -60,28 +73,27 @@ class ParameterTest(unittest.TestCase):
         classA.addParameter("m1", [], "int", "toRemove")
         classA.addParameter("m1", [("int", "toRemove")], "string", "toRemove2")
         classA.removeAllParameters("m1", [("int", "toRemove"), ("string", "toRemove2")])
-        self.assertNotIn(("string", "toRemove2"), classA.methodDict["m1"][0].parameters)
-        
-   
+        self.assertNotIn(("string", "toRemove2"), classA.methodDict["m1"][0].parameters)    
+    
     def testRemoveParameterInvalidClass(self):
         collection = ClassCollection()
         collection.addClass("c1")
         collection.addMethod("c1", "m1", "int")
         collection.addParameter("c1", "m1", [], "int", "integerOne")
-        self.assertRaises(KeyError, collection.removeParameter("c2", "m1", [("int", "integerOne")], "integerOne"))
+        self.assertRaises(KeyError, collection.removeParameter, "c2", "m1", [("int", "integerOne")], "integerOne")
     
     def testRemoveParameterInvalidMethod(self):
         collection = ClassCollection()
         collection.addClass("c1")
         collection.addMethod("c1", "m1", "int")
         collection.addParameter("c1", "m1", [], "int", "integerOne")
-        self.assertRaises(KeyError, collection.removeParameter("c1", "m2", [("int", "integerOne")], "integerOne"))
+        self.assertRaises(KeyError, collection.removeParameter, "c1", "m2", [("int", "integerOne")], "integerOne")
     
     def testRemoveParameterNotFound(self):
         classA = Class("c1")
         classA.addMethod("m1", "int")
         classA.addParameter("m1", [], "int", "toRemove")
-        self.assertRaises(KeyError, classA.removeParameter("m1", [("int", "toRemove")], "badParameter"))
+        self.assertRaises(KeyError, classA.removeParameter, "m1", [("int", "toRemove")], "badParameter")
     
     # -----------------------------------------------------------------------------------------------------------------------
 
@@ -107,20 +119,20 @@ class ParameterTest(unittest.TestCase):
         collection.addClass("c1")
         collection.addMethod("c1", "m1", "int")
         collection.addParameter("c1", "m1", [], "int", "integerOne")
-        self.assertRaises(KeyError, collection.changeParameter("c2", "m1", [("int", "integerOne")], "integerOne", "string", "newParam"))
+        self.assertRaises(KeyError, collection.changeParameter, "c2", "m1", [("int", "integerOne")], "integerOne", "string", "newParam")
     
     def testChangeParameterInvalidMethod(self):
         collection = ClassCollection()
         collection.addClass("c1")
         collection.addMethod("c1", "m1", "int")
         collection.addParameter("c1", "m1", [], "int", "integerOne")
-        self.assertRaises(KeyError, collection.changeParameter("c1", "m2", [("int", "integerOne")], "integerOne", "string", "newParam"))
+        self.assertRaises(KeyError, collection.changeParameter, "c1", "m2", [("int", "integerOne")], "integerOne", "string", "newParam")
     
     def testChangeParameterNotFound(self):
         classA = Class("c1")
         classA.addMethod("m1", "int")
         classA.addParameter("m1", [], "int", "toChange")
-        self.assertRaises(KeyError, classA.changeParameter("m1", [("int", "toChange")], "badParameter", "string", "newParam"))
-
+        self.assertRaises(KeyError, classA.changeParameter, "m1", [("int", "toChange")], "badParameter", "string", "newParam")
+    
 if __name__ == "__main__":
     unittest.main()

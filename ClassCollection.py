@@ -167,21 +167,31 @@ class ClassCollection():
             self.classDict[className].renameMethod(methodName, parameters, newName)
 
         # --------------------------- ( Parameter ) ----------------------------- #
-        # "parameters" is the parameter lsit of the given method to distinguish it.
-        def addParameter(self, className, methodName, parameters, type, name):
-            pass
+        # "parameters" is the parameter listt of the given method to distinguish it.
+        def addParameter(self, className, methodName, parameters, typ, name):
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+            self.classDict[className].addParameter(methodName, parameters, typ, name)
 
         def removeParameter(self, className, methodName, parameters, name):
-            pass
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+            self.classDict[className].removeParameter(methodName, parameters, name)
 
         def removeAllParameters(self, className, methodName, parameters):
-            pass
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+            self.classDict[className].removeAllParameters(methodName, parameters)
 
         def changeParameter(self, className, methodName, parameters, name, newType, newName):
-            pass
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+            self.classDict[className].changeParameter(methodName, parameters, name, newType, newName)
         
         def changeAllParameters(self, className, methodName, parameters, newParameters):
-            pass
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+            self.classDict[className].changeAllParameters(methodName, parameters, newParameters)
         
          # --------------------------- ( Field ) ----------------------------- #
          #error checking is done in Class.py
