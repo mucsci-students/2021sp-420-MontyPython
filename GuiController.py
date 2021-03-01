@@ -1,9 +1,12 @@
-import Gui
+import sys
+from ClassCollection import ClassCollection
 
-# ------------------ Controller ------------------ #
+# A default collection
+collection = ClassCollection()
 
-# show the GUI
-Gui.window.show()
 
-# Run the event loop
-Gui.sys.exit(Gui.qApp.exec_())
+def exit():
+    sys.exit()
+
+# Create a method to pull info about classes from a class collection instance. Maybe that should be made here?
+# This may end up being similar to interface.py and REPL.py
