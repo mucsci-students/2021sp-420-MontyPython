@@ -1,21 +1,10 @@
 # Handles exit status
 import sys
-import GUIController
+import GUIController, GUIClassMenu, GUIRelationshipMenu, GUIFieldMenu, GUIParameterMenu, GUIMethodMenu
 
 # Import Qapplication and required widgets
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QWidget
-# For the menu bar at the top
-from PyQt5.QtWidgets import QMenuBar
-from PyQt5.QtWidgets import QMenu
-# For individual Classes
-from PyQt5.QtWidgets import QLabel
-from PyQt5.QtWidgets import QMainWindow
-
-from PyQt5.QtWidgets import QAction
-from PyQt5.QtWidgets import QPushButton
-
-# TODO: Figure out circular problem with the guicontroller and gui
+from PyQt5.QtWidgets import QApplication, QWidget, QMenuBar, QMenu, QLabel, QMainWindow, QAction, QPushButton, QDesktopWidget
+from PyQt5.QtGui import QPainter, QPen
 
 # TODO: Figure out the difference between QWidget and QMainWindow
 class MainWindow(QWidget):
@@ -24,9 +13,24 @@ class MainWindow(QWidget):
         super(MainWindow, self).__init__(parent)
         
         self.drawWindow()
+        self.centerWindow()
         self.drawMenuBar()
-        self.drawClass()
+        self.drawClass(100, 200)
+        self.drawClass(400, 200)
+        #self.drawLine()
         
+        # TODO - Figure out how to draw lines
+        #def paintEvent(self, event):
+            #paint = QPainter()
+            #paint.begin(self)
+            #paint = setPen(Qt.Black)
+            #painter.drawLine(paint)
+            #paint.end()
+
+        #def drawLine(self, paint):
+            #pen = QPen(paint.black, 2, paint.SolidLine)
+            #paint.setPen(pen)
+            #paint.drawLine(500, 600, 800, 500)
 
     def drawWindow(self):
         # The window is created in GuiController.py
@@ -34,10 +38,20 @@ class MainWindow(QWidget):
 
         # Window size: x and y coords on screen, width and height of window
         # TODO: The coords will be problematic based on screen size. Fix this so it centers at any screen size (desktop()/screenGeometry()?)
-        self.setGeometry(500, 500, 500, 500)
+        #self.setGeometry(800, 800, 800, 800)
+        self.resize(800, 800)
 
         # Style sheet can be used on all parts of GUI
         self.setStyleSheet(open('GuiStyleSheet.css').read()) 
+
+    def centerWindow(self):
+        # Get widget geometry
+        widgetGeo = self.frameGeometry()
+        # Find the center of the desktop 
+        centerScreen = QDesktopWidget().availableGeometry().center()
+        # Move the widget center to the center of the screen
+        widgetGeo.moveCenter(centerScreen)
+        self.move(widgetGeo.topLeft())
         
     def drawMenuBar(self):
         # Create bar
@@ -47,7 +61,12 @@ class MainWindow(QWidget):
 
         # Add menus to bar
         menuFile = bar.addMenu("File")
-        menuEditElements = bar.addMenu("Edit Elements")
+        #menuEditElements = bar.addMenu("Edit Elements")
+        menuClass = bar.addMenu("Classes")
+        menuField = bar.addMenu("Fields")
+        menuMethod = bar.addMenu("Methods")
+
+        menuRelationship = bar.addMenu("Relationships")
 
         # Add submenus and connect signals to
         # Submenu: File  
@@ -63,35 +82,54 @@ class MainWindow(QWidget):
         menuExit.triggered.connect(GUIController.exit)
 
         # Submenu: Edit Elements -- Class
-        menuAddClass = menuEditElements.addAction("Add Class")
-        menuAddClass.triggered.connect(self.drawClass)
-        menuDeleteClass = menuEditElements.addAction("Delete Class")
+        menuAddClass = menuClass.addAction("Add Class")
+        menuAddClass.triggered.connect(self.openClassMenu)
+        menuDeleteClass = menuClass.addAction("Delete Class")
         menuDeleteClass.triggered.connect(test1)
-        menuRenameClass = menuEditElements.addAction("Rename Class")
+        menuRenameClass = menuClass.addAction("Rename Class")
         menuRenameClass.triggered.connect(test1)
-        menuEditElements.addSeparator()
+        #menuClass.addSeparator()
 
-        # Submenu: Edit Elements -- Attribute
-        menuAddAttribute = menuEditElements.addAction("Add Attribute")
-        menuAddAttribute.triggered.connect(test1)
-        menuDeleteAttribute = menuEditElements.addAction("Delete Attribute")
-        menuDeleteAttribute.triggered.connect(test1)
-        menuRenameAttribute = menuEditElements.addAction("Rename Attribute")
-        menuRenameAttribute.triggered.connect(test1)
-        menuEditElements.addSeparator()
+        # Submenu: Edit Elements -- Field
+        menuAddField = menuField.addAction("Add Field")
+        menuAddField.triggered.connect(self.openFieldMenu)
+        menuDeleteField = menuField.addAction("Delete Field")
+        menuDeleteField.triggered.connect(test1)
+        menuRenameField = menuField.addAction("Rename Field")
+        menuRenameField.triggered.connect(test1)
+        #menuField.addSeparator()
+
+        # Submenu: Edit Elements -- Method
+        menuAddMethod = menuMethod.addAction("Add Method")
+        menuAddMethod.triggered.connect(self.openMethodMenu)
+        menuDeleteMethod = menuMethod.addAction("Delete Method")
+        menuDeleteMethod.triggered.connect(test1)
+        menuRenameMethod = menuMethod.addAction("Rename Method")
+        menuRenameMethod.triggered.connect(test1)
+        menuMethod.addSeparator()
+
+        # Submenu: Edit Elements -- Parameter
+        menuAddParameter = menuMethod.addAction("Add Parameter")
+        menuAddParameter.triggered.connect(self.openParamMenu)
+        menuDeleteParameter = menuMethod.addAction("Delete Parameter")
+        menuDeleteParameter.triggered.connect(test1)
+        menuRenameParameter = menuMethod.addAction("Rename Parameter")
+        menuRenameParameter.triggered.connect(test1)
+        #menuEditElements.addSeparator()
 
         # Submenu: Edit Elements -- Relationship
-        menuAddRelationship = menuEditElements.addAction("Add Relationship")
-        menuAddRelationship.triggered.connect(test1)
-        menuDeleteRelationship = menuEditElements.addAction("Delete Relationship")
+        menuAddRelationship = menuRelationship.addAction("Add Relationship")
+        menuAddRelationship.triggered.connect(self.openRelationshipMenu)
+        menuDeleteRelationship = menuRelationship.addAction("Delete Relationship")
         menuDeleteRelationship.triggered.connect(test1)
 
     # This will be called when a class is added or a class is being loaded.
     # It'll pull info from GuiController.py
-    def drawClass(self):
+    def drawClass(self, x, y):
         # x and y coords for labels are based on the top left corner of the label
-        x = 200
-        y = 200
+
+        # TODO: What if field and method labels are empty?
+        # TODO: ADD PARAMETERS nameLbl, fieldLbl, methodLbl
 
         nameLbl = QLabel("Book", parent = self)
         fieldLbl = QLabel("title: String\nauthors : String[]", parent = self)
@@ -116,10 +154,31 @@ class MainWindow(QWidget):
         methodHeight = methodLbl.height()
 
         # Base everything around fieldLbl(It's in the middle of name and method)
+        # TODO : Maybe change this to nameLbl? What if there are no field/methods? How will it display?
         fieldLbl.setGeometry(x, y, width, fieldHeight)
         # Adding/subtracting 2 makes the lines overlap and makes it appear as though it's one object
         nameLbl.setGeometry(fieldLbl.x(), (fieldLbl.y() - nameHeight + 2), width, nameHeight)
         methodLbl.setGeometry(fieldLbl.x(), (fieldLbl.y() + fieldHeight - 2), width, methodHeight)
+
+    def openClassMenu(self, checked):
+        self.cMenu = GUIClassMenu.ClassMenu()
+        self.cMenu.show()
+ 
+    def openRelationshipMenu(self, checked):
+        self.rMenu = GUIRelationshipMenu.RelationshipMenu()
+        self.rMenu.show()
+
+    def openFieldMenu(self, checked):
+        self.fMenu = GUIFieldMenu.FieldMenu()
+        self.fMenu.show()
+    
+    def openMethodMenu(self, checked):
+        self.mMenu = GUIMethodMenu.MethodMenu()
+        self.mMenu.show()
+
+    def openParamMenu(self, checked):
+        self.pMenu = GUIParameterMenu.ParameterMenu()
+        self.pMenu.show()
 
     # TODO
     def createRClickMenu(self):
@@ -131,6 +190,8 @@ class MainWindow(QWidget):
 
 def test1():
     print("test")
+
+
 
     
     # Menu when label is right clicked
