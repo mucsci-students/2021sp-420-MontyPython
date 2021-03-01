@@ -67,20 +67,123 @@ class Class():
             self.deleteMethod(oldName, parameters)
 
         # ----------------------------( Parameters ) ------------------------ #
-        def addParameter(self, methodName, parameters, type, name):
-            pass
+        def addParameter(self, methodName, parameters, typ, name):
+            if typ == "":
+                raise KeyError(f'Type must be provided')
+            if name == "":
+                raise KeyError(f'Name must be provided')
+            found = False
+            methodIndex = 0                        
+            for i in range(len(self.methodDict[methodName])):
+                if self.methodDict[methodName][i].parameters == parameters:   
+                    found = True              
+                    methodIndex = i
+                    break
+            if not found:
+                raise KeyError(f'Method {methodName} with parameters {parameters} not found')
+            if (typ,name) in self.methodDict[methodName][methodIndex].parameters:
+                raise KeyError(f'Parameter {name} already exists')
+            # Check if adding the parameter causes identical method signatures (illegal)     
+            testList = self.methodDict[methodName][methodIndex].parameters.copy()
+            testList.append((typ, name))           
+            for i in range(len(self.methodDict[methodName])):
+                if self.methodDict[methodName][i].parameters == testList:   
+                    raise KeyError(f'Adding \'{name}\' will cause a duplicate method signature.')
+            # Finally, add the parameter
+            self.methodDict[methodName][methodIndex].parameters.append((typ, name))
 
         def removeParameter(self, methodName, parameters, name):
-            pass
+            if name == "":
+                raise KeyError(f'Name must be provided')
+            # Check if method with given parameters exists (and get index)
+            found = False
+            methodIndex = 0
+            for i in range(len(self.methodDict[methodName])):
+                if self.methodDict[methodName][i].parameters == parameters:   
+                    found = True
+                    methodIndex = i
+                    break        
+            if not found:
+                raise KeyError(f'Method {methodName} with parameters {parameters} not found')
+            # Get the type of the parameter (not a parameter for simplicity)
+            typ = ""
+            found = False
+            for tup in self.methodDict[methodName][methodIndex].parameters:
+                if tup[1] == name:
+                    typ = tup[0]
+                    found = True
+            if not found:
+                raise KeyError(f'Parameter {name} does not belong to {methodName}')
+            # Check if removing the parameter causes identical method signatures (illegal)
+            testList = self.methodDict[methodName][methodIndex].parameters.copy()
+            testList.remove((typ, name))           
+            for i in range(len(self.methodDict[methodName])):
+                if self.methodDict[methodName][i].parameters == testList:   
+                    raise KeyError(f'Removing \'{name}\' will cause a duplicate method signature.')
+            # Finally, remove the parameter
+            self.methodDict[methodName][methodIndex].parameters.remove((typ, name))
 
         def removeAllParameters(self, methodName, parameters):
-            pass
+            # Check if method with given parameters exists (and get index)
+            found = False
+            methodIndex = 0
+            for i in range(len(self.methodDict[methodName])):
+                if self.methodDict[methodName][i].parameters == parameters:   
+                    found = True
+                    methodIndex = i
+                    break       
+            if not found:
+                raise KeyError(f'Method {methodName} with parameters {parameters} not found')
+            # Check if empty method signature already exists
+            for i in range(len(self.methodDict[methodName])):
+                if self.methodDict[methodName][i].parameters  == []:
+                    raise KeyError(f'Cannot remove all parameters because a method with an empty signature already exists')
+            # Finally, remove all parameters
+            self.methodDict[methodName][methodIndex].parameters.clear()
 
         def changeParameter(self, methodName, parameters, name, newType, newName):
-            pass
+            if name == "":
+                raise KeyError(f'Name must be provided')
+            if newType == "":
+                raise KeyError(f'New type must be provided')
+            if newName == "":
+                raise KeyError(f'Name name must be provided')
+            # Check if method with given signature exists
+            found = False
+            methodIndex = 0
+            for i in range(len(self.methodDict[methodName])):
+                if self.methodDict[methodName][i].parameters == parameters:   
+                    found = True
+                    methodIndex = i
+                    break
+            if not found:
+                raise KeyError(f'Method {methodName} with parameters {parameters} not found')
+            if (newType, newName) in self.methodDict[methodName][methodIndex].parameters:
+                raise KeyError(f'Parameter {newName} already exists')
+            # Append the new parameter (errors will be handled in addParameter)
+            self.addParameter(methodName, parameters, newType, newName)
+            # Remove the old parameter (errors will be handled in removeParameter)
+            self.removeParameter(methodName, self.methodDict[methodName][methodIndex].parameters, name)
 
         def changeAllParameters(self, methodName, parameters, newParameters):
-            pass
+            # Check if method with given signature exists
+            found = False
+            methodIndex = 0
+            for i in range(len(self.methodDict[methodName])):
+                if self.methodDict[methodName][i].parameters == parameters:   
+                    found = True
+                    methodIndex = i
+                    break       
+            if not found:
+                raise KeyError(f'Method {methodName} with parameters {parameters} not found')
+            # Check if changing all parameters causes duplicate method signatures.
+            for i in range(len(self.methodDict[methodName])):
+                if self.methodDict[methodName][i].parameters  == newParameters:
+                    raise KeyError(f'Cannot change all parameters because a method with containing new parameter list already exists')
+            # Clear the parameters
+            self.methodDict[methodName][methodIndex].parameters.clear()
+            # Add the new parameter list
+            self.methodDict[methodName][methodIndex].parameters = newParameters
 
         # --------------------------- ( Field ) ----------------------------- #
         def addField(self, name, dataType):
