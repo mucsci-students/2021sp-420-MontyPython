@@ -8,10 +8,11 @@ class ClassMenu(QDialog):
     def addClass(self):
         self.setWindowTitle('Add Class')
         self.setFixedSize(600, 600)
-        #self.resize(600, 600)
         self.setStyleSheet(open('GuiStyleSheet.css').read()) 
-        #self.setWindowFlags()
         self.setModal(True)
+
+        
+
         self.exec_()
 
 
