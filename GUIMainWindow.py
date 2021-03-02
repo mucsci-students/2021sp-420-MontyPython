@@ -15,30 +15,16 @@ class MainWindow(QWidget):
         self.drawWindow()
         self.centerWindow()
         self.drawMenuBar()
+
+        # TODO - Delete this when done testing
         self.drawClass(100, 200)
         self.drawClass(400, 200)
-        #self.drawLine()
-        
-        # TODO - Figure out how to draw lines
-        #def paintEvent(self, event):
-            #paint = QPainter()
-            #paint.begin(self)
-            #paint = setPen(Qt.Black)
-            #painter.drawLine(paint)
-            #paint.end()
-
-        #def drawLine(self, paint):
-            #pen = QPen(paint.black, 2, paint.SolidLine)
-            #paint.setPen(pen)
-            #paint.drawLine(500, 600, 800, 500)
 
     def drawWindow(self):
         # The window is created in GuiController.py
         self.setWindowTitle('UML Editor')
 
-        # Window size: x and y coords on screen, width and height of window
-        # TODO: The coords will be problematic based on screen size. Fix this so it centers at any screen size (desktop()/screenGeometry()?)
-        #self.setGeometry(800, 800, 800, 800)
+        # Width, height
         self.resize(800, 800)
 
         # Style sheet can be used on all parts of GUI
@@ -57,18 +43,18 @@ class MainWindow(QWidget):
         # Create bar
         #self.bar = QMenuBar()
         # TODO - Are memory leaks possible?
+        # TODO - Stretch the menu bar across the top of the GUI
         bar = QMenuBar(self)
 
         # Add menus to bar
         menuFile = bar.addMenu("File")
-        #menuEditElements = bar.addMenu("Edit Elements")
         menuClass = bar.addMenu("Classes")
         menuField = bar.addMenu("Fields")
         menuMethod = bar.addMenu("Methods")
 
         menuRelationship = bar.addMenu("Relationships")
 
-        # Add submenus and connect signals to
+        # Add submenus and connect signals to them
         # Submenu: File  
         menuOpen = menuFile.addAction("Open")
         menuOpen.triggered.connect(test1)
@@ -88,7 +74,6 @@ class MainWindow(QWidget):
         menuDeleteClass.triggered.connect(test1)
         menuRenameClass = menuClass.addAction("Rename Class")
         menuRenameClass.triggered.connect(test1)
-        #menuClass.addSeparator()
 
         # Submenu: Edit Elements -- Field
         menuAddField = menuField.addAction("Add Field")
@@ -97,7 +82,6 @@ class MainWindow(QWidget):
         menuDeleteField.triggered.connect(test1)
         menuRenameField = menuField.addAction("Rename Field")
         menuRenameField.triggered.connect(test1)
-        #menuField.addSeparator()
 
         # Submenu: Edit Elements -- Method
         menuAddMethod = menuMethod.addAction("Add Method")
@@ -115,7 +99,6 @@ class MainWindow(QWidget):
         menuDeleteParameter.triggered.connect(test1)
         menuRenameParameter = menuMethod.addAction("Rename Parameter")
         menuRenameParameter.triggered.connect(test1)
-        #menuEditElements.addSeparator()
 
         # Submenu: Edit Elements -- Relationship
         menuAddRelationship = menuRelationship.addAction("Add Relationship")
@@ -129,7 +112,7 @@ class MainWindow(QWidget):
         # x and y coords for labels are based on the top left corner of the label
 
         # TODO: What if field and method labels are empty?
-        # TODO: ADD PARAMETERS nameLbl, fieldLbl, methodLbl
+        # TODO: Add parameters nameLbl, fieldLbl, methodLbl
 
         nameLbl = QLabel("Book", parent = self)
         fieldLbl = QLabel("title: String\nauthors : String[]", parent = self)
@@ -154,31 +137,28 @@ class MainWindow(QWidget):
         methodHeight = methodLbl.height()
 
         # Base everything around fieldLbl(It's in the middle of name and method)
-        # TODO : Maybe change this to nameLbl? What if there are no field/methods? How will it display?
+        # TODO: Maybe change this to nameLbl. What if there are no field/methods? How will it display?
         fieldLbl.setGeometry(x, y, width, fieldHeight)
         # Adding/subtracting 2 makes the lines overlap and makes it appear as though it's one object
         nameLbl.setGeometry(fieldLbl.x(), (fieldLbl.y() - nameHeight + 2), width, nameHeight)
         methodLbl.setGeometry(fieldLbl.x(), (fieldLbl.y() + fieldHeight - 2), width, methodHeight)
 
+        # TODO: Track mouse movement to place class label w/ a click, move w/ another click
+
     def openClassMenu(self, checked):
-        self.cMenu = GUIClassMenu.ClassMenu()
-        self.cMenu.show()
+        self.cMenu = GUIClassMenu.ClassMenu().addClass()
  
     def openRelationshipMenu(self, checked):
-        self.rMenu = GUIRelationshipMenu.RelationshipMenu()
-        self.rMenu.show()
+        self.rMenu = GUIRelationshipMenu.RelationshipMenu().addRelationship()
 
     def openFieldMenu(self, checked):
-        self.fMenu = GUIFieldMenu.FieldMenu()
-        self.fMenu.show()
+        self.fMenu = GUIFieldMenu.FieldMenu().addField()
     
     def openMethodMenu(self, checked):
-        self.mMenu = GUIMethodMenu.MethodMenu()
-        self.mMenu.show()
+        self.mMenu = GUIMethodMenu.MethodMenu().addMethod()
 
     def openParamMenu(self, checked):
-        self.pMenu = GUIParameterMenu.ParameterMenu()
-        self.pMenu.show()
+        self.pMenu = GUIParameterMenu.ParameterMenu().addParameter()
 
     # TODO
     def createRClickMenu(self):
@@ -188,21 +168,18 @@ class MainWindow(QWidget):
         #classLabel.setContextMenuPolicy(Qt.ActionsContextMenu)
         #classLabel.addAction("Delete Relationship")
 
+# TODO: Delete this when done testing
 def test1():
     print("test")
 
+    # TODO: QMessageBox for popups like "Are you sure you'd like to save?"
+    # Use QDialog for the menu?
 
-
-    
-    # Menu when label is right clicked
-        # Use drop down or multiple selection within the menu
-    # Idea: Have fixed spots on the editor that classes can be dragged and snapped into
-
-    # Lines between labels
-
-    # Popup dialog that asks for info when you add a class/attribute/etc
+    # TODO: Relationship lines between labels
 
      # TODO - Delete this when done testing
         #btn1 = QPushButton(self)
         #btn1.move(80, 80)
         #btn1.clicked.connect(test1)
+
+    # TODO - Make sure window size is saved when user saves the state of the program

@@ -1,13 +1,18 @@
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QDialog
 
-class ClassMenu(QWidget):
+class ClassMenu(QDialog):
         
     def __init__(self, parent = None):
         super(ClassMenu, self).__init__(parent)
 
+    def addClass(self):
         self.setWindowTitle('Add Class')
-        self.resize(800, 800)
+        self.setFixedSize(600, 600)
+        #self.resize(600, 600)
         self.setStyleSheet(open('GuiStyleSheet.css').read()) 
+        #self.setWindowFlags()
+        self.setModal(True)
+        self.exec_()
 
 
 

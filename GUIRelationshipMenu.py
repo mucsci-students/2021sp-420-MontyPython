@@ -1,10 +1,15 @@
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QDialog
 
-class RelationshipMenu(QWidget):
+class RelationshipMenu(QDialog):
         
     def __init__(self, parent = None):
         super(RelationshipMenu, self).__init__(parent)
 
+    def addRelationship(self):
         self.setWindowTitle('Add Relationship')
-        self.resize(400, 800)
+        self.setFixedSize(600, 600)
+        #self.resize(600, 600)
         self.setStyleSheet(open('GuiStyleSheet.css').read()) 
+        #self.setWindowFlags()
+        self.setModal(True)
+        self.exec_()
