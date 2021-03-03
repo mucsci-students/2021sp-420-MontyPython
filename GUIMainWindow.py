@@ -1,6 +1,5 @@
 # Handles exit status
 import sys
-import GUIController, GUIClassMenu, GUIRelationshipMenu, GUIFieldMenu, GUIParameterMenu, GUIMethodMenu, GUIBrowseFiles
 
 # Import Qapplication and required widgets
 from PyQt5.QtWidgets import QApplication, QWidget, QMenuBar, QMenu, QLabel, QMainWindow, QAction, QPushButton, QDesktopWidget
@@ -60,9 +59,9 @@ class MainWindow(QWidget):
         # Add submenus and connect signals to them
         # Submenu: File  
         menuOpen = menuFile.addAction("Open")
-        menuOpen.triggered.connect(self.openMenu)
+        menuOpen.triggered.connect(self.controller.openMenu)
         menuSave = menuFile.addAction("Save")
-        menuSave.triggered.connect(self.saveMenu)
+        menuSave.triggered.connect(self.controller.saveMenu)
         menuFile.addSeparator()
         menuHelp = menuFile.addAction("Help")
         menuHelp.triggered.connect(test1)
@@ -72,96 +71,44 @@ class MainWindow(QWidget):
 
         # Submenu: Edit Elements -- Class
         menuAddClass = menuClass.addAction("Add Class")
-        menuAddClass.triggered.connect(self.addClassMenu)
+        menuAddClass.triggered.connect(self.controller.addClassMenu)
         menuDeleteClass = menuClass.addAction("Delete Class")
-        menuDeleteClass.triggered.connect(self.delClassMenu)
+        menuDeleteClass.triggered.connect(self.controller.delClassMenu)
         menuRenameClass = menuClass.addAction("Rename Class")
-        menuRenameClass.triggered.connect(self.renClassMenu)
+        menuRenameClass.triggered.connect(self.controller.renClassMenu)
 
         # Submenu: Edit Elements -- Field
         menuAddField = menuField.addAction("Add Field")
-        menuAddField.triggered.connect(self.addFieldMenu)
+        menuAddField.triggered.connect(self.controller.addFieldMenu)
         menuDeleteField = menuField.addAction("Delete Field")
-        menuDeleteField.triggered.connect(self.delFieldMenu)
+        menuDeleteField.triggered.connect(self.controller.delFieldMenu)
         menuRenameField = menuField.addAction("Rename Field")
-        menuRenameField.triggered.connect(self.renFieldMenu)
+        menuRenameField.triggered.connect(self.controller.renFieldMenu)
 
         # Submenu: Edit Elements -- Method
         menuAddMethod = menuMethod.addAction("Add Method")
-        menuAddMethod.triggered.connect(self.addMethodMenu)
+        menuAddMethod.triggered.connect(self.controller.addMethodMenu)
         menuDeleteMethod = menuMethod.addAction("Delete Method")
-        menuDeleteMethod.triggered.connect(self.delMethodMenu)
+        menuDeleteMethod.triggered.connect(self.controller.delMethodMenu)
         menuRenameMethod = menuMethod.addAction("Rename Method")
-        menuRenameMethod.triggered.connect(self.renMethodMenu)
+        menuRenameMethod.triggered.connect(self.controller.renMethodMenu)
         menuMethod.addSeparator()
 
         # Submenu: Edit Elements -- Parameter
         menuAddParameter = menuMethod.addAction("Add Parameter")
-        menuAddParameter.triggered.connect(self.addParamMenu)
+        menuAddParameter.triggered.connect(self.controller.addParamMenu)
         menuDeleteParameter = menuMethod.addAction("Delete Parameter")
-        menuDeleteParameter.triggered.connect(self.delParamMenu)
+        menuDeleteParameter.triggered.connect(self.controller.delParamMenu)
         menuRenameParameter = menuMethod.addAction("Rename Parameter")
-        menuRenameParameter.triggered.connect(self.renParamMenu)
+        menuRenameParameter.triggered.connect(self.controller.renParamMenu)
 
         # Submenu: Edit Elements -- Relationship
         menuAddRelationship = menuRelationship.addAction("Add Relationship")
-        menuAddRelationship.triggered.connect(self.addRelationshipMenu)
+        menuAddRelationship.triggered.connect(self.controller.addRelationshipMenu)
         menuDeleteRelationship = menuRelationship.addAction("Delete Relationship")
-        menuDeleteRelationship.triggered.connect(self.delRelationshipMenu)
+        menuDeleteRelationship.triggered.connect(self.controller.delRelationshipMenu)
         menuRenameRelationship = menuRelationship.addAction("Change Relationship")
-        menuRenameRelationship.triggered.connect(self.renRelationshipMenu)
-
-    # Data gets sent from the menu bar to here, where it gets sent to the correct menu to open
-    def addClassMenu(self, checked):
-        self.cMenu = GUIClassMenu.ClassMenu().addClass()
- 
-    def addRelationshipMenu(self, checked):
-        self.rMenu = GUIRelationshipMenu.RelationshipMenu().addRelationship()
-
-    def addFieldMenu(self, checked):
-        self.fMenu = GUIFieldMenu.FieldMenu().addField()
-    
-    def addMethodMenu(self, checked):
-        self.mMenu = GUIMethodMenu.MethodMenu().addMethod()
-
-    def addParamMenu(self, checked):
-        self.pMenu = GUIParameterMenu.ParameterMenu().addParameter()
-
-    def openMenu(self, checked):
-        self.oMenu = GUIBrowseFiles.BrowseFiles().openFile()
-
-    def saveMenu(self, checked):
-        self.sMenu = GUIBrowseFiles.BrowseFiles().saveFile()
-
-    def delClassMenu(self, checked):
-        self.delCMenu = GUIClassMenu.ClassMenu().deleteClass()
-
-    def renClassMenu(self, checked):
-        self.renCMenu = GUIClassMenu.ClassMenu().renameClass()
-
-    def delFieldMenu(self, checked):
-        self.delFMenu = GUIFieldMenu.FieldMenu().deleteField()
-
-    def renFieldMenu(self, checked):
-        self.renFMenu = GUIFieldMenu.FieldMenu().renameField()
-
-    def delMethodMenu(self, checked):
-        self.delMethodMenu = GUIMethodMenu.MethodMenu().deleteMethod()
-
-    def renMethodMenu(self, checked):
-        self.renMethodMenu = GUIMethodMenu.MethodMenu().renameMethod()
-
-    def delParamMenu(self, checked):
-        self.delPMenu = GUIParameterMenu.ParameterMenu().deleteParameter()
-
-    def renParamMenu(self, checked):
-        self.renPMenu = GUIParameterMenu.ParameterMenu().renameParameter()
-
-    def delRelationshipMenu(self, checked):
-        self.delRMenu = GUIRelationshipMenu.RelationshipMenu().deleteRelationship()
-
-    def renRelationshipMenu(self, checked):
-        self.renRMenu = GUIRelationshipMenu.RelationshipMenu().renameRelationship()
+        menuRenameRelationship.triggered.connect(self.controller.renRelationshipMenu)
 
     # This will be called when a class is added or a class is being loaded.
     # It'll pull info from GuiController.py
