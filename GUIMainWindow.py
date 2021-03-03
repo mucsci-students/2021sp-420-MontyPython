@@ -9,9 +9,11 @@ from PyQt5.QtGui import QPainter, QPen
 # TODO: Figure out the difference between QWidget and QMainWindow
 class MainWindow(QWidget):
         
-    def __init__(self, parent = None):
+    def __init__(self, controller, parent = None):
         super(MainWindow, self).__init__(parent)
         
+        self.controller = controller
+
         self.drawWindow()
         self.centerWindow()
         self.drawMenuBar()
@@ -66,7 +68,7 @@ class MainWindow(QWidget):
         menuHelp.triggered.connect(test1)
         menuFile.addSeparator()
         menuExit = menuFile.addAction("Exit")
-        menuExit.triggered.connect(GUIController.exit)
+        menuExit.triggered.connect(self.controller.exit)
 
         # Submenu: Edit Elements -- Class
         menuAddClass = menuClass.addAction("Add Class")
