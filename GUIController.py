@@ -41,7 +41,7 @@ class GUIController:
     def renameRelationship(self, firstClassName, secondClassName, typ):
         pass
 
-    def addMethod(self, className, methodName, returnType, parameters = []):
+    def addMethod(self, className, methodName, returnType, parameters):
         pass
 
     def deleteMethod(self, className, methodName):
