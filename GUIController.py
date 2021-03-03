@@ -6,6 +6,15 @@ from PyQt5.QtWidgets import QLabel
 collection = ClassCollection()
 
 
+def open():
+    pass
+
+def save():
+    pass
+
+def help():
+    pass
+
 def exit():
     sys.exit()
 
@@ -32,25 +41,19 @@ def renameRelationship(firstClassName, secondClassName, typ):
 def addMethod(className, methodName, returnType, parameters = []):
     pass
 
-def deleteMethod(self, className, methodName, parameters):
+def deleteMethod(self, className, methodName):
     pass
 
-def renameMethod(className, methodName, parameters, newName):
+def renameMethod(className, methodName, newName):
     pass
 
-def addParameter(className, methodName, parameters, typ, name):
+def addParameter(className, methodName, typ, name):
     pass
 
-def removeParameter(className, methodName, parameters, name):
+def removeParameter(className, methodName, name):
     pass
 
-def removeAllParameters(className, methodName, parameters):
-    pass
-
-def changeParameter(className, methodName, parameters, name, newType, newName):
-    pass
-
-def changeAllParameters(className, methodName, parameters, newParameters):
+def changeParameter(className, methodName, name, newType, newName):
     pass
 
 def addField(className, name, dataType):
