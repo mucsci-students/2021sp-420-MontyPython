@@ -244,4 +244,4 @@ class ClassCollection():
                 print(f"Error: no method {methodName} in {className} exists")
                 return None
 
-            return self.classDict[className].methodDict[className]
+            return self.classDict[className].methodDict[methodName]
