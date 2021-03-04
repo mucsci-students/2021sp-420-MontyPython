@@ -7,7 +7,7 @@ class RelationshipMenu(QDialog):
     def __init__(self, parent = None):
         super(RelationshipMenu, self).__init__(parent)
 
-    def addRelationship(self):
+    def addRelationship(self, controller):
         self.setWindowTitle('Add Relationship')
         # w, h
         self.setFixedSize(350, 405)
@@ -38,7 +38,7 @@ class RelationshipMenu(QDialog):
         btnSubmit.resize(250, 50)
 
         # This needs to be an anonymous function for the signal to work
-        btnSubmit.clicked.connect(lambda: self.addRelationshipData(txtSrcClass.text(), txtDestClass.text(), cbxRelationshipType.currentText()))
+        btnSubmit.clicked.connect(lambda: controller.addRelationship(txtSrcClass.text(), txtDestClass.text(), cbxRelationshipType.currentText()))
 
         self.exec_()
 
@@ -51,7 +51,7 @@ class RelationshipMenu(QDialog):
         print(typ)
 
 
-    def deleteRelationship(self):
+    def deleteRelationship(self, controller):
         self.setWindowTitle('Delete Relationship')
         # w, h
         self.setFixedSize(350, 335)
@@ -76,7 +76,7 @@ class RelationshipMenu(QDialog):
         btnSubmit.resize(250, 50)
 
         # This needs to be an anonymous function for the signal to work
-        btnSubmit.clicked.connect(lambda: self.delRelationshipData(txtSrcClass.text(), txtDestClass.text()))
+        btnSubmit.clicked.connect(lambda: controller.deleteRelationship(txtSrcClass.text(), txtDestClass.text()))
 
         self.exec_()
 
@@ -88,7 +88,7 @@ class RelationshipMenu(QDialog):
         print(secondClassName)
 
 
-    def renameRelationship(self):
+    def renameRelationship(self, controller):
         self.setWindowTitle('Change Relationship')
         # w, h
         self.setFixedSize(350, 405)
@@ -119,7 +119,7 @@ class RelationshipMenu(QDialog):
         btnSubmit.resize(250, 50)
 
         # This needs to be an anonymous function for the signal to work
-        btnSubmit.clicked.connect(lambda: self.renRelationshipData(txtSrcClass.text(), txtDestClass.text(), cbxRelationshipType.currentText()))
+        btnSubmit.clicked.connect(lambda: controller.renameRelationship(txtSrcClass.text(), txtDestClass.text(), cbxRelationshipType.currentText()))
 
         self.exec_()
 

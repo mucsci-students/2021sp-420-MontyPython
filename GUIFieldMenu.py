@@ -7,7 +7,7 @@ class FieldMenu(QDialog):
     def __init__(self, parent = None):
         super(FieldMenu, self).__init__(parent)
 
-    def addField(self):
+    def addField(self, controller):
         self.setWindowTitle('Add Field')
         # w, h
         self.setFixedSize(350, 405)
@@ -38,7 +38,7 @@ class FieldMenu(QDialog):
         btnSubmit.resize(250, 50)
 
         # This needs to be an anonymous function for the signal to work
-        btnSubmit.clicked.connect(lambda: self.addFieldData(txtClassName.text(), txtFieldName.text(), txtType.text()))
+        btnSubmit.clicked.connect(lambda: controller.addField(txtClassName.text(), txtFieldName.text(), txtType.text()))
 
         self.exec_()
 
@@ -50,7 +50,7 @@ class FieldMenu(QDialog):
         print(fieldName)
         print(typ)
 
-    def deleteField(self):
+    def deleteField(self, controller):
         self.setWindowTitle('Delete Field')
         # w, h
         self.setFixedSize(350, 335)
@@ -75,7 +75,7 @@ class FieldMenu(QDialog):
         btnSubmit.resize(250, 50)
 
         # Signal for Method Menu
-        btnSubmit.clicked.connect(lambda: self.delFieldData(txtClassName.text(), txtFieldName.text()))
+        btnSubmit.clicked.connect(lambda: controller.deleteField(txtClassName.text(), txtFieldName.text()))
 
         self.exec_()
 
@@ -84,7 +84,7 @@ class FieldMenu(QDialog):
         print(className)
         print(fieldName)
 
-    def renameField(self):
+    def renameField(self, controller):
         self.setWindowTitle('Rename Field')
         # w, h
         self.setFixedSize(350, 405)
@@ -115,7 +115,7 @@ class FieldMenu(QDialog):
         btnSubmit.resize(250, 50)
 
         # This needs to be an anonymous function for the signal to work
-        btnSubmit.clicked.connect(lambda: self.addFieldData(txtClassName.text(), txtOldName.text(), txtNewName.text()))
+        btnSubmit.clicked.connect(lambda: controller.renameField(txtClassName.text(), txtOldName.text(), txtNewName.text()))
 
         self.exec_()
 

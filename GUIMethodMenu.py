@@ -8,7 +8,7 @@ class MethodMenu(QDialog):
     def __init__(self, parent = None):
         super(MethodMenu, self).__init__(parent)
 
-    def addMethod(self):
+    def addMethod(self, controller):
         self.setWindowTitle('Add Method')
         # w, h
         self.setFixedSize(602, 420)
@@ -53,7 +53,7 @@ class MethodMenu(QDialog):
 
         # This needs to be an anonymous function for the signal to work
         btnParams.clicked.connect(lambda: self.addParameterToTable(paramTable))
-        btnSubmit.clicked.connect(lambda: self.addMethodData(txtClassName.text(), txtMethodName.text(), txtType.text(), "Loop through and add this"))
+        btnSubmit.clicked.connect(lambda: controller.addMethod(txtClassName.text(), txtMethodName.text(), txtType.text(), "Loop through and add this"))
 
         self.exec_()
 
@@ -73,7 +73,7 @@ class MethodMenu(QDialog):
 
     # TODO: This method does not include use input to ask for the parameters
     # I've been basing these off of the required input for our functions, so I'm not sure how this will work
-    def deleteMethod(self):
+    def deleteMethod(self, controller):
         self.setWindowTitle('Delete Method')
         # w, h
         self.setFixedSize(350, 335)
@@ -98,7 +98,7 @@ class MethodMenu(QDialog):
         btnSubmit.resize(250, 50)
 
         # This needs to be an anonymous function for the signal to work
-        btnSubmit.clicked.connect(lambda: self.delMethodData(txtClassName.text(), txtMethodName.text()))
+        btnSubmit.clicked.connect(lambda: controller.deleteMethod(txtClassName.text(), txtMethodName.text()))
 
         self.exec_()
 
@@ -109,7 +109,7 @@ class MethodMenu(QDialog):
         print(className)
         print(methodName)
 
-    def renameMethod(self):
+    def renameMethod(self, controller):
         self.setWindowTitle('Rename Method')
         # w, h
         self.setFixedSize(350, 405)
@@ -140,7 +140,7 @@ class MethodMenu(QDialog):
         btnSubmit.resize(250, 50)
 
         # This needs to be an anonymous function for the signal to work
-        btnSubmit.clicked.connect(lambda: self.renMethodData(txtClassName.text(), txtOldName.text(), txtNewName.text()))
+        btnSubmit.clicked.connect(lambda: controller.renameMethod(txtClassName.text(), txtOldName.text(), txtNewName.text()))
 
         self.exec_()
 
