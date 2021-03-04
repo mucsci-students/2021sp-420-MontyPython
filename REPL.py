@@ -3,6 +3,15 @@ from ClassCollection import ClassCollection
 import sys
 import os
 
+
+
+# A default collection
+collection = ClassCollection()
+
+# Saves the file name of the most recently loaded or saved file
+# Allows for use of save command without entering a file name
+recentFile = ""
+
 # Function for recursive calls when insufficient parameters are supplied
 def requestParameters(paramList):
     length = len(paramList)
@@ -13,22 +22,18 @@ def requestParameters(paramList):
         if first == False:
             paramString += ", "
         paramString += each
+
     response = input(f'Please supply the following parameter(s): {paramString}\n')
     tokens = response.split()
-    # If proper number of tokens are met, returns token list
+
+    # If proper number of tokens are met, but requestParameters does not require a method's parameter list,
+    # immediately returns tokens
     if len(tokens) >= length:
         return tokens
     # If not, recurses, requesting missing parameters
     else:
         start = len(tokens)
         tokens.append(requestParameters(paramList[start:]))
-
-# A default collection
-collection = ClassCollection()
-
-# Saves the file name of the most recently loaded or saved file
-# Allows for use of save command without entering a file name
-recentFile = ""
 
 response = ""
 response = input('What would you like to do? \nType "Help" for options.\n')
@@ -59,9 +64,10 @@ while (tokens[0].lower() != 'exit'):
                     missing = 3 - len(tokens)
                     paramList = ['name']
                     start = len(paramList) - missing
-                    returnTokens = requestParameters(paramList[start:])
+                    addedTokens = requestParameters(paramList[start:])
+                    tokens.extend(addedTokens)
                 # Adds class
-                collection.addClass(returnTokens[0])
+                collection.addClass(tokens[2])
             
             # Add relationship takes three parameters: source class, destination class, type
             if obj == 'relationship':
@@ -77,6 +83,7 @@ while (tokens[0].lower() != 'exit'):
 
             # Add field takes three parameters: class name, field name, type
             if obj == 'field':
+                # Finds number of missing parameters then calls requestParameters
                 if len(tokens) <= 4:
                     missing = 5 - len(tokens)
                     paramList = ['class name', 'field name', 'type']
@@ -86,12 +93,61 @@ while (tokens[0].lower() != 'exit'):
                 # Adds field
                 collection.addField(tokens[2], tokens[3], tokens[4])
 
-            # Add method not yet implemented
+            # Add method takes three required parameters: class name, method name, return type
+            # Add method may also take an even number of parameters after these three
+            # The additional parameters alternate between parameter type and parameter name
             if obj == 'method':
-                pass
+                # Finds number of missing parameters then calls requestParameters
+                if len(tokens) <= 4:
+                    missing = 5 - len(tokens)
+                    paramList = ['class name', 'method name', 'return type']
+                    start = len(paramList) - missing
+                    addedTokens = requestParameters(paramList[start:])
+                    tokens.extend(addedTokens)
+                params = input(f"Please list any parameters for the method {tokens[3]}.\nEx: int foo int bar\n")
+                paramsTokens = params.split()
+                methodParameters = []
+                for typ, name in zip(paramsTokens[0::2], paramsTokens[1::2]):
+                    methodParameters.append((typ, name))
+                # Adds method with appropriate parameter list
+                collection.addMethod(tokens[2], tokens[3], tokens[4], methodParameters)
+
+            # Add parameter takes two required parameters: class name, method name
+            # From here, the user is asked which method by parameter list they would like to add to
+            # Add parameter then takes two more required parameters: type and name
+            if obj == 'parameter':
+                if len(tokens) <= 3:
+                    missing = 4 - len(tokens)
+                    paramList = ['class name', 'method name']
+                    start = len(paramList) - missing
+                    addedTokens = requestParameters(paramList[start:])
+                    tokens.extend(addedTokens)
+                
+                parametersLists = collection.getMethodsByName(tokens[2], tokens[3])
+                print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
+                index = 1
+                for each in parametersLists:
+                    print(f"{index}: {each}")
+                    index += 1
+                
+                methodNum = input(f"Please select a parameter list by its number.\n")
+                methodParameters = parametersLists[methodNum]
+
+                paramRaw = input("Please input the parameter type and name to be added:\n")
+                param = paramRaw.split()
+
+                if len(param) <= 1:
+                    missing = 2 - len(tokens)
+                    paramList = ['type', 'name']
+                    start = len(paramList) - missing
+                    addedTokens = requestParameters(paramList[start:])
+                    tokens.extend(addedTokens)
+
+                collection.addParameter(tokens[2], tokens[3], param[0], param[1])
+            
 
         # ------- Delete ------- #
-        if tokens[0] == 'delete':
+        elif tokens[0] == 'delete':
             obj = tokens[1].lower()
 
             # Delete class takes one parameter: name
@@ -102,8 +158,9 @@ while (tokens[0].lower() != 'exit'):
                     paramList = ['name']
                     start = len(paramList) - missing
                     returnTokens = requestParameters(paramList[start:])
+                    tokens.extend(returnTokens)
                 # Deletes class
-                collection.deleteClass(returnTokens[0])
+                collection.deleteClass(tokens[2])
 
             # Delete relationship takes two parameters: source class, destination class
             if obj == 'relationship':
@@ -117,8 +174,44 @@ while (tokens[0].lower() != 'exit'):
                 # Deletes relationship
                 collection.deleteRelationship(tokens[2], tokens[3])
 
+            # Delete field takes two parameters: class name, field name
+            if obj == 'field':
+                # Finds number of missing parameters then calls requestParameters
+                if len(tokens) <= 3:
+                    missing = 4 - len(tokens)
+                    paramList = ['class name', 'field name']
+                    start = len(paramList) - missing
+                    addedTokens = requestParameters(paramList[start:])
+                    tokens.extend(addedTokens)
+                # Adds field
+                collection.deleteField(tokens[2], tokens[3])
+
+            # Delete method takes two required parameters: class name, method name
+            # From here, the user is then asked which method they wish to delete by parameters
+            if obj == 'method':
+                # Finds number of missing parameters then calls requestParameters
+                if len(tokens) <= 3:
+                    missing = 4 - len(tokens)
+                    paramList = ['class name', 'method name']
+                    start = len(paramList) - missing
+                    addedTokens = requestParameters(paramList[start:])
+                    tokens.extend(addedTokens)
+
+                parametersLists = collection.getMethodsByName(tokens[2], tokens[3])
+                print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
+                index = 1
+                for each in parametersLists:
+                    print(f"{index}: {each}")
+                    index += 1
+                
+                methodNum = input(f"Please select a parameter list by its number.\n")
+                methodParameters = parametersLists[methodNum]
+
+                # Deletes method
+                collection.deleteMethod(tokens[2], tokens[3], methodParameters)
+
         # ------- Rename ------- #
-        if tokens[0] == 'rename':
+        elif tokens[0] == 'rename':
             obj = tokens[1].lower()
 
             # Rename class takes two parameters: old name, new name
@@ -147,21 +240,149 @@ while (tokens[0].lower() != 'exit'):
 
             # Rename field takes three parameters: class name, old field name, new field name
             if obj == 'field':
+                # Finds number of missing parameters then calls requestParameters
                 if len(tokens) <= 4:
                     missing = 5 - len(tokens)
                     paramList = ['class name', 'old field name', 'new field name']
                     start = len(paramList) - missing
                     addedTokens = requestParameters(paramList[start:])
                     tokens.extend(addedTokens)
-                # Renames class
+                # Renames field
                 collection.renameField(tokens[2], tokens[3], tokens[4])
 
-            # Not yet implemented
+            # Rename method takes three required parameters: class name, old method name, new method name
+            # From here, the user is asked which method they would like to rename from the parameters lists
             if obj == 'method':
-                pass
-        
+                if len(tokens) <= 4:
+                    missing = 5 - len(tokens)
+                    paramList = ['class name', 'old method name', 'new method name']
+                    start = len(paramList) - missing
+                    addedTokens = requestParameters(paramList[start:])
+                    tokens.extend(addedTokens)
+                
+                parametersLists = collection.getMethodsByName(tokens[2], tokens[3])
+                print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
+                index = 1
+                for each in parametersLists:
+                    print(f"{index}: {each}")
+                    index += 1
+                
+                methodNum = input(f"Please select a parameter list by its number.\n")
+                methodParameters = parametersLists[methodNum]
+
+                # Renames method
+                collection.deleteMethod(tokens[2], tokens[3], methodParameters, tokens[4])
+
+        # ------- Remove ------- #
+        elif tokens[0] == 'remove':
+            obj = tokens[1].lower()
+
+            # Remove parameter takes two required parameters: class name, method name
+            # Then, it requests the user to select which method to remove from via its parameter list
+            # Remove parameter then takes one more required parameter: name
+            if obj == 'parameter':
+                if len(tokens) <= 3:
+                    missing = 4 - len(tokens)
+                    paramList = ['class name', 'method name']
+                    start = len(paramList) - missing
+                    addedTokens = requestParameters(paramList[start:])
+                    tokens.extend(addedTokens)
+
+                parametersLists = collection.getMethodsByName(tokens[2], tokens[3])
+                print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
+                index = 1
+                for each in parametersLists:
+                    print(f"{index}: {each}")
+                    index += 1
+                
+                methodNum = input(f"Please select a parameter list by its number.\n")
+                methodParameters = parametersLists[methodNum]
+
+                delName = input("Please enter the name of the parameter you wish to remove.\n")
+                collection.removeParameter(tokens[2], tokens[3], methodParameters, delName)
+
+            # Remove parameters takes two required parameters: class name, method name
+            # Then, it requests the user to select which method to remove via its parameter list
+            # All parameters are then removed from this specific method
+            if obj == 'parameters':
+                if len(tokens) <= 3:
+                    missing = 4 - len(tokens)
+                    paramList = ['class name', 'method name']
+                    start = len(paramList) - missing
+                    addedTokens = requestParameters(paramList[start:])
+                    tokens.extend(addedTokens)
+
+                parametersLists = collection.getMethodsByName(tokens[2], tokens[3])
+                print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
+                index = 1
+                for each in parametersLists:
+                    print(f"{index}: {each}")
+                    index += 1
+                
+                methodNum = input(f"Please select a parameter list by its number.\n")
+                methodParameters = parametersLists[methodNum]
+
+                collection.removeAllParameters(tokens[2], tokens[3], methodParameters)
+
+        # ------- Change ------- #
+        elif tokens[0] == 'change':
+            obj = tokens[1].lower()
+
+            # Change parameter takes two required parameters: class name, method name
+            # Then, it requests the user to select which method to change via its parameter list
+            # Change parameter then takes three more required parameters: old name, new type, new name
+            if obj == 'parameter':
+                if len(tokens) <= 3:
+                    missing = 4 - len(tokens)
+                    paramList = ['class name', 'method name']
+                    start = len(paramList) - missing
+                    addedTokens = requestParameters(paramList[start:])
+                    tokens.extend(addedTokens)
+
+                parametersLists = collection.getMethodsByName(tokens[2], tokens[3])
+                print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
+                index = 1
+                for each in parametersLists:
+                    print(f"{index}: {each}")
+                    index += 1
+                
+                methodNum = input(f"Please select a parameter list by its number.\n")
+                methodParameters = parametersLists[methodNum]
+
+                paramList = ['old name', 'new type', 'new name']
+                changeTokens = requestParameters(paramList)
+                collection.changeParameter(tokens[2], tokens[3], methodParameters, changeTokens[0], changeTokens[1], changeTokens[2])
+
+            # Change parameters takes two required parameters: class name, method name
+            # Then, it requests the user to select which method to change via its parameter list
+            # Change parameters then takes an arbitrary length list to tokenize into new parameters
+            # The tokens should take the form type, name, type, name, so forth
+            if obj == 'parameters':
+                if len(tokens) <= 3:
+                    missing = 4 - len(tokens)
+                    paramList = ['class name', 'method name']
+                    start = len(paramList) - missing
+                    addedTokens = requestParameters(paramList[start:])
+                    tokens.extend(addedTokens)
+
+                parametersLists = collection.getMethodsByName(tokens[2], tokens[3])
+                print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
+                index = 1
+                for each in parametersLists:
+                    print(f"{index}: {each}")
+                    index += 1
+                
+                methodNum = input(f"Please select a parameter list by its number.\n")
+                methodParameters = parametersLists[methodNum]
+
+                paramListRaw = input(f"Please enter a new list of parameters.\n")
+                newParams = []
+                for typ, name in zip(paramListRaw[0::2], paramListRaw[1::2]):
+                    newParams.append((typ, name))
+                collection.changeAllParameters(tokens[2], tokens[3], methodParameters, newParams)
+
         # ------- List ------- #
-        if tokens[0] == 'list':
+        elif tokens[0] == 'list':
             obj = tokens[1].lower()
 
             # List class takes one parameter: class name
@@ -172,8 +393,9 @@ while (tokens[0].lower() != 'exit'):
                     paramList = ['name']
                     start = len(paramList) - missing
                     returnTokens = requestParameters(paramList[start:])
+                    tokens.extend(returnTokens)
                 # Deletes class
-                Interface.listClass(collection, returnTokens[0])
+                Interface.listClass(collection, tokens[2])
 
             # List classes takes zero parameters
             if obj == 'classes':
@@ -187,7 +409,7 @@ while (tokens[0].lower() != 'exit'):
         # Save takes one parameter: file name
         # If no name is given, but the file was previously loaded or saved,
         # the user is prompted if they wish to overwrite the file.
-        if tokens[0] == 'save':
+        elif tokens[0] == 'save':
             overwriteBool = True
             # If no file name is given and no recent file was saved or loaded,
             # requests file name from user
@@ -213,7 +435,7 @@ while (tokens[0].lower() != 'exit'):
 
         # ------- Load ------- #
         # Load takes one parameter: file name
-        if tokens[0] == 'load':
+        elif tokens[0] == 'load':
             # If file name is missing, requests name
             if len(tokens) == 1:
                 paramList = ['file name']
@@ -227,12 +449,12 @@ while (tokens[0].lower() != 'exit'):
         # ------- Help ------- #
         # Help takes zero parameters
         # Future update to allow for parsing individual commands for detailed help?
-        if tokens[0] == 'help':
+        elif tokens[0] == 'help':
             Interface.help()
 
        # ------- Exit ------- #
        # Exit takes zero parameters
-        if tokens[0] == 'exit':
+        elif tokens[0] == 'exit':
             Interface.exit()
 
         else:
