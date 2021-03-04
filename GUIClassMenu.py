@@ -5,7 +5,7 @@ class ClassMenu(QDialog):
     def __init__(self, parent = None):
         super(ClassMenu, self).__init__(parent)
 
-    def addClass(self):
+    def addClass(self, controller):
         self.setWindowTitle('Add Class')
         self.setFixedSize(350, 250)
         self.setStyleSheet(open('MenuStyleSheet.css').read()) 
@@ -23,7 +23,7 @@ class ClassMenu(QDialog):
         btnSubmit.resize(250, 50)
 
         # This needs to be an anonymous function for the signal to work
-        btnSubmit.clicked.connect(lambda: self.addClassData(txtName.text()))
+        btnSubmit.clicked.connect(lambda: controller.addClass(txtName.text()))
 
         self.exec_()
 
@@ -33,7 +33,7 @@ class ClassMenu(QDialog):
         self.close()
         print(name)
 
-    def deleteClass(self):
+    def deleteClass(self, controller):
         self.setWindowTitle('Delete Class')
         self.setFixedSize(350, 250)
         self.setStyleSheet(open('MenuStyleSheet.css').read()) 
@@ -51,7 +51,7 @@ class ClassMenu(QDialog):
         btnSubmit.resize(250, 50)
 
         # This needs to be an anonymous function for the signal to work
-        btnSubmit.clicked.connect(lambda: self.deleteClassData(txtName.text()))
+        btnSubmit.clicked.connect(lambda: controller.deleteClass(txtName.text()))
 
         self.exec_()
 
@@ -61,7 +61,7 @@ class ClassMenu(QDialog):
         self.close()
         print(name)
 
-    def renameClass(self):
+    def renameClass(self, controller):
         self.setWindowTitle('Rename Class')
         # w, h
         self.setFixedSize(350, 335)
@@ -86,7 +86,7 @@ class ClassMenu(QDialog):
         btnSubmit.resize(250, 50)
 
         # Signal for Method Menu
-        btnSubmit.clicked.connect(lambda: self.renameClassData(txtOldName.text(), txtNewName.text()))
+        btnSubmit.clicked.connect(lambda: controller.renameClass(txtOldName.text(), txtNewName.text()))
 
         self.exec_()
 

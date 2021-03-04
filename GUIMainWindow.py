@@ -99,8 +99,8 @@ class MainWindow(QWidget):
         menuAddParameter.triggered.connect(self.controller.addParamMenu)
         menuDeleteParameter = menuMethod.addAction("Delete Parameter")
         menuDeleteParameter.triggered.connect(self.controller.delParamMenu)
-        menuRenameParameter = menuMethod.addAction("Rename Parameter")
-        menuRenameParameter.triggered.connect(self.controller.renParamMenu)
+        menuRenameParameter = menuMethod.addAction("Change Parameter")
+        menuRenameParameter.triggered.connect(self.controller.chgParameterMenu)
 
         # Submenu: Edit Elements -- Relationship
         menuAddRelationship = menuRelationship.addAction("Add Relationship")

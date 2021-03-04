@@ -9,7 +9,7 @@ class ParameterMenu(QDialog):
         super(ParameterMenu, self).__init__(parent)
 
     # Creates a menu that requires a class name and method name
-    def addParameter(self):
+    def addParameter(self, controller):
         self.setWindowTitle('Add Parameter')
         # w, h
         self.setFixedSize(350, 505)
@@ -46,7 +46,7 @@ class ParameterMenu(QDialog):
         btnSubmit.resize(250, 50)
 
         # This needs to be an anonymous function for the signal to work
-        btnSubmit.clicked.connect(lambda: self.addParamData(txtClassName.text(), txtMethodName.text(), txtParamName.text(), txtParamType.text()))
+        btnSubmit.clicked.connect(lambda: controller.addParameter(txtClassName.text(), txtMethodName.text(), txtParamName.text(), txtParamType.text()))
 
         self.exec_()
 
@@ -59,7 +59,7 @@ class ParameterMenu(QDialog):
         print(paramName)
         print(paramType)
 
-    def deleteParameter(self):
+    def deleteParameter(self, controller):
         self.setWindowTitle('Delete Parameter')
         # w, h
         self.setFixedSize(350, 405)
@@ -90,7 +90,7 @@ class ParameterMenu(QDialog):
         btnSubmit.resize(250, 50)
 
         # This needs to be an anonymous function for the signal to work
-        btnSubmit.clicked.connect(lambda: self.delParamData(txtClassName.text(), txtMethodName.text(), txtParamName.text()))
+        btnSubmit.clicked.connect(lambda: controller.deleteParameter(txtClassName.text(), txtMethodName.text(), txtParamName.text()))
 
         self.exec_()
 
@@ -102,8 +102,9 @@ class ParameterMenu(QDialog):
         print(methodName)
         print(paramName)
 
-    def renameParameter(self):
-        self.setWindowTitle('Add Parameter')
+    # TODO change to changeParameter
+    def changeParameter(self, controller):
+        self.setWindowTitle('Change Parameter')
         # w, h
         self.setFixedSize(350, 590)
         self.setStyleSheet(open('MenuStyleSheet.css').read()) 
@@ -145,7 +146,7 @@ class ParameterMenu(QDialog):
         btnSubmit.resize(250, 50)
 
         # This needs to be an anonymous function for the signal to work
-        btnSubmit.clicked.connect(lambda: self.renParamData(txtClassName.text(), txtMethodName.text(), txtOldName.text(), txtParamType.text(), txtNewName.text()))
+        btnSubmit.clicked.connect(lambda: controller.changeParameter(txtClassName.text(), txtMethodName.text(), txtOldName.text(), txtParamType.text(), txtNewName.text()))
 
         self.exec_()
 
