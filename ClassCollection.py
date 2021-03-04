@@ -236,3 +236,12 @@ class ClassCollection():
                 return None
             
             return self.relationshipDict[(firstClassName, secondClassName)]
+
+        # Used in REPL to direct user to a specific method of a given name
+        # Returns a list of all methods under said given name
+        def getMethodsByName(self, className, methodName):
+            if methodName not in self.classDict[className].methodDict:
+                print(f"Error: no method {methodName} in {className} exists")
+                return None
+
+            return self.classDict[className].methodDict[className]
