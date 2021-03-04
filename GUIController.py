@@ -112,8 +112,8 @@ class GUIController:
     def delParamMenu(self, checked):
         self.delPMenu = GUIParameterMenu.ParameterMenu().deleteParameter(self)
 
-    def renParamMenu(self, checked):
-        self.renPMenu = GUIParameterMenu.ParameterMenu().renameParameter(self)
+    def chgParameterMenu(self, checked):
+        self.renPMenu = GUIParameterMenu.ParameterMenu().changeParameter(self)
 
     def delRelationshipMenu(self, checked):
         self.delRMenu = GUIRelationshipMenu.RelationshipMenu().deleteRelationship(self)

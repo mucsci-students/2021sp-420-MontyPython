@@ -102,8 +102,9 @@ class ParameterMenu(QDialog):
         print(methodName)
         print(paramName)
 
-    def renameParameter(self, controller):
-        self.setWindowTitle('Add Parameter')
+    # TODO change to changeParameter
+    def changeParameter(self, controller):
+        self.setWindowTitle('Change Parameter')
         # w, h
         self.setFixedSize(350, 590)
         self.setStyleSheet(open('MenuStyleSheet.css').read()) 
