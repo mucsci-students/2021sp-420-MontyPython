@@ -22,6 +22,7 @@ def requestParameters(paramList):
         if first == False:
             paramString += ", "
         paramString += each
+        first = False
 
     response = input(f'Please supply the following parameter(s): {paramString}\n')
     tokens = response.split()
@@ -124,26 +125,31 @@ while (tokens[0].lower() != 'exit'):
                     tokens.extend(addedTokens)
                 
                 parametersLists = collection.getMethodsByName(tokens[2], tokens[3])
-                print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
-                index = 1
-                for each in parametersLists:
-                    print(f"{index}: {each}")
-                    index += 1
-                
-                methodNum = input(f"Please select a parameter list by its number.\n")
-                methodParameters = parametersLists[methodNum]
 
-                paramRaw = input("Please input the parameter type and name to be added:\n")
-                param = paramRaw.split()
+                if parametersLists != None:
+                    print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
+                    index = 1
+                    for each in parametersLists:
+                        print(f"{index}: {each}")
+                        index += 1
+                    
+                    methodNum = input(f"Please select a parameter list by its number.\n")
+                    methodParameters = parametersLists[methodNum]
 
-                if len(param) <= 1:
-                    missing = 2 - len(tokens)
-                    paramList = ['type', 'name']
-                    start = len(paramList) - missing
-                    addedTokens = requestParameters(paramList[start:])
-                    tokens.extend(addedTokens)
+                    paramRaw = input("Please input the parameter type and name to be added:\n")
+                    param = paramRaw.split()
 
-                collection.addParameter(tokens[2], tokens[3], param[0], param[1])
+                    if len(param) <= 1:
+                        missing = 2 - len(tokens)
+                        paramList = ['type', 'name']
+                        start = len(paramList) - missing
+                        addedTokens = requestParameters(paramList[start:])
+                        tokens.extend(addedTokens)
+
+                    collection.addParameter(tokens[2], tokens[3], methodParameters, param[0], param[1])
+
+                else:
+                    pass
             
 
         # ------- Delete ------- #
@@ -198,17 +204,22 @@ while (tokens[0].lower() != 'exit'):
                     tokens.extend(addedTokens)
 
                 parametersLists = collection.getMethodsByName(tokens[2], tokens[3])
-                print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
-                index = 1
-                for each in parametersLists:
-                    print(f"{index}: {each}")
-                    index += 1
-                
-                methodNum = input(f"Please select a parameter list by its number.\n")
-                methodParameters = parametersLists[methodNum]
 
-                # Deletes method
-                collection.deleteMethod(tokens[2], tokens[3], methodParameters)
+                if parametersLists != None:
+                    print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
+                    index = 1
+                    for each in parametersLists:
+                        print(f"{index}: {each}")
+                        index += 1
+                    
+                    methodNum = input(f"Please select a parameter list by its number.\n")
+                    methodParameters = parametersLists[methodNum]
+
+                    # Deletes method
+                    collection.deleteMethod(tokens[2], tokens[3], methodParameters)
+
+                else:
+                    pass
 
         # ------- Rename ------- #
         elif tokens[0] == 'rename':
@@ -261,17 +272,22 @@ while (tokens[0].lower() != 'exit'):
                     tokens.extend(addedTokens)
                 
                 parametersLists = collection.getMethodsByName(tokens[2], tokens[3])
-                print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
-                index = 1
-                for each in parametersLists:
-                    print(f"{index}: {each}")
-                    index += 1
-                
-                methodNum = input(f"Please select a parameter list by its number.\n")
-                methodParameters = parametersLists[methodNum]
 
-                # Renames method
-                collection.deleteMethod(tokens[2], tokens[3], methodParameters, tokens[4])
+                if parametersLists != None:
+                    print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
+                    index = 1
+                    for each in parametersLists:
+                        print(f"{index}: {each}")
+                        index += 1
+                    
+                    methodNum = input(f"Please select a parameter list by its number.\n")
+                    methodParameters = parametersLists[methodNum]
+
+                    # Renames method
+                    collection.renameMethod(tokens[2], tokens[3], methodParameters, tokens[4])
+
+                else:
+                    pass
 
         # ------- Remove ------- #
         elif tokens[0] == 'remove':
@@ -289,17 +305,22 @@ while (tokens[0].lower() != 'exit'):
                     tokens.extend(addedTokens)
 
                 parametersLists = collection.getMethodsByName(tokens[2], tokens[3])
-                print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
-                index = 1
-                for each in parametersLists:
-                    print(f"{index}: {each}")
-                    index += 1
-                
-                methodNum = input(f"Please select a parameter list by its number.\n")
-                methodParameters = parametersLists[methodNum]
 
-                delName = input("Please enter the name of the parameter you wish to remove.\n")
-                collection.removeParameter(tokens[2], tokens[3], methodParameters, delName)
+                if parametersLists != None:
+                    print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
+                    index = 1
+                    for each in parametersLists:
+                        print(f"{index}: {each}")
+                        index += 1
+                    
+                    methodNum = input(f"Please select a parameter list by its number.\n")
+                    methodParameters = parametersLists[methodNum]
+
+                    delName = input("Please enter the name of the parameter you wish to remove.\n")
+                    collection.removeParameter(tokens[2], tokens[3], methodParameters, delName)
+
+                else:
+                    pass
 
             # Remove parameters takes two required parameters: class name, method name
             # Then, it requests the user to select which method to remove via its parameter list
@@ -313,16 +334,21 @@ while (tokens[0].lower() != 'exit'):
                     tokens.extend(addedTokens)
 
                 parametersLists = collection.getMethodsByName(tokens[2], tokens[3])
-                print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
-                index = 1
-                for each in parametersLists:
-                    print(f"{index}: {each}")
-                    index += 1
-                
-                methodNum = input(f"Please select a parameter list by its number.\n")
-                methodParameters = parametersLists[methodNum]
 
-                collection.removeAllParameters(tokens[2], tokens[3], methodParameters)
+                if parametersLists != None:
+                    print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
+                    index = 1
+                    for each in parametersLists:
+                        print(f"{index}: {each}")
+                        index += 1
+                    
+                    methodNum = input(f"Please select a parameter list by its number.\n")
+                    methodParameters = parametersLists[methodNum]
+
+                    collection.removeAllParameters(tokens[2], tokens[3], methodParameters)
+
+                else:
+                    pass
 
         # ------- Change ------- #
         elif tokens[0] == 'change':
@@ -340,18 +366,23 @@ while (tokens[0].lower() != 'exit'):
                     tokens.extend(addedTokens)
 
                 parametersLists = collection.getMethodsByName(tokens[2], tokens[3])
-                print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
-                index = 1
-                for each in parametersLists:
-                    print(f"{index}: {each}")
-                    index += 1
-                
-                methodNum = input(f"Please select a parameter list by its number.\n")
-                methodParameters = parametersLists[methodNum]
 
-                paramList = ['old name', 'new type', 'new name']
-                changeTokens = requestParameters(paramList)
-                collection.changeParameter(tokens[2], tokens[3], methodParameters, changeTokens[0], changeTokens[1], changeTokens[2])
+                if parametersLists != None:
+                    print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
+                    index = 1
+                    for each in parametersLists:
+                        print(f"{index}: {each}")
+                        index += 1
+                    
+                    methodNum = input(f"Please select a parameter list by its number.\n")
+                    methodParameters = parametersLists[methodNum]
+
+                    paramList = ['old name', 'new type', 'new name']
+                    changeTokens = requestParameters(paramList)
+                    collection.changeParameter(tokens[2], tokens[3], methodParameters, changeTokens[0], changeTokens[1], changeTokens[2])
+
+                else:
+                    pass
 
             # Change parameters takes two required parameters: class name, method name
             # Then, it requests the user to select which method to change via its parameter list
@@ -366,20 +397,25 @@ while (tokens[0].lower() != 'exit'):
                     tokens.extend(addedTokens)
 
                 parametersLists = collection.getMethodsByName(tokens[2], tokens[3])
-                print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
-                index = 1
-                for each in parametersLists:
-                    print(f"{index}: {each}")
-                    index += 1
-                
-                methodNum = input(f"Please select a parameter list by its number.\n")
-                methodParameters = parametersLists[methodNum]
 
-                paramListRaw = input(f"Please enter a new list of parameters.\n")
-                newParams = []
-                for typ, name in zip(paramListRaw[0::2], paramListRaw[1::2]):
-                    newParams.append((typ, name))
-                collection.changeAllParameters(tokens[2], tokens[3], methodParameters, newParams)
+                if parametersLists != None:
+                    print(f"The following parameter lists have been found for the method {tokens[3]} in class {tokens[2]}:\n")
+                    index = 1
+                    for each in parametersLists:
+                        print(f"{index}: {each}")
+                        index += 1
+                    
+                    methodNum = input(f"Please select a parameter list by its number.\n")
+                    methodParameters = parametersLists[methodNum]
+
+                    paramListRaw = input(f"Please enter a new list of parameters.\n")
+                    newParams = []
+                    for typ, name in zip(paramListRaw[0::2], paramListRaw[1::2]):
+                        newParams.append((typ, name))
+                    collection.changeAllParameters(tokens[2], tokens[3], methodParameters, newParams)
+
+                else:
+                    pass
 
         # ------- List ------- #
         elif tokens[0] == 'list':
