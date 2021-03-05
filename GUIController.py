@@ -7,9 +7,41 @@ import GUIController, GUIClassMenu, GUIRelationshipMenu, GUIFieldMenu, GUIParame
 collection = ClassCollection()
 
 class GUIController:
-    def __init__(self, model):
+    def __init__(self, model, view):
         self.model = model
-    
+        self.view = view
+
+        self.setSignal("Open", self.openMenu)
+        self.setSignal("Save", self.saveMenu)
+        self.setSignal("Help", self.helpMenu)
+        self.setSignal("Exit", self.exit)
+
+        self.setSignal("Add Class", self.addClassMenu)
+        self.setSignal("Delete Class", self.delClassMenu)
+        self.setSignal("Rename Class", self.renClassMenu)
+
+        self.setSignal("Add Field", self.addFieldMenu)
+        self.setSignal("Delete Field", self.delFieldMenu)
+        self.setSignal("Rename Field", self.renFieldMenu)
+
+        self.setSignal("Add Method", self.addMethodMenu)
+        self.setSignal("Delete Method", self.delMethodMenu)
+        self.setSignal("Rename Method", self.renMethodMenu)
+
+        self.setSignal("Add Parameter", self.addParamMenu)
+        self.setSignal("Delete Parameter", self.delParamMenu)
+        self.setSignal("Change Parameter", self.chgParamMenu)
+
+        self.setSignal("Add Relationship", self.addRelationshipMenu)
+        self.setSignal("Delete Relationship", self.delRelationshipMenu)
+        self.setSignal("Change Relationship", self.renRelationshipMenu)
+
+        self.view.drawClass(100, 200)
+        self.view.drawClass(400, 300)
+
+    def setSignal(self, name, function):
+        self.view.menuObjects[name].triggered.connect(function)
+
     def open(self):
         pass
 
@@ -112,7 +144,7 @@ class GUIController:
     def delParamMenu(self, checked):
         self.delPMenu = GUIParameterMenu.ParameterMenu().deleteParameter(self)
 
-    def chgParameterMenu(self, checked):
+    def chgParamMenu(self, checked):
         self.renPMenu = GUIParameterMenu.ParameterMenu().changeParameter(self)
 
     def delRelationshipMenu(self, checked):
@@ -120,6 +152,9 @@ class GUIController:
 
     def renRelationshipMenu(self, checked):
         self.renRMenu = GUIRelationshipMenu.RelationshipMenu().renameRelationship(self)
+    
+    def helpMenu(self, checked):
+        print('help was clicked yay')
 
 
 # Create a method to pull info about classes from a class collection instance. Maybe that should be made here?
