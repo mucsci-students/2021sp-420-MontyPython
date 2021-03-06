@@ -30,7 +30,7 @@ class RelationshipMenu(QDialog):
         lblRelationshipType.move(50, 220)
         cbxRelationshipType = QComboBox(self)
         cbxRelationshipType.move(50, 255)
-        cbxRelationshipType.addItems(["Aggregation", "Composition", "Inheritance", "Realization"])
+        cbxRelationshipType.addItems(["aggregation", "composition", "inheritance", "realization"])
 
         btnSubmit = QPushButton(self)
         btnSubmit.setText("Submit")
@@ -111,7 +111,7 @@ class RelationshipMenu(QDialog):
         lblRelationshipType.move(50, 220)
         cbxRelationshipType = QComboBox(self)
         cbxRelationshipType.move(50, 255)
-        cbxRelationshipType.addItems(["Aggregation", "Composition", "Inheritance", "Realization"])
+        cbxRelationshipType.addItems(["aggregation", "composition", "inheritance", "realization"])
 
         btnSubmit = QPushButton(self)
         btnSubmit.setText("Submit")
