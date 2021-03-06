@@ -4,6 +4,7 @@ import sys
 # Import Qapplication and required widgets
 from PyQt5.QtWidgets import QApplication, QWidget, QMenuBar, QMenu, QLabel, QMainWindow, QAction, QPushButton, QDesktopWidget
 from PyQt5.QtGui import QPainter, QPen
+from GUIClassWidget import ClassWidget
 
 # TODO: Figure out the difference between QWidget and QMainWindow
 class MainWindow(QWidget):
@@ -16,6 +17,9 @@ class MainWindow(QWidget):
         self.drawWindow()
         self.centerWindow()
         self.drawMenuBar()
+        
+        newWidget = ClassWidget(self, 100, 200, "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
+
 
         # TODO - Delete this when done testing
 
