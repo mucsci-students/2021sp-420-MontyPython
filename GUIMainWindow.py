@@ -8,18 +8,16 @@ from PyQt5.QtGui import QPainter, QPen
 # TODO: Figure out the difference between QWidget and QMainWindow
 class MainWindow(QWidget):
         
-    def __init__(self, controller, parent = None):
+    def __init__(self, parent = None):
         super(MainWindow, self).__init__(parent)
         
-        self.controller = controller
+        self.menuObjects = {}
 
         self.drawWindow()
         self.centerWindow()
         self.drawMenuBar()
 
         # TODO - Delete this when done testing
-        self.drawClass(100, 200)
-        self.drawClass(400, 200)
 
     def drawWindow(self):
         # The window is created in GuiController.py
@@ -53,62 +51,51 @@ class MainWindow(QWidget):
         menuClass = bar.addMenu("Classes")
         menuField = bar.addMenu("Fields")
         menuMethod = bar.addMenu("Methods")
-
         menuRelationship = bar.addMenu("Relationships")
-
+        
         # Add submenus and connect signals to them
         # Submenu: File  
-        menuOpen = menuFile.addAction("Open")
-        menuOpen.triggered.connect(self.controller.openMenu)
-        menuSave = menuFile.addAction("Save")
-        menuSave.triggered.connect(self.controller.saveMenu)
+        self.menuObjects["Open"] = menuFile.addAction("Open")
+        self.menuObjects["Save"] = menuFile.addAction("Save")
         menuFile.addSeparator()
-        menuHelp = menuFile.addAction("Help")
-        menuHelp.triggered.connect(test1)
+        self.menuObjects["Help"] = menuFile.addAction("Help")
         menuFile.addSeparator()
-        menuExit = menuFile.addAction("Exit")
-        menuExit.triggered.connect(self.controller.exit)
+        self.menuObjects["Exit"] = menuFile.addAction("Exit")
+        # menuExit.triggered.connect(self.controller.exit)
 
         # Submenu: Edit Elements -- Class
-        menuAddClass = menuClass.addAction("Add Class")
-        menuAddClass.triggered.connect(self.controller.addClassMenu)
-        menuDeleteClass = menuClass.addAction("Delete Class")
-        menuDeleteClass.triggered.connect(self.controller.delClassMenu)
-        menuRenameClass = menuClass.addAction("Rename Class")
-        menuRenameClass.triggered.connect(self.controller.renClassMenu)
+        self.menuObjects["Add Class"] = menuClass.addAction("Add Class")
+        # menuAddClass.triggered.connect(self.controller.addClassMenu)
+        self.menuObjects["Delete Class"] = menuClass.addAction("Delete Class")
+        # menuDeleteClass.triggered.connect(self.controller.delClassMenu)
+        self.menuObjects["Rename Class"] = menuClass.addAction("Rename Class")
+        # menuRenameClass.triggered.connect(self.controller.renClassMenu)
 
         # Submenu: Edit Elements -- Field
-        menuAddField = menuField.addAction("Add Field")
-        menuAddField.triggered.connect(self.controller.addFieldMenu)
-        menuDeleteField = menuField.addAction("Delete Field")
-        menuDeleteField.triggered.connect(self.controller.delFieldMenu)
-        menuRenameField = menuField.addAction("Rename Field")
-        menuRenameField.triggered.connect(self.controller.renFieldMenu)
+        self.menuObjects["Add Field"] = menuField.addAction("Add Field")
+        self.menuObjects["Delete Field"] = menuField.addAction("Delete Field")
+        self.menuObjects["Rename Field"] = menuField.addAction("Rename Field")
 
         # Submenu: Edit Elements -- Method
-        menuAddMethod = menuMethod.addAction("Add Method")
-        menuAddMethod.triggered.connect(self.controller.addMethodMenu)
-        menuDeleteMethod = menuMethod.addAction("Delete Method")
-        menuDeleteMethod.triggered.connect(self.controller.delMethodMenu)
-        menuRenameMethod = menuMethod.addAction("Rename Method")
-        menuRenameMethod.triggered.connect(self.controller.renMethodMenu)
+        self.menuObjects["Add Method"] = menuMethod.addAction("Add Method")
+        self.menuObjects["Delete Method"] = menuMethod.addAction("Delete Method")
+        self.menuObjects["Rename Method"] = menuMethod.addAction("Rename Method")
         menuMethod.addSeparator()
 
         # Submenu: Edit Elements -- Parameter
-        menuAddParameter = menuMethod.addAction("Add Parameter")
-        menuAddParameter.triggered.connect(self.controller.addParamMenu)
-        menuDeleteParameter = menuMethod.addAction("Delete Parameter")
-        menuDeleteParameter.triggered.connect(self.controller.delParamMenu)
-        menuRenameParameter = menuMethod.addAction("Change Parameter")
-        menuRenameParameter.triggered.connect(self.controller.chgParameterMenu)
+        self.menuObjects["Add Parameter"] = menuMethod.addAction("Add Parameter")
+        # menuAddParameter.triggered.connect(self.controller.addParamMenu)
+        self.menuObjects["Delete Parameter"] = menuMethod.addAction("Delete Parameter")
+        # menuDeleteParameter.triggered.connect(self.controller.delParamMenu)
+        self.menuObjects["Change Parameter"] = menuMethod.addAction("Change Parameter")
+        # menuRenameParameter.triggered.connect(self.controller.chgParameterMenu)
 
         # Submenu: Edit Elements -- Relationship
-        menuAddRelationship = menuRelationship.addAction("Add Relationship")
-        menuAddRelationship.triggered.connect(self.controller.addRelationshipMenu)
-        menuDeleteRelationship = menuRelationship.addAction("Delete Relationship")
-        menuDeleteRelationship.triggered.connect(self.controller.delRelationshipMenu)
-        menuRenameRelationship = menuRelationship.addAction("Change Relationship")
-        menuRenameRelationship.triggered.connect(self.controller.renRelationshipMenu)
+        self.menuObjects["Add Relationship"] = menuRelationship.addAction("Add Relationship")
+        self.menuObjects["Delete Relationship"] = menuRelationship.addAction("Delete Relationship")
+        # menuDeleteRelationship.triggered.connect(self.controller.delRelationshipMenu)
+        self.menuObjects["Change Relationship"] = menuRelationship.addAction("Change Relationship")
+        # menuRenameRelationship.triggered.connect(self.controller.renRelationshipMenu)
 
     # This will be called when a class is added or a class is being loaded.
     # It'll pull info from GuiController.py

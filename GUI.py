@@ -6,9 +6,10 @@ import ClassCollection
 
 # QApplication instance, pass in sys.argv because it deals with common command line args
 model = ClassCollection.ClassCollection()
-controller = GUIController.GUIController(model)
 qApp = QApplication(sys.argv)
-window = GUIMainWindow.MainWindow(controller)
+window = GUIMainWindow.MainWindow()
+controller = GUIController.GUIController(model, window)
+
 window.show()
 
 # Run the event loop
