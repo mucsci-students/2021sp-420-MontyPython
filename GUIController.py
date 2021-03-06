@@ -36,8 +36,10 @@ class GUIController:
         self.setSignal("Delete Relationship", self.delRelationshipMenu)
         self.setSignal("Change Relationship", self.renRelationshipMenu)
 
-        self.view.drawClass(100, 200)
-        self.view.drawClass(400, 300)
+        #self.view.drawClass(100, 200)
+        #self.view.drawClass(400, 300)
+
+        
 
     def setSignal(self, name, function):
         self.view.menuObjects[name].triggered.connect(function)

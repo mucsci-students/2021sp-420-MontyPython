@@ -3,7 +3,9 @@ import sys
 
 # Import Qapplication and required widgets
 from PyQt5.QtWidgets import QApplication, QWidget, QMenuBar, QMenu, QLabel, QMainWindow, QAction, QPushButton, QDesktopWidget
-from PyQt5.QtGui import QPainter, QPen
+from PyQt5.QtGui import QPainter, QPen, QBrush
+from PyQt5.QtCore import Qt
+
 
 # TODO: Figure out the difference between QWidget and QMainWindow
 class MainWindow(QWidget):
@@ -16,6 +18,8 @@ class MainWindow(QWidget):
         self.drawWindow()
         self.centerWindow()
         self.drawMenuBar()
+
+        #self.drawLines()
 
         # TODO - Delete this when done testing
 
@@ -135,6 +139,23 @@ class MainWindow(QWidget):
         methodLbl.setGeometry(fieldLbl.x(), (fieldLbl.y() + fieldHeight - 2), width, methodHeight)
 
         # TODO: Track mouse movement to place class label w/ a click, move w/ another click
+
+    def paintEvent(self, event):
+        paint = QPainter()
+        paint.begin(self)
+        self.drawLines(paint)
+        paint.end()
+
+    def drawLines(self, paint):
+        penSolid = QPen(Qt.black, 2)
+        paint.setPen(penSolid)
+        paint.drawLine(400, 100, 200, 100)
+
+        penDashed = QPen(Qt.black, 2)
+        penDashed.setStyle(Qt.DashLine)
+        paint.setPen(penDashed)
+        paint.drawLine(400, 400, 200, 400)
+
 
     # TODO
     def createRClickMenu(self):
