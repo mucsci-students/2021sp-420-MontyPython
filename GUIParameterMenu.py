@@ -163,9 +163,10 @@ class ParameterMenu(QDialog):
 # Creates a menu that works with Method Menu's add method. Does not require a class or method to be input
 class MethodParameterMenu(QDialog):
         
-    def __init__(self, paramTable, parent = None):
-        super(ParameterMenu, self).__init__(parent)
-        self.paramTable = paramTable
+    def __init__(self, returnDict, parent = None):
+        super(MethodParameterMenu, self).__init__(parent)
+        
+        self.returnDict = returnDict
 
     def addParameterWithMethod(self):
         self.setWindowTitle('Add Parameter')
@@ -196,18 +197,12 @@ class MethodParameterMenu(QDialog):
 
         self.exec_()
 
-    # TODO: This is broken
+    # This works! Send data back to the Method Menu
     def returnParam(self, paramName, paramType):
         self.close()
-        
-        # TODO: Connect this back to previous menu somehow
-        # Adds row to the end of the table
-        rowCount = self.paramTable.rowCount()
-        self.paramTable.insertRow(rowCount)
-
-        # Populate the newly created row
-        self.paramTable.setItem(rowCount, 0, QTableWidgetItem(paramName))
-        self.paramTable.setItem(rowCount, 1, QTableWidgetItem(paramType))
+        self.returnDict['Values Entered'] = True
+        self.returnDict['Parameter Name'] = paramName
+        self.returnDict['Parameter Type'] = paramType
 
     
 

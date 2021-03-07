@@ -1,5 +1,5 @@
 QWidget{
-    background-color: rgb(173, 173, 173); 
+    background-color: rgb(233, 233, 233); 
     font-size: 16px;
     color: rgb(0, 0, 0)
 }
@@ -11,3 +11,14 @@ QMenuBar{
 QMenu{
     background-color:rgb(221, 221, 221)
 } 
+
+QPushButton{
+    border-style: solid;
+    border-color: black;
+    border-width: 2px;
+    background-color: rgb(177, 212, 177)
+}
+
+QPushButton::pressed{
+    background-color: rgb(209, 241, 209)
+}
