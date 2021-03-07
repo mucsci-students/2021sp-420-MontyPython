@@ -38,18 +38,11 @@ class GUIController:
         self.setSignal("Change Relationship", self.renRelationshipMenu)
 
         classWidget = ClassWidget(view, 100, 200, "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
-        print(classWidget.getCoordinates())
-        classWidget.setCoordinates(20, 20)
-        print(classWidget.getCoordinates())
-        classWidget.drawClass()
-        classWidget.setName("Testing")
-        classWidget.delete()
-
-        # NOTE: To update, need to call .drawClass again
-
+        #print(classWidget.getCoordinates())
+        #classWidget.setCoordinates(20, 20)
+        #print(classWidget.getCoordinates())
+        #classWidget.setName("Testing")
         #classWidget.delete()
-        # Call draw class to redraw the new location?
-        # TODO: WORKS! But the first one has to be able to be deleted
 
 
     def setSignal(self, name, function):
