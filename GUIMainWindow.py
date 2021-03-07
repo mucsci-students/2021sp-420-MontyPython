@@ -2,7 +2,7 @@
 import sys
 
 # Import Qapplication and required widgets
-from PyQt5.QtWidgets import QApplication, QWidget, QMenuBar, QMenu, QLabel, QMainWindow, QAction, QPushButton, QDesktopWidget
+from PyQt5.QtWidgets import QApplication, QWidget, QMenuBar, QMenu, QLabel, QMainWindow, QAction, QPushButton, QDesktopWidget, QScrollBar
 from PyQt5.QtGui import QPainter, QPen
 from GUIClassWidget import ClassWidget
 
@@ -21,7 +21,10 @@ class MainWindow(QWidget):
     def drawWindow(self):
         self.setWindowTitle('UML Editor')
         # Width, height
-        self.resize(1000, 800)
+        self.resize(1000, 900)
+
+        # TODO: For sprint 3, create scroll bar
+
         # Style sheet can be used on all parts of GUI
         self.setStyleSheet(open('GUIStyleSheet.css').read()) 
 

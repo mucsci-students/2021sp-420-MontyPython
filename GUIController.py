@@ -12,11 +12,15 @@ class GUIController:
         self.model = model
         self.view = view
 
-        self.classWidgetDictionary = {}
-        self.classWidgetCount = 0
-        # TODO: For sprint 3, the biggest flaw in this is it doesn't scale for the class widget size. Fix this and
+        # TODO: For sprint 3, one of the biggest flaws in this is it doesn't scale for the class widget size. Fix this and
         # create something that dynamically scales
-        self.coordinateList = [[50, 100], [50, 400], [400, 100], [400, 400], [800, 100], [800, 800]]
+        # With the way this is set up now, this supports 9 classes being in the diagram at once. In future versions, remove this restriction
+        # TODO: Move these to the controller
+        self.coordinateList = [[50, 100], [50, 400], [400, 100], [400, 400], [750, 100], [750, 400], [50, 750], [400, 750], [750, 750]]
+        self.classWidgetDict = {}
+        # Update this when classes are added/removed to get the correct coordinates
+        # TODO: throw an error if user tries to add more than 9 classes. Say only 9 can be displayed
+        self.classWidgetCount = 0
 
         self.setSignal("Open", self.openMenu)
         self.setSignal("Save", self.saveMenu)
@@ -44,12 +48,16 @@ class GUIController:
         self.setSignal("Delete Relationship", self.delRelationshipMenu)
         self.setSignal("Change Relationship", self.renRelationshipMenu)
 
-        classWidget = ClassWidget(view, self.coordinateList[0][0], self.coordinateList[0][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
-        classWidget = ClassWidget(view, self.coordinateList[1][0], self.coordinateList[1][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
-        classWidget = ClassWidget(view, self.coordinateList[2][0], self.coordinateList[2][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
-        classWidget = ClassWidget(view, self.coordinateList[3][0], self.coordinateList[3][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
-        classWidget = ClassWidget(view, self.coordinateList[4][0], self.coordinateList[4][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
-
+        # TODO: Delete these when done testing
+        #classWidget = ClassWidget(view, self.coordinateList[0][0], self.coordinateList[0][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
+        #classWidget = ClassWidget(view, self.coordinateList[1][0], self.coordinateList[1][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
+        #classWidget = ClassWidget(view, self.coordinateList[2][0], self.coordinateList[2][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
+        #classWidget = ClassWidget(view, self.coordinateList[3][0], self.coordinateList[3][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
+        #classWidget = ClassWidget(view, self.coordinateList[4][0], self.coordinateList[4][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
+        #classWidget = ClassWidget(view, self.coordinateList[5][0], self.coordinateList[5][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
+        #classWidget = ClassWidget(view, self.coordinateList[6][0], self.coordinateList[6][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
+        #classWidget = ClassWidget(view, self.coordinateList[7][0], self.coordinateList[7][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
+        #classWidget = ClassWidget(view, self.coordinateList[8][0], self.coordinateList[8][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
 
     def setSignal(self, name, function):
         self.view.menuObjects[name].triggered.connect(function)
