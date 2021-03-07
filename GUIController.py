@@ -2,6 +2,7 @@ import sys
 from ClassCollection import ClassCollection
 from PyQt5.QtWidgets import QLabel
 import GUIController, GUIClassMenu, GUIRelationshipMenu, GUIFieldMenu, GUIParameterMenu, GUIMethodMenu, GUIBrowseFiles
+from GUIClassWidget import ClassWidget
 
 # A default collection
 collection = ClassCollection()
@@ -36,8 +37,13 @@ class GUIController:
         self.setSignal("Delete Relationship", self.delRelationshipMenu)
         self.setSignal("Change Relationship", self.renRelationshipMenu)
 
-        self.view.drawClass(100, 200)
-        self.view.drawClass(400, 300)
+        classWidget = ClassWidget(view, 100, 200, "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
+        #print(classWidget.getCoordinates())
+        #classWidget.setCoordinates(20, 20)
+        #print(classWidget.getCoordinates())
+        #classWidget.setName("Testing")
+        #classWidget.delete()
+
 
     def setSignal(self, name, function):
         self.view.menuObjects[name].triggered.connect(function)
@@ -55,8 +61,8 @@ class GUIController:
         sys.exit()
 
     def addClass(self, name):
-        print(f'{name} IN CONTROLLER')
-        # Take the info from the addClass menu, store in the classcollection and find a way to display it on the main window
+        # Add new class widget to the view
+        pass
 
     def deleteClass(self, name):
         pass
