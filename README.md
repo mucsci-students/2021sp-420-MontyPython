@@ -4,31 +4,37 @@ This command line program creates a text representation of a UML diagram though 
 
 ## Prerequisites
 1. To run the program, [Python 3.9.1](https://www.python.org/downloads/) needs to be installed.
-1. During installation, check the box labeled "Add Python 3.9 to PATH" so Python programs can be run by typing `python` in a terminal.
+1. During installation in Windows, check the box labeled "Add Python 3.9 to PATH" so Python programs can be run by typing `python` in a terminal.
+
+## Package Installation
+### Method 1 - No virtual environment
+Assuming you are running [Python 3.9.1](https://www.python.org/downloads/) or later you can run the `Install.py` script by invoking `python Install.py`. This will install all of the required packages to your system so you can run the program. If it fails however, move on to Method 2.
+
+### Method 2 - Virtual environment using venv
+If the installation script does not work for whatever reason, you can try running it within a virtual environment using `venv`
+1. Invoke `python -m venv venv` within the project directory. This will create a new directory containing a python interpreter and `pip`.
+1. To activate the virtual environment:
+
+	On Windows (Powershell):
+    
+    	PS> venv\Scripts\Activate.ps1
+    
+    On MacOS/Linux:
+    
+    	$ source venv/bin/activate
+
+1. Run `pip` to install the required packages by doing `python -m pip install -r requirements.txt`
 
 ## Running the program
 1. Download the program from our [repository](https://github.com/mucsci-students/2021sp-420-MontyPython).
 1. In a terminal, navigate to the directory the repository download has been saved in.
-1. Type `python REPL.py` to launch the command line program.
-1. Follow the program’s prompts to create, load, or save a text representation of a UML diagram. Type `help` to view possible commands. 
+1. Follow one of the [package installation](#Package-Installation) guides.
+1. If using a virtual environment, activate the environment (using step 2 from [package installation](#Package-Installation))
+1. To run the program in GUI mode simply invoke `python Monty.py` within the root project directory. To run in CLI mode, add the `--cli` flag (`python Monty.py --cli`).
+1. Follow the program’s prompts to create, load, or save a text representation of a UML diagram. Type `help` to view possible commands, or click `File > Help` in GUI mode.
 
 ### Example Image:  
 ![Example Image](https://i.imgur.com/3SAMIFe.png)
-
-## Files
-**Attribute.py:** Contains the “Attribute” class.
-
-**Class.py:** Contains the “Class” class.
-
-**ClassCollection.py:** Contains both the class dictionary and the relationship dictionary used to store the UML diagram. Also includes functions to add, delete, display, and modify UML elements. 
-
-**Help.txt:** Contains the help text that displays when a user types `help` in the terminal.
-  
-**Interface.py:** Contains code for save, load, and other interface functions.
-
-**REPL.py:** The main file that contains code to prompt the user for input.
-
-**RelationshipTest.py, AttributeTest.py, InterfaceTest.py, and ClassTest.py:** Contains unit tests for Class.py, ClassCollection.py, and Interface.py.
 
 ## Authors
 [Quinn Lehman](https://github.com/qlehman)
