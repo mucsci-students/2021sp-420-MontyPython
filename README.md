@@ -4,11 +4,11 @@ This command line program creates a text representation of a UML diagram though 
 
 ## Prerequisites
 1. To run the program, [Python 3.9.1](https://www.python.org/downloads/) needs to be installed.
-1. During installation, check the box labeled "Add Python 3.9 to PATH" so Python programs can be run by typing `python` in a terminal.
+1. During installation in Windows, check the box labeled "Add Python 3.9 to PATH" so Python programs can be run by typing `python` in a terminal.
 
 ## Package Installation
 ### Method 1 - No virtual environment
-Assuming you are running [Python 3.9.1](https://www.python.org/downloads/) or later you can run the `Install.py` script by invoking `python Install.py`. This will install all of the required packages to your system so you can run the program.
+Assuming you are running [Python 3.9.1](https://www.python.org/downloads/) or later you can run the `Install.py` script by invoking `python Install.py`. This will install all of the required packages to your system so you can run the program. If it fails however, move on to Method 2.
 
 ### Method 2 - Virtual environment using venv
 If the installation script does not work for whatever reason, you can try running it within a virtual environment using `venv`
@@ -21,7 +21,7 @@ If the installation script does not work for whatever reason, you can try runnin
     
     On MacOS/Linux:
     
-    	$ venv/bin/activate
+    	$ source venv/bin/activate
 
 1. Run `pip` to install the required packages by doing `python -m pip install -r requirements.txt`
 
