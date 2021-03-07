@@ -112,7 +112,7 @@ class MainWindow(QWidget):
         del self.RelationshipCoordiantes[(firstClassName, secondClassName)]
 
 
-
+# ----------- Anything below this line can be ignored until sprint 3 ----------- #
 
     # TODO
     def createRClickMenu(self):
