@@ -1,5 +1,4 @@
 import argparse
-import subprocess
 import sys
 
 try:
@@ -14,6 +13,6 @@ args = parser.parse_args()
 argsDict = vars(args)
 
 if argsDict['cli']:
-    subprocess.run(['python', 'REPL.py'])
+    import REPL
 else:
-    subprocess.run(['python', 'GUI.py'])
+    import GUI
