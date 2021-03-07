@@ -1,8 +1,10 @@
 import sys
 from ClassCollection import ClassCollection
 from PyQt5.QtWidgets import QLabel
-import GUIController, GUIClassMenu, GUIRelationshipMenu, GUIFieldMenu, GUIParameterMenu, GUIMethodMenu, GUIBrowseFiles
+
+import GUIController, GUIClassMenu, GUIRelationshipMenu, GUIFieldMenu, GUIParameterMenu, GUIMethodMenu, GUIBrowseFiles, GUIAlertWindow, Interface
 from GUIClassWidget import ClassWidget
+
 
 # A default collection
 collection = ClassCollection()
@@ -65,7 +67,7 @@ class GUIController:
     def open(self):
         pass
 
-    def save(self):
+    def save(name):
         pass
 
     def help(self):
@@ -75,51 +77,142 @@ class GUIController:
         sys.exit()
 
     def addClass(self, name):
-        # Add new class widget to the view
-        pass
+        try:
+            self.model.addClass(name)
+        except Exception as e:
+            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
+            print(e)
+
+        print(self.model.classDict)
+        # Take the info from the addClass menu, store in the classcollection and find a way to display it on the main window
 
     def deleteClass(self, name):
-        pass
-        # Take the name of the class from the menu, update the classcollection, and delete the class from the main window
+        try:
+            self.model.deleteClass(name)
+        except Exception as e:
+            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
+            print(e)
+        
 
+        print(self.model.classDict)
+        # Take the name of the class from the menu, update the classcollection, and delete the class from the main window
+        
     def renameClass(self, oldName, newName):
-        pass
+        try:
+            self.model.renameClass(oldName, newName)
+        except Exception as e:
+            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
+            print(e)
+
+        print(self.model.classDict)
 
     def addRelationship(self, firstClassName, secondClassName, typ):
-        pass
+        try:
+            self.model.addRelationship(firstClassName, secondClassName, typ)
+        except Exception as e:
+            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
+            print(e)
+
+        print(self.model.relationshipDict)
 
     def deleteRelationship(self, firstClassName, secondClassName):
-        pass
+        try:
+            self.model.deleteRelationship(firstClassName, secondClassName)
+        except Exception as e:
+            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
+            print(e)
+
+        print(self.model.relationshipDict)
 
     def renameRelationship(self, firstClassName, secondClassName, typ):
-        pass
+        try:
+            self.model.renameRelationship(firstClassName, secondClassName, typ)
+        except Exception as e:
+            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
+            print(e)
+
+        print(self.model.relationshipDict)
 
     def addMethod(self, className, methodName, returnType, parameters):
-        pass
+        try:
+            self.model.addMethod(className, methodName, returnType, parameters)
+        except Exception as e:
+            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
+            print(e)
+
+        print(self.model.classDict)
 
     def deleteMethod(self, className, methodName):
-        pass
+        try:
+            self.model.deleteMethod(className, methodName)
+        except Exception as e:
+            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
+            print(e)
+
+        print(self.model.classDict)    
 
     def renameMethod(self, className, methodName, newName):
-        pass
+        try:
+            self.model.renameMethod(className, methodName, newName)
+        except Exception as e:
+            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
+            print(e)
+
+        print(self.model.classDict)
 
     def addParameter(self, className, methodName, typ, name):
-        pass
+        try:
+            self.model.addParameter(className, methodName, typ, name)
+        except Exception as e:
+            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
+            print(e)
+        
+        print(self.model.classDict)
 
     def removeParameter(self, className, methodName, name):
-        pass
+        try:
+            self.model.removeParameter(className, methodName, name)
+        except Exception as e:
+            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
+            print(e)
+
+        print(self.model.classDict)
 
     def changeParameter(self, className, methodName, name, newType, newName):
-        pass
+        try:
+            self.model.changeParameter(className, methodName, name, newType, newName)
+        except Exception as e:
+            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
+            print(e)
+
+        print(self.model.classDict)
 
     def addField(self, className, name, dataType):
-        pass
+        try:
+            self.model.addField(className, name, dataType)
+        except Exception as e:
+            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
+            print(e)
+
+        print(self.model.classDict)
 
     def deleteField(self, className, name):
-        pass
+        try:
+            self.model.deleteField(className, name)
+        except Exception as e:
+            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
+            print(e)
+
+        print(self.model.classDict)
 
     def renameField(self, className, oldName, newName):
-        pass
+        try:
+            self.model.renameField(className, oldName, newName)
+        except Exception as e:
+            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
+            print(e)
+
+        print(self.model.classDict)
 
     # Creates instance of popup windows
     def addClassMenu(self, checked):
