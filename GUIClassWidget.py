@@ -9,6 +9,11 @@ class ClassWidget(QWidget):
         # This is for sprint 3
         self.clicked = False
 
+        # Sends the widget to the bottom of the parent's widget stack, so it'll go behind the menu bar
+        # Not having this causes the menu bar to be inaccessible
+        # Self-note: stackUnder() is another option, may need this later
+        self.lower()
+
         self.x = x
         self.y = y
         self.name = name
@@ -21,6 +26,10 @@ class ClassWidget(QWidget):
         self.methodLbl = QLabel(self.method, parent = self)
 
         self.drawClass()
+
+        middle = self.getWidgetMiddle()
+        self.middleX = middle[0]
+        self.middleY = middle[1]
     
     # Sets new coordinates for the widget and updates the widget location
     # Note: x and y coords for labels are based on the top left corner of the label
@@ -52,14 +61,29 @@ class ClassWidget(QWidget):
     def delete(self):
         self.close()
 
-    def drawClass(self):
+    def getWidgetMiddle(self):
+        nameLbl = self.nameLbl
+        methodLbl = self.methodLbl
+        fieldLbl = self.fieldLbl
 
+        middleX = (nameLbl.x() + methodLbl.x() + nameLbl.width()) / 2
+        middleY = (nameLbl.y() + methodLbl.y() + methodLbl.height()) / 2
+
+        return [middleX, middleY]
+    
+    def getMiddleX(self):
+        return self.middleX
+
+    def getMiddleY(self):
+        return self.middleY
+
+    def drawClass(self):
         # Did this so names would be easier to read (self won't be everywhere)
         x = self.x
         y = self.y
         nameLbl = self.nameLbl
-        methodLbl = self.methodLbl
         fieldLbl = self.fieldLbl
+        methodLbl = self.methodLbl
 
         # Start by automatically setting the size of each label based on the contents
         methodLbl.adjustSize()
@@ -87,22 +111,22 @@ class ClassWidget(QWidget):
 
 
     # --------- Anything below this can be ignored until sprint 3 --------- #
-    def mousePressEvent(self, event):
+    #def mousePressEvent(self, event):
         # Location of the mouse when the button is first clicked
-        self.startLoc = event.pos()
-        self.clicked = True
+        #self.startLoc = event.pos()
+        #self.clicked = True
 
-    def mouseMoveEvent(self, event):
+    #def mouseMoveEvent(self, event):
         # This will continue until mouseReleaseEvent is triggered, because that's how it gets set to false
-        if self.clicked and event.buttons() == Qt.LeftButton:
+        #if self.clicked and event.buttons() == Qt.LeftButton:
 
             # Current location of the mouse
-            self.endLoc = event.pos()
+            #self.endLoc = event.pos()
             # The change in distance
-            self.locChange = self.mapToGlobal(self.endLoc - self.startLoc)
-            self.move(self.locChange)
+            #self.locChange = self.mapToGlobal(self.endLoc - self.startLoc)
+            #self.move(self.locChange)
             # Continuously update until the mouseReleaseEvent is triggered
-            self.endLoc = self.startLoc
+            #self.endLoc = self.startLoc
 
-    def mouseReleaseEvent(self, event):
-        self.clicked = False
+    #def mouseReleaseEvent(self, event):
+        #self.clicked = False

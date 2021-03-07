@@ -12,8 +12,15 @@ class GUIController:
         self.model = model
         self.view = view
 
+        self.classWidgetDictionary = {}
+        self.classWidgetCount = 0
+        # TODO: For sprint 3, the biggest flaw in this is it doesn't scale for the class widget size. Fix this and
+        # create something that dynamically scales
+        self.coordinateList = [[50, 100], [50, 400], [400, 100], [400, 400], [800, 100], [800, 800]]
+
         self.setSignal("Open", self.openMenu)
         self.setSignal("Save", self.saveMenu)
+
         self.setSignal("Help", self.helpMenu)
         self.setSignal("Exit", self.exit)
 
@@ -37,12 +44,11 @@ class GUIController:
         self.setSignal("Delete Relationship", self.delRelationshipMenu)
         self.setSignal("Change Relationship", self.renRelationshipMenu)
 
-        classWidget = ClassWidget(view, 100, 200, "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
-        #print(classWidget.getCoordinates())
-        #classWidget.setCoordinates(20, 20)
-        #print(classWidget.getCoordinates())
-        #classWidget.setName("Testing")
-        #classWidget.delete()
+        classWidget = ClassWidget(view, self.coordinateList[0][0], self.coordinateList[0][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
+        classWidget = ClassWidget(view, self.coordinateList[1][0], self.coordinateList[1][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
+        classWidget = ClassWidget(view, self.coordinateList[2][0], self.coordinateList[2][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
+        classWidget = ClassWidget(view, self.coordinateList[3][0], self.coordinateList[3][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
+        classWidget = ClassWidget(view, self.coordinateList[4][0], self.coordinateList[4][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
 
 
     def setSignal(self, name, function):

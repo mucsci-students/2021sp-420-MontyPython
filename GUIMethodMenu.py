@@ -1,6 +1,6 @@
 # Contains classes used to create menus related to methods
 
-from PyQt5.QtWidgets import QWidget, QDialog, QTableWidget, QLabel, QLineEdit, QPushButton
+from PyQt5.QtWidgets import QWidget, QDialog, QTableWidget, QTableWidgetItem, QLabel, QLineEdit, QPushButton
 import GUIParameterMenu
 
 class MethodMenu(QDialog):
@@ -8,10 +8,12 @@ class MethodMenu(QDialog):
     def __init__(self, parent = None):
         super(MethodMenu, self).__init__(parent)
 
+        self.returnDict = {'Values Entered': False}
+
     def addMethod(self, controller):
         self.setWindowTitle('Add Method')
         # w, h
-        self.setFixedSize(602, 420)
+        self.setFixedSize(619, 420)
         self.setStyleSheet(open('MenuStyleSheet.css').read()) 
         self.setModal(True)
 
@@ -40,11 +42,11 @@ class MethodMenu(QDialog):
 
         lblParams = QLabel("Parameters", parent = self)
         lblParams.move(350, 50)
-        paramTable = QTableWidget(self)
-        paramTable.setColumnCount(2)
-        paramTable.setFixedSize(202, 200)
-        paramTable.move(350, 85)
-        paramTable.setHorizontalHeaderLabels(('Name', 'Type'))
+        self.paramTable = QTableWidget(self)
+        self.paramTable.setColumnCount(2)
+        self.paramTable.setFixedSize(219, 200)
+        self.paramTable.move(350, 85)
+        self.paramTable.setHorizontalHeaderLabels(('Name', 'Type'))
 
         btnParams = QPushButton(self)
         btnParams.setText("Add Parameter")
@@ -52,15 +54,27 @@ class MethodMenu(QDialog):
         btnParams.resize(202, 50)
 
         # This needs to be an anonymous function for the signal to work
-        btnParams.clicked.connect(lambda: self.addParameterToTable(paramTable))
+        btnParams.clicked.connect(lambda: self.addParameterToTable())
         btnSubmit.clicked.connect(lambda: controller.addMethod(txtClassName.text(), txtMethodName.text(), txtType.text(), "Loop through and add this"))
 
         self.exec_()
 
-    # TODO: Unfinished. This does not work
-    def addParameterToTable(self, checked, paramTable):
-        self.pMenu = GUIParameterMenu.MethodParameterMenu(paramTable)
+    # Pop up the parameter menu, and when it's closed with submit, add new values to the parameter table
+    # TODO: If submit is hit without input, it'll put two empty strings in
+    def addParameterToTable(self):
+        self.pMenu = GUIParameterMenu.MethodParameterMenu(self.returnDict)
         self.pMenu.addParameterWithMethod()
+        if self.returnDict['Values Entered'] == True:
+            rowCount = self.paramTable.rowCount()
+            self.paramTable.insertRow(rowCount)
+
+            # Populate the newly created row
+            self.paramTable.setItem(rowCount, 0, QTableWidgetItem(self.returnDict['Parameter Name']))
+            self.paramTable.setItem(rowCount, 1, QTableWidgetItem(self.returnDict['Parameter Type']))
+
+            # Important: Clear the dictionary so it can be used again, if this doesn't happen things could break
+            self.returnDict.clear()
+            self.returnDict['Values Entered'] = False
     
     # TODO: right now this takes the information entered into the menu and prints the data.
     # This information needs to be sent to the controller instead of being printed
