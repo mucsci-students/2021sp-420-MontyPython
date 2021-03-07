@@ -15,6 +15,8 @@ class MainWindow(QWidget):
         self.menuObjects = {}
         self.RelationshipCoordiantes = {}    #[(joe, secondClassName)] = [x1, y1, x2, y2]
         #self.addRelationshipLine("firstClassName", "secondClassName", 200, 100, 400, 200)
+        #self.deleteRelationshipLine("firstClassName", "secondClassName")
+        
         self.drawWindow()
         self.centerWindow()
         self.drawMenuBar()
@@ -98,7 +100,7 @@ class MainWindow(QWidget):
     def drawLines(self, paint):
         penSolid = QPen(Qt.black, 2)
         paint.setPen(penSolid)
-        paint.drawLine(400, 100, 200, 100)
+        #paint.drawLine(400, 100, 200, 100)
         for key, x in self.RelationshipCoordiantes.items():
             paint.drawLine(x[0], x[1], x[2], x[3])
 

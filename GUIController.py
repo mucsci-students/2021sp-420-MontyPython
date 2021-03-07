@@ -44,19 +44,12 @@ class GUIController:
         self.setSignal("Delete Relationship", self.delRelationshipMenu)
         self.setSignal("Change Relationship", self.renRelationshipMenu)
 
-<<<<<<< HEAD
-        #self.view.drawClass(100, 200)
-        #self.view.drawClass(400, 300)
-
-        
-=======
         classWidget = ClassWidget(view, self.coordinateList[0][0], self.coordinateList[0][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
         classWidget = ClassWidget(view, self.coordinateList[1][0], self.coordinateList[1][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
         classWidget = ClassWidget(view, self.coordinateList[2][0], self.coordinateList[2][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
         classWidget = ClassWidget(view, self.coordinateList[3][0], self.coordinateList[3][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
         classWidget = ClassWidget(view, self.coordinateList[4][0], self.coordinateList[4][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
 
->>>>>>> develop
 
     def setSignal(self, name, function):
         self.view.menuObjects[name].triggered.connect(function)
