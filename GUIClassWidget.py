@@ -21,6 +21,10 @@ class ClassWidget(QWidget):
         self.methodLbl = QLabel(self.method, parent = self)
 
         self.drawClass()
+
+        middle = self.getWidgetMiddle()
+        self.middleX = middle[0]
+        self.middleY = middle[1]
     
     # Sets new coordinates for the widget and updates the widget location
     # Note: x and y coords for labels are based on the top left corner of the label
@@ -52,14 +56,29 @@ class ClassWidget(QWidget):
     def delete(self):
         self.close()
 
-    def drawClass(self):
+    def getWidgetMiddle(self):
+        nameLbl = self.nameLbl
+        methodLbl = self.methodLbl
+        fieldLbl = self.fieldLbl
 
+        middleX = (nameLbl.x() + methodLbl.x() + nameLbl.width()) / 2
+        middleY = (nameLbl.y() + methodLbl.y() + methodLbl.height()) / 2
+
+        return [middleX, middleY]
+    
+    def getMiddleX(self):
+        return self.middleX
+
+    def getMiddleY(self):
+        return self.middleY
+
+    def drawClass(self):
         # Did this so names would be easier to read (self won't be everywhere)
         x = self.x
         y = self.y
         nameLbl = self.nameLbl
-        methodLbl = self.methodLbl
         fieldLbl = self.fieldLbl
+        methodLbl = self.methodLbl
 
         # Start by automatically setting the size of each label based on the contents
         methodLbl.adjustSize()
