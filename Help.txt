@@ -2,7 +2,9 @@
 ------------------------------
 This program accepts user input to add, delete, display, and modify elements of a text representation of a UML diagram.
 
-This program accepts the following commands:
+This program accepts the following commands.
+Commands are case-insensitive. 
+Typing in an incomplete command will prompt the user for missing parameters.
 
 --------- Interface ---------
 Exit: Exits the application.
@@ -16,26 +18,76 @@ List Classes: Lists the contents of all classes within the current UML diagram.
 List Class: Asks for the name of the class in the current UML diagram and lists the contents of that class.
 
 --------- Save/Load ---------
-Save: Asks for the name of the file and saves the contents of the current UML diagram under that file name.
+Save: Asks for the name of the file and saves the contents of the current UML diagram under that file name. 
+If the name given is "foo", the file will be foo.monty.
 
-Load: Asks for the name of the file to load from and loads the contents of that file as the current UML diagram.
+Load: Asks for the name of the file to load from and loads the contents of that file as the current UML diagram. 
+If the name given is "foo", the file loaded will be foo.monty.
 
 --------- Classes ---------
 Add Class: Asks for the name of the new class and adds that class to the current UML diagram.
 
 Delete Class: Asks for the name of the class and deletes that class from the current UML diagram.
 
-Rename Class: Asks for the original name and new name of the class in the current UML diagram.  Changes the old name of the class to the new name.
+Rename Class: Asks for the original name and new name of the class in the current UML diagram.
+Changes the old name of the class to the new name.
 
 --------- Relationships ---------
-Add Relationship: Asks for a source and destination class in the current UML diagram. Adds a relationship between the two classes.
+Add Relationship: Asks for a source class and a destination class in the current UML diagram and a type of relationship. 
+Adds a relationship between the two classes with that type of relationship.
 
-Delete Relationship: Asks for a source and destination class in the current UML diagram and deletes their relationship if one exists.
+Delete Relationship: Asks for a source class and destination class in the current UML diagram and deletes their relationship if one exists.
 
---------- Attributes ---------
-Add Attribute: Asks for the name of the class in the UML diagram to add an attribute to, and the attribute name. Creates an attribute within that class.
+Rename Relationship: Asks for a source class and destination class in the current UML diagram and a type of relationship. 
+The type of the relationship between these two classes is then changed.
 
-Delete Attribute: Asks for the name of the class in the UML diagram that the attribute is in, and the name of the attribute. Deletes the attribute from the specified class. 
+--------- Methods ---------
+Add Method: Asks for the name of the class in the UML diagram to add a method to, the method's name, and its return type. 
+The user is then asked to supply any parameters for the method. 
+The format for adding parameters is alternating type and name, with type being the first word. Ex. int foo int bar. 
+The user may enter no parameters by sending an empty line. 
+NOTE: If an odd number of words are supplied (ex. int foo int bar str), then the final word is ignored.
 
-Rename Attribute: Asks for the class name, the old attribute name, and the new attribute name. Adds the attribute to the specified class in the current UML diagram.
+Delete Method: Asks for the name of the class in the UML diagram that the method is in, and the name of the method. 
+The user then must select which form of the method to delete. This then deletes the selected instance of the method.
+
+Rename Method: Asks for the name of the class in the UML diagram, the current name of the method, and the new name for the method. 
+The user then must select which form of the method to rename. This instance of the method is then given the new name.
+
+--------- Fields ---------
+Add Field: Asks for the name of the class in the UML diagram to add a field to, the field's name, and its type. 
+A field of this name and type is then added to the class.
+
+Delete Field: Asks for the name of the class in the UML diagram that the field is in, and the name of the field. 
+The field of this name is then removed from the class.
+
+Rename Field: Asks for the name of the class in the UML diagram that the field is in, the field's old name, and the field's new name. 
+The field of the old name is then renamed to the new name within the class.
+
+--------- Parameters ---------
+Add Parameter: Asks for the name of the class in the UML diagram and a method name within that class to add a parameter to. 
+The user then must select which form of the method to add a parameter to.
+The user is then asked to provide a type and a name for the new parameter.
+NOTE: User input past the first type and name are ignored.
+
+Remove Parameter: Asks for the name of the class in the UML diagram and a method name within that class to remove a parameter from. 
+The user then must select which form of the method to remove a parameter from.
+The user is then asked to provide the name of the parameter to remove.
+
+Remove Parameters: Asks for the name of the class in the UML diagram and a method name within that class to remove a parameter from. 
+The user then must select which form of the method to remove parameters from. 
+All parameters are removed from this instance of the method.
+
+Change Parameter: Asks for the name of the class in the UML diagram and a method name within that class to remove a parameter from. 
+The user then must select which form of the method to change a parameter of. 
+The user is then asked to provide the name of the parameter to change, the new type for the parameter, and the new name for the parameter. 
+The chosen parameter is then changed within this instance of the method.
+
+Change Parameters: Asks for the name of the class in the UML diagram and a method name within that class to remove a parameter from. 
+The user then must select which form of the method to change all parameters of. 
+The user is then asked to provide a list of parameters to replace the current list for this instance of the method. 
+The format for adding parameters is alternating type and name, with type being the first word. Ex. int foo int bar. 
+The user may enter no parameters by sending an empty line. 
+NOTE: If an odd number of words are supplied (ex. int foo int bar str), then the final word is ignored.
+
 ------------------------------

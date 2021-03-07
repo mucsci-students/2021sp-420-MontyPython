@@ -2,8 +2,10 @@
 import sys
 
 # Import Qapplication and required widgets
-from PyQt5.QtWidgets import QApplication, QWidget, QMenuBar, QMenu, QLabel, QMainWindow, QAction, QPushButton, QDesktopWidget, QScrollBar
-from PyQt5.QtGui import QPainter, QPen
+from PyQt5.QtWidgets import QApplication, QWidget, QMenuBar, QMenu, QLabel, QMainWindow, QAction, QPushButton, QDesktopWidget
+from PyQt5.QtGui import QPainter, QPen, QBrush
+from PyQt5.QtCore import Qt
+
 from GUIClassWidget import ClassWidget
 
 class MainWindow(QWidget):
@@ -12,7 +14,10 @@ class MainWindow(QWidget):
         super(MainWindow, self).__init__(parent)
         
         self.menuObjects = {}
-
+        self.RelationshipCoordiantes = {}    #[(joe, secondClassName)] = [x1, y1, x2, y2]
+        #self.addRelationshipLine("firstClassName", "secondClassName", 200, 100, 400, 200)
+        #self.deleteRelationshipLine("firstClassName", "secondClassName")
+        
         self.drawWindow()
         self.centerWindow()
         self.drawMenuBar()
@@ -88,23 +93,31 @@ class MainWindow(QWidget):
         self.menuObjects["Delete Relationship"] = menuRelationship.addAction("Delete Relationship")
         self.menuObjects["Change Relationship"] = menuRelationship.addAction("Change Relationship")
 
-    #def paintEvent(self, event):
-        #paint = QPainter()
-        #paint.begin(self)
-        #self.drawLines(paint)
-        #paint.end()
+    def paintEvent(self, event):
+        paint = QPainter()
+        paint.begin(self)
+        paint.fillRect(0, 0, 1000, 800, QBrush(Qt.white))
+        self.drawLines(paint)
+        paint.end()
 
-    #def drawLines(self, paint):
-        #penSolid = QPen(Qt.black, 2)
-        #paint.setPen(penSolid)
+
+    def drawLines(self, paint):
+        penSolid = QPen(Qt.black, 2)
+        paint.setPen(penSolid)
         #paint.drawLine(400, 100, 200, 100)
+        for key, x in self.RelationshipCoordiantes.items():
+            paint.drawLine(x[0], x[1], x[2], x[3])
 
-        #penDashed = QPen(Qt.black, 2)
-        #penDashed.setStyle(Qt.DashLine)
-        #paint.setPen(penDashed)
-        #paint.drawLine(400, 400, 200, 400)
 
-    # ----------- Anything below this line can be ignored until sprint 3 ----------- #
+    def addRelationshipLine(self, firstClassName, secondClassName, x1, y1, x2, y2):
+        self.RelationshipCoordiantes[(firstClassName, secondClassName)] = [x1, y1, x2, y2]
+
+    def deleteRelationshipLine(self, firstClassName, secondClassName):
+        del self.RelationshipCoordiantes[(firstClassName, secondClassName)]
+
+
+# ----------- Anything below this line can be ignored until sprint 3 ----------- #
+
     # TODO
     def createRClickMenu(self):
         pass

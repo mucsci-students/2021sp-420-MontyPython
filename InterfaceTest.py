@@ -28,21 +28,22 @@ class InterfaceTest(unittest.TestCase):
         collection = ClassCollection()
         collection.addClass("foo")
         collection.addClass("bar")
-        collection.addRelationship("foo", "bar")
+        collection.addRelationship("foo", "bar", "aggregation")
         Interface.saveFile(collection, "file1")
         self.assertTrue(os.path.isfile("file1.monty"))
 
     def testSaveCorrectFileContents(self):
-        comparisonString = "[{\"foo\": {\"buzz\": \"buzz\"}, \"bar\": {}}, {\"foo, bar\": \"\"}]"
+        comparisonString = "[{\"foo\": [{\"buzz\": [[\"int\", []], [\"int\", [[\"int\", \"a\"], [\"int\", \"b\"]]]]}, {\"test\": \"int\"}], \"bar\": [{}, {}]}, {\"foo, bar\": \"aggregation\"}]"
         collection = ClassCollection()
         collection.addClass("foo")
         collection.addClass("bar")
-        collection.addRelationship("foo", "bar")
-        collection.addAttribute("foo", "buzz")
+        collection.addRelationship("foo", "bar", "aggregation")
+        collection.addMethod("foo", "buzz", "int", [])
+        collection.addMethod("foo", "buzz", "int", [("int", "a"), ("int", "b")])
+        collection.addField("foo", "test", "int")
         Interface.saveFile(collection, "file1")
         with open("file1.monty", "r") as f:
             lines = f.readlines()
-            print(lines[0])
             self.assertTrue((lines[0] == comparisonString) and (len(lines) == 1))
 
         
@@ -63,7 +64,9 @@ class InterfaceTest(unittest.TestCase):
         collection = ClassCollection()
         collection.addClass("foo")
         collection.addClass("bar")
-        collection.addRelationship("foo", "bar")
+        collection.addRelationship("foo", "bar", "aggregation")
+        collection.addMethod("foo", "buzz", "int", [])
+        collection.addMethod("foo", "buzz", "int", [("int", "a"), ("int", "b")])
         Interface.saveFile(collection, "file1")
         collectionLoaded = ClassCollection()
         Interface.loadFile(collectionLoaded, "file1")
