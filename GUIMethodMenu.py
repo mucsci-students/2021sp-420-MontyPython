@@ -51,7 +51,7 @@ class MethodMenu(QDialog):
         btnParams = QPushButton(self)
         btnParams.setText("Add Parameter")
         btnParams.move(350, 320) 
-        btnParams.resize(202, 50)
+        btnParams.resize(219, 50)
 
         # This needs to be an anonymous function for the signal to work
         btnParams.clicked.connect(lambda: self.addParameterToTable())

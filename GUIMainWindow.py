@@ -23,7 +23,7 @@ class MainWindow(QWidget):
         # Width, height
         self.resize(1000, 800)
         # Style sheet can be used on all parts of GUI
-        self.setStyleSheet(open('GuiStyleSheet.css').read()) 
+        self.setStyleSheet(open('GUIStyleSheet.css').read()) 
 
     def centerWindow(self):
         # Get widget geometry
@@ -100,7 +100,6 @@ class MainWindow(QWidget):
         #penDashed.setStyle(Qt.DashLine)
         #paint.setPen(penDashed)
         #paint.drawLine(400, 400, 200, 400)
-
 
     # ----------- Anything below this line can be ignored until sprint 3 ----------- #
     # TODO
