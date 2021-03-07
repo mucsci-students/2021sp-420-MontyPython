@@ -16,11 +16,12 @@ class MainWindow(QWidget):
         self.drawWindow()
         self.centerWindow()
         self.drawMenuBar()
+        #self.showMaximized()
 
     def drawWindow(self):
         self.setWindowTitle('UML Editor')
         # Width, height
-        self.resize(800, 800)
+        self.resize(1000, 800)
         # Style sheet can be used on all parts of GUI
         self.setStyleSheet(open('GuiStyleSheet.css').read()) 
 
@@ -39,7 +40,8 @@ class MainWindow(QWidget):
 
         # w, h
         # TODO: Fix this so it goes across when window is resized
-        bar.resize(800, 30)
+        # This is a sketchy fix
+        bar.resize(10000, 30)
 
         # Add menus to bar
         menuFile = bar.addMenu("File")
@@ -83,21 +85,21 @@ class MainWindow(QWidget):
         self.menuObjects["Delete Relationship"] = menuRelationship.addAction("Delete Relationship")
         self.menuObjects["Change Relationship"] = menuRelationship.addAction("Change Relationship")
 
-    def paintEvent(self, event):
-        paint = QPainter()
-        paint.begin(self)
-        self.drawLines(paint)
-        paint.end()
+    #def paintEvent(self, event):
+        #paint = QPainter()
+        #paint.begin(self)
+        #self.drawLines(paint)
+        #paint.end()
 
-    def drawLines(self, paint):
-        penSolid = QPen(Qt.black, 2)
-        paint.setPen(penSolid)
-        paint.drawLine(400, 100, 200, 100)
+    #def drawLines(self, paint):
+        #penSolid = QPen(Qt.black, 2)
+        #paint.setPen(penSolid)
+        #paint.drawLine(400, 100, 200, 100)
 
-        penDashed = QPen(Qt.black, 2)
-        penDashed.setStyle(Qt.DashLine)
-        paint.setPen(penDashed)
-        paint.drawLine(400, 400, 200, 400)
+        #penDashed = QPen(Qt.black, 2)
+        #penDashed.setStyle(Qt.DashLine)
+        #paint.setPen(penDashed)
+        #paint.drawLine(400, 400, 200, 400)
 
 
     # ----------- Anything below this line can be ignored until sprint 3 ----------- #

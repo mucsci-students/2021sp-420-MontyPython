@@ -9,6 +9,11 @@ class ClassWidget(QWidget):
         # This is for sprint 3
         self.clicked = False
 
+        # Sends the widget to the bottom of the parent's widget stack, so it'll go behind the menu bar
+        # Not having this causes the menu bar to be inaccessible
+        # Self-note: stackUnder() is another option, may need this later
+        self.lower()
+
         self.x = x
         self.y = y
         self.name = name
@@ -106,22 +111,22 @@ class ClassWidget(QWidget):
 
 
     # --------- Anything below this can be ignored until sprint 3 --------- #
-    def mousePressEvent(self, event):
+    #def mousePressEvent(self, event):
         # Location of the mouse when the button is first clicked
-        self.startLoc = event.pos()
-        self.clicked = True
+        #self.startLoc = event.pos()
+        #self.clicked = True
 
-    def mouseMoveEvent(self, event):
+    #def mouseMoveEvent(self, event):
         # This will continue until mouseReleaseEvent is triggered, because that's how it gets set to false
-        if self.clicked and event.buttons() == Qt.LeftButton:
+        #if self.clicked and event.buttons() == Qt.LeftButton:
 
             # Current location of the mouse
-            self.endLoc = event.pos()
+            #self.endLoc = event.pos()
             # The change in distance
-            self.locChange = self.mapToGlobal(self.endLoc - self.startLoc)
-            self.move(self.locChange)
+            #self.locChange = self.mapToGlobal(self.endLoc - self.startLoc)
+            #self.move(self.locChange)
             # Continuously update until the mouseReleaseEvent is triggered
-            self.endLoc = self.startLoc
+            #self.endLoc = self.startLoc
 
-    def mouseReleaseEvent(self, event):
-        self.clicked = False
+    #def mouseReleaseEvent(self, event):
+        #self.clicked = False
