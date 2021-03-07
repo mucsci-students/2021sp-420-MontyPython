@@ -59,7 +59,8 @@ class MethodMenu(QDialog):
 
         self.exec_()
 
-    # TODO: Unfinished. This does not work
+    # Pop up the parameter menu, and when it's closed with submit, add new values to the parameter table
+    # TODO: If submit is hit without input, it'll put two empty strings in
     def addParameterToTable(self):
         self.pMenu = GUIParameterMenu.MethodParameterMenu(self.returnDict)
         self.pMenu.addParameterWithMethod()
@@ -67,9 +68,13 @@ class MethodMenu(QDialog):
             rowCount = self.paramTable.rowCount()
             self.paramTable.insertRow(rowCount)
 
-            #Populate the newly created row
+            # Populate the newly created row
             self.paramTable.setItem(rowCount, 0, QTableWidgetItem(self.returnDict['Parameter Name']))
             self.paramTable.setItem(rowCount, 1, QTableWidgetItem(self.returnDict['Parameter Type']))
+
+            # Important: Clear the dictionary so it can be used again, if this doesn't happen things could break
+            self.returnDict.clear()
+            self.returnDict['Values Entered'] = False
     
     # TODO: right now this takes the information entered into the menu and prints the data.
     # This information needs to be sent to the controller instead of being printed

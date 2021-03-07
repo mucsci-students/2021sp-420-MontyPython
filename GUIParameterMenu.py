@@ -197,23 +197,12 @@ class MethodParameterMenu(QDialog):
 
         self.exec_()
 
-    # TODO: This is broken
+    # This works! Send data back to the Method Menu
     def returnParam(self, paramName, paramType):
         self.close()
-        print(paramName)
-        print(paramType)
         self.returnDict['Values Entered'] = True
         self.returnDict['Parameter Name'] = paramName
         self.returnDict['Parameter Type'] = paramType
-        
-        # TODO: Connect this back to previous menu somehow
-        # Adds row to the end of the table
-        #rowCount = self.paramTable.rowCount()
-        #self.paramTable.insertRow(rowCount)
-
-        # Populate the newly created row
-        #self.paramTable.setItem(rowCount, 0, QTableWidgetItem(paramName))
-        #self.paramTable.setItem(rowCount, 1, QTableWidgetItem(paramType))
 
     
 
