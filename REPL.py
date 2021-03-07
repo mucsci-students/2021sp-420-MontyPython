@@ -40,17 +40,28 @@ response = ""
 response = input('What would you like to do? \nType "Help" for options.\n')
 tokens = response.split()
 
+if len(tokens) == 0:
+    tokens.append('')
+
 while (tokens[0].lower() != 'exit'):
     # Forms list of individual words of input
     # As some commands are one, some are two, .lower() is used only on the first
     # If a second word for a command is needed, .lower() is used after identifying
     # which form of command it is
     tokens = response.split()
+
+    if len(tokens) == 0:
+        tokens.append('')
+    
     tokens[0] = tokens[0].lower()
 
     try:
         # ------- Add ------- #
         if tokens[0] == 'add':
+            if len(tokens) == 1:
+                addedTokens = input('What would you like to add?\n').split()
+                tokens.extend(addedTokens)
+            
             obj = tokens[1].lower()
 
             # Add class takes one parameter: name
@@ -80,7 +91,7 @@ while (tokens[0].lower() != 'exit'):
                     addedTokens = requestParameters(paramList[start:])
                     tokens.extend(addedTokens)
                 # Adds relationship
-                collection.addRelationship(tokens[2], tokens[3], tokens[4])
+                collection.addRelationship(tokens[2], tokens[3], tokens[4].lower())
 
             # Add field takes three parameters: class name, field name, type
             if obj == 'field':
@@ -105,7 +116,7 @@ while (tokens[0].lower() != 'exit'):
                     start = len(paramList) - missing
                     addedTokens = requestParameters(paramList[start:])
                     tokens.extend(addedTokens)
-                params = input(f"Please list any parameters for the method {tokens[3]}.\nEx: int foo int bar\n")
+                params = input(f"Please list any parameters for the method {tokens[3]}. Ex: int foo int bar\nAn empty list of parameters can added by inputting an empty line.\nNote: if an odd number of words are provided, the final word is ignored\n")
                 paramsTokens = params.split()
                 methodParameters = []
                 for typ, name in zip(paramsTokens[0::2], paramsTokens[1::2]):
@@ -136,7 +147,7 @@ while (tokens[0].lower() != 'exit'):
                     methodNum = int(input(f"Please select a parameter list by its number.\n"))
                     methodParameters = parametersLists[methodNum].parameters
 
-                    paramRaw = input("Please input the parameter type and name to be added:\n")
+                    paramRaw = input("Please input the parameter type and name to be added.\nNote: additional words past the first type and name will be ignored.\n")
                     param = paramRaw.split()
 
                     if len(param) <= 1:
@@ -154,6 +165,10 @@ while (tokens[0].lower() != 'exit'):
 
         # ------- Delete ------- #
         elif tokens[0] == 'delete':
+            if len(tokens) == 1:
+                addedTokens = input('What would you like to delete?\n').split()
+                tokens.extend(addedTokens)
+            
             obj = tokens[1].lower()
 
             # Delete class takes one parameter: name
@@ -223,6 +238,10 @@ while (tokens[0].lower() != 'exit'):
 
         # ------- Rename ------- #
         elif tokens[0] == 'rename':
+            if len(tokens) == 1:
+                addedTokens = input('What would you like to rename?\n').split()
+                tokens.extend(addedTokens)
+            
             obj = tokens[1].lower()
 
             # Rename class takes two parameters: old name, new name
@@ -247,7 +266,7 @@ while (tokens[0].lower() != 'exit'):
                     addedTokens = requestParameters(paramList[start:])
                     tokens.extend(addedTokens)
                 # Renames class
-                collection.renameRelationship(tokens[2], tokens[3], tokens[4])
+                collection.renameRelationship(tokens[2], tokens[3], tokens[4].lower())
 
             # Rename field takes three parameters: class name, old field name, new field name
             if obj == 'field':
@@ -291,6 +310,10 @@ while (tokens[0].lower() != 'exit'):
 
         # ------- Remove ------- #
         elif tokens[0] == 'remove':
+            if len(tokens) == 1:
+                addedTokens = input('What would you like to remove?\n').split()
+                tokens.extend(addedTokens)
+            
             obj = tokens[1].lower()
 
             # Remove parameter takes two required parameters: class name, method name
@@ -352,6 +375,10 @@ while (tokens[0].lower() != 'exit'):
 
         # ------- Change ------- #
         elif tokens[0] == 'change':
+            if len(tokens) == 1:
+                addedTokens = input('What would you like to change?\n').split()
+                tokens.extend(addedTokens)
+            
             obj = tokens[1].lower()
 
             # Change parameter takes two required parameters: class name, method name
@@ -419,6 +446,10 @@ while (tokens[0].lower() != 'exit'):
 
         # ------- List ------- #
         elif tokens[0] == 'list':
+            if len(tokens) == 1:
+                addedTokens = input('What would you like to list?\n').split()
+                tokens.extend(addedTokens)
+            
             obj = tokens[1].lower()
 
             # List class takes one parameter: class name
@@ -492,6 +523,10 @@ while (tokens[0].lower() != 'exit'):
        # Exit takes zero parameters
         elif tokens[0] == 'exit':
             Interface.exit()
+
+        # ------- Blank ------- #
+        elif tokens[0] == '':
+            print('If you would like to see input options, please type "help".\n')
 
         else:
             print('Invalid input. \nIf you would like to see input options, please type "help".\n')

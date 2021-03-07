@@ -23,6 +23,33 @@ def listRelationships(collection):
     for relationship in collection.relationshipDict:
         print(f"\t{relationship[0]} -> {relationship[1]}")
 
+
+#{
+# (classA, classB) : relationship is currently ""
+# }
+#]
+
+#[
+#    {
+#    "classA" :
+#       [
+#           {
+#           "fieldA" : type
+#           } 
+#           {
+#           "methodA" : 
+#               [
+#               (type, [params])
+#               (type, [params])
+#               ]
+#           }
+#       ]
+#    }
+#    {
+#    (classA, classB) : type
+#    } 
+#]
+
 ### Save
 def saveFile(collection, fileName=None):
     #Value Error if no file name is given
@@ -30,37 +57,40 @@ def saveFile(collection, fileName=None):
         raise ValueError("No file name given to save")
 
     nameList = []
-    attributesList = []
-    #Iterates through collection
-    #Enters a class's name field into nameList
-    #Enters a class's attributes dictionary field into attributesList
+    methodsList = []
+    fieldsList = []
+
     for classObj in collection.classDict.values():
         nameList.append(classObj.name)
-        attributesList.append(classObj.attributeDict)
+        methodsList.append(classObj.methodDict)
+        fieldsList.append(classObj.fieldDict)
 
     classesDictionary = {}
-    #Iterates through nameList and attributesList
-    #zip() ends when the shorter of two lists is emptied
-    #The assumption is made that there will never be a class that
-    #does not have both a name and an attributes dictioanry field.
-    #Forms a dictionary of classes with a key of name and a value of
-    #the attributes dictionary
-    for name, attributesDict in zip(nameList, attributesList):
-        attributesDictionary = {}
-        #attributeValue is an attribute object
-        #As currently implemented, attribute objects only contain
-        #the name of the attribute, and so that is the value pulled.
-        for attributeName in attributesDict:
-            attributesDictionary[attributeName] = attributeName
-        classesDictionary[name] = attributesDictionary
+
+    for name, methodDict, fieldDict in zip(nameList, methodsList, fieldsList):
+        methodsDictionary = {}
+        fieldsDictionary = {}
+
+        for methodName, methodVariants in methodDict.items():
+            variantList = []
+
+            for each in methodVariants:
+                variantList.append((each.returnType, each.parameters))
+
+            methodsDictionary[methodName] = variantList
+
+        for fieldName, fieldType in fieldDict.items():
+            fieldsDictionary[fieldName] = fieldType.dataType
+
+        classesDictionary[name] = (methodsDictionary, fieldsDictionary)
 
     relationshipsDictionary = {}
     #When saving to JSON, a tuple cannot be used as a key. The tuple
     #is saved as a string, delimited by ", ".
     #A dictionary is formed with the string as the key
     for key, value in collection.relationshipDict.items():
-        stringKey = ', '.join(str(s) for s in key)
-        relationshipsDictionary[stringKey] = value
+        stringKey = ', '.join(str(s) for s in key)  
+        relationshipsDictionary[stringKey] = value.typ
 
     #The classes dictionary and the relationships dictionary are
     #formed into a list, allowing for a singular structure to be dumped
@@ -97,19 +127,27 @@ def loadFile(collection, fileName=None):
         classesDictionary = classesRelationshipsList[0]
         relationshipsDictionary = classesRelationshipsList[1]
 
-        #Reforms relationship dictionary, creating a tuple from
-        #the string delimited by ", "
-        for key, value in relationshipsDictionary.items():
-            tupleKey = tuple(key.split(", "))
-            collection.relationshipDict[tupleKey] = value
-
         #Creates a class class for each entry in the classes dictionary
         #Within each class, creates an attribute class for each attribute
         #entry in the attributes dictionary
-        for name, attributes in classesDictionary.items():
+        for name, methodField in classesDictionary.items():
             collection.addClass(name)
-            for attribute in attributes.keys():
-                collection.addAttribute(name, attribute)
+            
+            methodsDictionary = methodField[0]
+            fieldsDictionary = methodField[1]
+
+            for field, typ in fieldsDictionary.items():
+                collection.addField(name, field, typ)
+
+            for method, variantList in methodsDictionary.items():
+                for variant in variantList:
+                    collection.addMethod(name, method, variant[0], variant[1])
+
+        #Reforms relationship dictionary, creating a tuple from
+        #the string delimited by ", "
+        for key, value in relationshipsDictionary.items():
+            classes = key.split(", ")
+            collection.addRelationship(classes[0], classes[1], value)
         
     #Raises an OS Error if the file does not exist
     else:
