@@ -2,7 +2,7 @@
 ### Classes defined: ClassCollection
 
 from Class import Class
-
+from Relationship import Relationship
 class ClassCollection():
 
         ## Initializes a ClassCollection Object 
@@ -66,17 +66,19 @@ class ClassCollection():
             self.classDict[newName] = self.classDict[oldName]
 
             toChange = []
-            for theTuple in self.relationshipDict.keys():
+            typeList = []
+            for theTuple, theType in self.relationshipDict.items():
                 if oldName in theTuple:
-                    toChange.append(theTuple)            
+                    toChange.append(theTuple)       
+                    typeList.append(theType.typ)     
                                
-            for theTuple in toChange:
+            for theTuple, theType in zip(toChange, typeList):
                 (name1, name2) = theTuple
                 if name1 == oldName:
-                    self.addRelationship(newName,name2)
+                    self.addRelationship(newName,name2, theType)
                     self.deleteRelationship(oldName, name2)
                 else:
-                    self.addRelationship(name1, newName)
+                    self.addRelationship(name1, newName, theType)
                     self.deleteRelationship(name1, oldName)
 
             self.classDict.pop(oldName)
@@ -84,7 +86,7 @@ class ClassCollection():
 
         # ------------------------ ( Relationship ) ------------------------- #
 
-        def addRelationship(self, firstClassName, secondClassName):
+        def addRelationship(self, firstClassName, secondClassName, typ):
             # check if classes exist
             if firstClassName not in self.classDict:
                 raise KeyError(f"{firstClassName} does not exist")
@@ -95,7 +97,10 @@ class ClassCollection():
             if (firstClassName, secondClassName) in self.relationshipDict:
                 raise KeyError(f"Relationship, {firstClassName}, {secondClassName}, already exists")
 
-            self.relationshipDict[(firstClassName, secondClassName)] = ""
+            if typ not in ["aggregation", "composition", "inheritance", "realization"]:
+                raise ValueError(f"Invalid Type: {typ}. Valid types are: aggregation, composition, inheritance, realization")
+
+            self.relationshipDict[(firstClassName, secondClassName)] = Relationship(firstClassName, secondClassName, typ)
         
         def deleteRelationship(self, firstClassName, secondClassName):
             # check if classes exist
@@ -110,6 +115,22 @@ class ClassCollection():
 
             del self.relationshipDict[(firstClassName, secondClassName)]
 
+        def renameRelationship(self, firstClassName, secondClassName, typ):
+            # check if classes exist
+            if firstClassName not in self.classDict:
+                raise KeyError(f"{firstClassName} does not exist")
+            
+            if secondClassName not in self.classDict:
+                raise KeyError(f"{secondClassName} does not exist")
+
+            if (firstClassName, secondClassName) not in self.relationshipDict:
+                raise KeyError(f"Relationship, {firstClassName}, {secondClassName}, does not exist")
+
+            if typ not in ["aggregation", "composition", "inheritance", "realization"]:
+                raise ValueError(f"Invalid Type: {typ}. Valid types are: aggregation, composition, inheritance, realization")
+
+            self.relationshipDict[(firstClassName, secondClassName)].typ = typ
+            
         # -------------------------- ( Attribute ) -------------------------- #
         ## Wrapper functions for dealing with attributes of a specific class.
 
@@ -128,6 +149,68 @@ class ClassCollection():
                 raise KeyError(f"{className} does not exist")
             self.classDict[className].renameAttribute(oldAttributeName, newAttributeName)
         
+        # --------------------------- ( Method ) ----------------------------- #
+
+        def addMethod(self, className, methodName, returnType, parameters):
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+            self.classDict[className].addMethod(methodName, returnType, parameters)
+
+        def deleteMethod(self, className, methodName, parameters):
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+            self.classDict[className].deleteMethod(methodName, parameters)
+        
+        def renameMethod(self, className, methodName, parameters, newName):
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+            self.classDict[className].renameMethod(methodName, parameters, newName)
+
+        # --------------------------- ( Parameter ) ----------------------------- #
+        # "parameters" is the parameter listt of the given method to distinguish it.
+        def addParameter(self, className, methodName, parameters, typ, name):
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+            self.classDict[className].addParameter(methodName, parameters, typ, name)
+
+        def removeParameter(self, className, methodName, parameters, name):
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+            self.classDict[className].removeParameter(methodName, parameters, name)
+
+        def removeAllParameters(self, className, methodName, parameters):
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+            self.classDict[className].removeAllParameters(methodName, parameters)
+
+        def changeParameter(self, className, methodName, parameters, name, newType, newName):
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+            self.classDict[className].changeParameter(methodName, parameters, name, newType, newName)
+        
+        def changeAllParameters(self, className, methodName, parameters, newParameters):
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+            self.classDict[className].changeAllParameters(methodName, parameters, newParameters)
+        
+         # --------------------------- ( Field ) ----------------------------- #
+         #error checking is done in Class.py
+        def addField(self, className, name, dataType):
+            self.classDict[className].addField(name,dataType)
+
+        def deleteField(self, className, name):
+            self.classDict[className].deleteField(name)
+        
+        def renameField(self, className, oldName, newName):
+            self.classDict[className].renameField(oldName,newName)
+
+        def getField(self, className, name):
+            if name not in self.classDict[className].fieldDict:
+                print(f"Error: {name} does not exist in {className}")
+                return None
+            return self.classDict[className].getField(name)
+
+
         # ---------------------- ( Helper Functions ) ----------------------- #
 
         # Used in unit tests
@@ -153,3 +236,12 @@ class ClassCollection():
                 return None
             
             return self.relationshipDict[(firstClassName, secondClassName)]
+
+        # Used in REPL to direct user to a specific method of a given name
+        # Returns a list of all methods under said given name
+        def getMethodsByName(self, className, methodName):
+            if methodName not in self.classDict[className].methodDict:
+                print(f"Error: no method {methodName} in {className} exists")
+                return None
+
+            return self.classDict[className].methodDict[methodName]
