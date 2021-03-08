@@ -2,7 +2,7 @@
 import sys
 
 # Import Qapplication and required widgets
-from PyQt5.QtWidgets import QApplication, QWidget, QMenuBar, QMenu, QLabel, QMainWindow, QAction, QPushButton, QDesktopWidget
+from PyQt5.QtWidgets import QApplication, QWidget, QMenuBar, QMenu, QLabel, QMainWindow, QAction, QPushButton, QDesktopWidget, QGridLayout
 from PyQt5.QtGui import QPainter, QPen, QBrush
 from PyQt5.QtCore import Qt
 
@@ -17,14 +17,29 @@ class MainWindow(QWidget):
         self.RelationshipCoordiantes = {}    #[(joe, secondClassName)] = [x1, y1, x2, y2]
         #self.addRelationshipLine("firstClassName", "secondClassName", 200, 100, 400, 200)
         #self.deleteRelationshipLine("firstClassName", "secondClassName")
+        self.classWidgetDict = {}
+        self.classLayoutDict = {}
         
-        self.windowSetup()
-        #self.showMaximized()
-
-    def windowSetup(self):
         self.drawWindow()
         self.centerWindow()
+
+        self.layout = QGridLayout()
+        self.setLayout(self.layout)
+
         self.drawMenuBar()
+
+        #self.addClassWidget(100, 200, "test", "", "")
+        #self.showMaximized()
+        
+
+    #def windowSetup(self):
+        #self.drawWindow()
+        #self.centerWindow()
+        #self.drawMenuBar()
+        #for widget in self.classWidgetDict.values():
+            #widget.setParent = self
+            #widget.repaint()
+
 
     def drawWindow(self):
         self.setWindowTitle('UML Editor')
@@ -99,7 +114,7 @@ class MainWindow(QWidget):
     def paintEvent(self, event):
         paint = QPainter()
         paint.begin(self)
-        paint.fillRect(0, 0, 1000, 900, QBrush(Qt.white))
+        paint.fillRect(0, 0, 2000, 2000, QBrush(Qt.white))
         self.drawLines(paint)
         paint.end()
 
@@ -118,6 +133,11 @@ class MainWindow(QWidget):
     def deleteRelationshipLine(self, firstClassName, secondClassName):
         del self.RelationshipCoordiantes[(firstClassName, secondClassName)]
 
+    def addClassWidget(self, row, column, x, y, name, field, method):
+        self.classWidgetDict[name] = ClassWidget(self, x, y, name, field, method)
+        self.classLayoutDict[name] = [row, column]
+        self.layout.addWidget(self.classWidgetDict[name], row, column)
+        #self.update
 
 # ----------- Anything below this line can be ignored until sprint 3 ----------- #
 

@@ -19,7 +19,8 @@ class GUIController:
         # With the way this is set up now, this supports 9 classes being in the diagram at once. In future versions, remove this restriction
         # TODO: Move these to the controller
         self.coordinateList = [[50, 100], [50, 400], [400, 100], [400, 400], [750, 100], [750, 400], [50, 750], [400, 750], [750, 750]]
-        self.classWidgetDict = {}
+        self.gridList = [[0, 0], [0, 1], [1, 0], [1, 1], [2, 0], [2, 1], [0, 2], [1, 2], [2, 2]]
+        #self.classWidgetDict = {}
         # Update this when classes are added/removed to get the correct coordinates
         # TODO: throw an error if user tries to add more than 9 classes. Say only 9 can be displayed
         self.classWidgetCount = 0
@@ -85,14 +86,42 @@ class GUIController:
 
         print(self.model.classDict)
 
-        # Add class to the view
-        x = self.coordinateList[self.classWidgetCount][0]
-        y = self.coordinateList[self.classWidgetCount][1]
-        # Field and method empty for now
-        self.classWidgetDict[name] = ClassWidget(self.view, x, y, name, "", "")
-        self.classWidgetCount = self.classWidgetCount + 1
+        if self.classWidgetCount <= 9:
 
-        self.view.windowSetup()
+            # Add class to the view
+            x = self.coordinateList[self.classWidgetCount][0]
+            y = self.coordinateList[self.classWidgetCount][1]
+            row = self.gridList[self.classWidgetCount][0]
+            column = self.gridList[self.classWidgetCount][1]
+
+            self.view.addClassWidget(row, column, x, y, name, "", "")
+
+            #self.view.addClassWidget(0, 0, x, y, name, "", "")
+            #self.view.addClassWidget(0, 1, x, y, name, "", "")
+            #self.view.addClassWidget(0, 2, x, y, name, "", "")
+            #self.view.addClassWidget(1, 0, x, y, name, "", "")
+            #self.view.addClassWidget(1, 1, x, y, name, "", "")
+            #self.view.addClassWidget(1, 2, x, y, name, "", "")
+            #self.view.addClassWidget(2, 0, x, y, name, "", "")
+            #self.view.addClassWidget(2, 1, x, y, name, "", "")
+            #self.view.addClassWidget(2, 2, x, y, name, "", "")
+
+            self.classWidgetCount = self.classWidgetCount + 1
+
+        
+
+        # Field and method empty for now
+        # Grid layout: Row, column
+        #self.view.addClassWidget(0, 0, x, y, "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
+        #self.view.addClassWidget(0, 1, x, y, name, "", "")
+        #self.view.addClassWidget(1, 0, x, y, name, "", "")
+        #self.view.addClassWidget(1, 1, x, y, "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
+        #self.classWidgetDict[name] = ClassWidget(self.view, x, y, name, "", "")
+        
+
+
+        #self.view.windowSetup()
+        #self.classWidgetDict[name].update()
         
         #self.view.addRelationshipLine("test", "test", 100, 200, 600, 800)
         #self.view.update()

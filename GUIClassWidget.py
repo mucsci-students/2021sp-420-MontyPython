@@ -7,7 +7,9 @@ class ClassWidget(QWidget):
         super(ClassWidget, self).__init__(parent = parentWindow)
 
         # This is for sprint 3
-        self.clicked = False
+        #self.clicked = False
+        
+        self.setParent = parentWindow
 
         # Sends the widget to the bottom of the parent's widget stack, so it'll go behind the menu bar
         # Not having this causes the menu bar to be inaccessible
@@ -31,7 +33,6 @@ class ClassWidget(QWidget):
         self.middleX = middle[0]
         self.middleY = middle[1]
 
-        parentWindow.update()
 
     # Sets new coordinates for the widget and updates the widget location
     # Note: x and y coords for labels are based on the top left corner of the label
