@@ -1,23 +1,21 @@
-from PyQt5.QtWidgets import QWidget, QLabel
+from PyQt5.QtWidgets import QWidget, QLabel, QGridLayout
 from PyQt5.QtCore import Qt
 
 class ClassWidget(QWidget):
         
-    def __init__(self, parentWindow, x, y, name, field, method):
+    def __init__(self, parentWindow, name, field, method):
         super(ClassWidget, self).__init__(parent = parentWindow)
 
         # This is for sprint 3
         #self.clicked = False
-        
-        self.setParent = parentWindow
 
         # Sends the widget to the bottom of the parent's widget stack, so it'll go behind the menu bar
         # Not having this causes the menu bar to be inaccessible
         # Self-note: stackUnder() is another option, may need this later
         self.lower()
 
-        self.x = x
-        self.y = y
+        #self.x = x
+        #self.y = y
         self.name = name
         self.field = field
         self.method = method
@@ -28,6 +26,10 @@ class ClassWidget(QWidget):
         self.methodLbl = QLabel(self.method, parent = self)
 
         self.drawClass()
+
+        self.x = self.nameLbl.x()
+        self.y = self.nameLbl.y()
+
 
         middle = self.getWidgetMiddle()
         self.middleX = middle[0]
@@ -49,19 +51,19 @@ class ClassWidget(QWidget):
     def setName(self, newName):
         self.name = newName
         self.nameLbl.setText(newName)
-        self.update()
+        self.drawClass()
 
     # Updates field label text
     def setField(self, newField):
         self.field = newField
         self.fieldLbl.setText(newField)
-        self.update()
+        self.drawClass()
     
     # Updates method label text
     def setMethod(self, newMethod):
         self.method = newMethod
         self.methodLbl.setText(newMethod)
-        self.update()
+        self.drawClass()
 
     # Deletes the instance of Class Widget
     def delete(self):
@@ -85,11 +87,12 @@ class ClassWidget(QWidget):
 
     def drawClass(self):
         # Did this so names would be easier to read (self won't be everywhere)
-        x = self.x
-        y = self.y
+        
         nameLbl = self.nameLbl
         fieldLbl = self.fieldLbl
         methodLbl = self.methodLbl
+        x = nameLbl.x()
+        y = nameLbl.y()
 
         # Start by automatically setting the size of each label based on the contents
         methodLbl.adjustSize()

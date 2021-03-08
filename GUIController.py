@@ -18,15 +18,16 @@ class GUIController:
         # create something that dynamically scales
         # With the way this is set up now, this supports 9 classes being in the diagram at once. In future versions, remove this restriction
         # TODO: Move these to the controller
-        self.coordinateList = [[50, 100], [50, 400], [400, 100], [400, 400], [750, 100], [750, 400], [50, 750], [400, 750], [750, 750]]
-        self.gridList = [[0, 0], [0, 1], [1, 0], [1, 1], [2, 0], [2, 1], [0, 2], [1, 2], [2, 2]]
+        #self.coordinateList = [[50, 100], [50, 400], [400, 100], [400, 400], [750, 100], [750, 400], [50, 750], [400, 750], [750, 750]]
+        self.unusedGridList = [[0, 0], [0, 1], [1, 0], [1, 1], [2, 0], [2, 1], [0, 2], [1, 2], [2, 2]]
+        self.usedGridDict = {}
         #self.classWidgetDict = {}
         # Update this when classes are added/removed to get the correct coordinates
         # TODO: throw an error if user tries to add more than 9 classes. Say only 9 can be displayed
         self.classWidgetCount = 0
 
-        self.setSignal("Open", self.openMenu)
-        self.setSignal("Save", self.saveMenu)
+        #self.setSignal("Open", self.openMenu)
+        #self.setSignal("Save", self.saveMenu)
 
         self.setSignal("Help", self.helpMenu)
         self.setSignal("Exit", self.exit)
@@ -40,12 +41,12 @@ class GUIController:
         self.setSignal("Rename Field", self.renFieldMenu)
 
         self.setSignal("Add Method", self.addMethodMenu)
-        self.setSignal("Delete Method", self.delMethodMenu)
-        self.setSignal("Rename Method", self.renMethodMenu)
+        #self.setSignal("Delete Method", self.delMethodMenu)
+        #self.setSignal("Rename Method", self.renMethodMenu)
 
-        self.setSignal("Add Parameter", self.addParamMenu)
-        self.setSignal("Delete Parameter", self.delParamMenu)
-        self.setSignal("Change Parameter", self.chgParamMenu)
+        #self.setSignal("Add Parameter", self.addParamMenu)
+        #self.setSignal("Delete Parameter", self.delParamMenu)
+        #self.setSignal("Change Parameter", self.chgParamMenu)
 
         self.setSignal("Add Relationship", self.addRelationshipMenu)
         self.setSignal("Delete Relationship", self.delRelationshipMenu)
@@ -80,58 +81,39 @@ class GUIController:
     def addClass(self, name):
         try:
             self.model.addClass(name)
+            # If the coordinate list isn't empty
+            if self.unusedGridList:
+                # Set row and column
+                row = self.unusedGridList[0][0]
+                column = self.unusedGridList[0][1]
+
+                # Add to the view
+                self.view.addClassWidget(row, column, name, "", "")
+
+                # Add coordinate to the used grid dictionary by the class name
+                self.usedGridDict[name] = self.unusedGridList[0]
+
+                # Delete from the unused list, because it's now being used
+                del self.unusedGridList[0]
+
+
         except Exception as e:
             self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
             print(e)
 
         print(self.model.classDict)
-
-        if self.classWidgetCount <= 9:
-
-            # Add class to the view
-            x = self.coordinateList[self.classWidgetCount][0]
-            y = self.coordinateList[self.classWidgetCount][1]
-            row = self.gridList[self.classWidgetCount][0]
-            column = self.gridList[self.classWidgetCount][1]
-
-            self.view.addClassWidget(row, column, x, y, name, "", "")
-
-            #self.view.addClassWidget(0, 0, x, y, name, "", "")
-            #self.view.addClassWidget(0, 1, x, y, name, "", "")
-            #self.view.addClassWidget(0, 2, x, y, name, "", "")
-            #self.view.addClassWidget(1, 0, x, y, name, "", "")
-            #self.view.addClassWidget(1, 1, x, y, name, "", "")
-            #self.view.addClassWidget(1, 2, x, y, name, "", "")
-            #self.view.addClassWidget(2, 0, x, y, name, "", "")
-            #self.view.addClassWidget(2, 1, x, y, name, "", "")
-            #self.view.addClassWidget(2, 2, x, y, name, "", "")
-
-            self.classWidgetCount = self.classWidgetCount + 1
-
-        
-
-        # Field and method empty for now
-        # Grid layout: Row, column
-        #self.view.addClassWidget(0, 0, x, y, "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
-        #self.view.addClassWidget(0, 1, x, y, name, "", "")
-        #self.view.addClassWidget(1, 0, x, y, name, "", "")
-        #self.view.addClassWidget(1, 1, x, y, "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
-        #self.classWidgetDict[name] = ClassWidget(self.view, x, y, name, "", "")
-        
-
-
-        #self.view.windowSetup()
-        #self.classWidgetDict[name].update()
-        
-        #self.view.addRelationshipLine("test", "test", 100, 200, 600, 800)
-        #self.view.update()
-        #self.view.repaint()
-
-        # Take the info from the addClass menu, store in the classcollection and find a way to display it on the main window
+     
 
     def deleteClass(self, name):
         try:
             self.model.deleteClass(name)
+
+            self.view.classWidgetDict[name].deleteLater()
+            # Free the coordinates
+            self.unusedGridList.append(self.usedGridDict[name])
+            del self.usedGridDict[name]
+            #TODO: Figure out how to "free" spot on grid for new widgets
+            # TODO: Do relationships break?
         except Exception as e:
             self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
             print(e)
@@ -143,6 +125,7 @@ class GUIController:
     def renameClass(self, oldName, newName):
         try:
             self.model.renameClass(oldName, newName)
+            self.view.classWidgetDict[oldName].setName(newName)
         except Exception as e:
             self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
             print(e)
@@ -152,6 +135,16 @@ class GUIController:
     def addRelationship(self, firstClassName, secondClassName, typ):
         try:
             self.model.addRelationship(firstClassName, secondClassName, typ)
+
+            firstClassCoords = self.view.menuObjects[firstClassName].getWidgetMiddle()
+            #firstClassCoords = self.usedGridDict[firstClassName]
+            print(firstClassCoords)
+            secondClassCoords = self.view.menuObjects[secondClassName].getWidgetMiddle()
+            #secondClassCoords = self.usedGridDict[secondClassName]
+            print(secondClassCoords)
+            
+            self.view.update()
+            self.view.addRelationshipLine(firstClassName, secondClassName, firstClassCoords[0], firstClassCoords[1], secondClassCoords[0], secondClassCoords[1])
         except Exception as e:
             self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
             print(e)
@@ -177,13 +170,17 @@ class GUIController:
         print(self.model.relationshipDict)
 
     def addMethod(self, className, methodName, returnType, parameters):
+        paramList = []
         try:
-            self.model.addMethod(className, methodName, returnType, parameters)
+            for x in range(parameters.rowCount()):
+                paramList.append((parameters.item(x,0).text(), parameters.item(x,1).text()))
+
+            self.model.addMethod(className, methodName, returnType, paramList)
         except Exception as e:
             self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
             print(e)
 
-        print(self.model.classDict)
+        print(self.model.classDict[className].methodDict)
 
     def deleteMethod(self, className, methodName):
         try:
@@ -233,6 +230,9 @@ class GUIController:
     def addField(self, className, name, dataType):
         try:
             self.model.addField(className, name, dataType)
+
+            self.view.classWidgetDict[className].setField(newName)
+            
         except Exception as e:
             self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
             print(e)

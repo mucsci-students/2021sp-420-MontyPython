@@ -24,6 +24,7 @@ class MainWindow(QWidget):
         self.centerWindow()
 
         self.layout = QGridLayout()
+        
         self.setLayout(self.layout)
 
         self.drawMenuBar()
@@ -63,11 +64,12 @@ class MainWindow(QWidget):
     def drawMenuBar(self):
         # Create bar
         bar = QMenuBar(self)
-
+        self.layout.setMenuBar(bar)
         # w, h
         # TODO: Fix this so it goes across when window is resized
         # This is a sketchy fix
-        bar.resize(10000, 30)
+        #bar.resize(10000, 30)
+        
 
         # Add menus to bar
         menuFile = bar.addMenu("File")
@@ -78,11 +80,11 @@ class MainWindow(QWidget):
         
         # Add submenus and connect signals to them
         # Submenu: File  
-        self.menuObjects["Open"] = menuFile.addAction("Open")
-        self.menuObjects["Save"] = menuFile.addAction("Save")
-        menuFile.addSeparator()
+        #self.menuObjects["Open"] = menuFile.addAction("Open")
+        #self.menuObjects["Save"] = menuFile.addAction("Save")
+        #menuFile.addSeparator()
         self.menuObjects["Help"] = menuFile.addAction("Help")
-        menuFile.addSeparator()
+        #menuFile.addSeparator()
         self.menuObjects["Exit"] = menuFile.addAction("Exit")
 
         # Submenu: Edit Elements -- Class
@@ -97,14 +99,14 @@ class MainWindow(QWidget):
 
         # Submenu: Edit Elements -- Method
         self.menuObjects["Add Method"] = menuMethod.addAction("Add Method")
-        self.menuObjects["Delete Method"] = menuMethod.addAction("Delete Method")
-        self.menuObjects["Rename Method"] = menuMethod.addAction("Rename Method")
-        menuMethod.addSeparator()
+        #self.menuObjects["Delete Method"] = menuMethod.addAction("Delete Method")
+        #self.menuObjects["Rename Method"] = menuMethod.addAction("Rename Method")
+       # menuMethod.addSeparator()
 
         # Submenu: Edit Elements -- Parameter
-        self.menuObjects["Add Parameter"] = menuMethod.addAction("Add Parameter")
-        self.menuObjects["Delete Parameter"] = menuMethod.addAction("Delete Parameter")
-        self.menuObjects["Change Parameter"] = menuMethod.addAction("Change Parameter")
+        #self.menuObjects["Add Parameter"] = menuMethod.addAction("Add Parameter")
+        #self.menuObjects["Delete Parameter"] = menuMethod.addAction("Delete Parameter")
+        #self.menuObjects["Change Parameter"] = menuMethod.addAction("Change Parameter")
 
         # Submenu: Edit Elements -- Relationship
         self.menuObjects["Add Relationship"] = menuRelationship.addAction("Add Relationship")
@@ -133,12 +135,11 @@ class MainWindow(QWidget):
     def deleteRelationshipLine(self, firstClassName, secondClassName):
         del self.RelationshipCoordiantes[(firstClassName, secondClassName)]
 
-    def addClassWidget(self, row, column, x, y, name, field, method):
-        self.classWidgetDict[name] = ClassWidget(self, x, y, name, field, method)
+    def addClassWidget(self, row, column, name, field, method):
+        self.classWidgetDict[name] = ClassWidget(self, name, field, method)
         self.classLayoutDict[name] = [row, column]
         self.layout.addWidget(self.classWidgetDict[name], row, column)
-        #self.update
-
+        
 # ----------- Anything below this line can be ignored until sprint 3 ----------- #
 
     # TODO
