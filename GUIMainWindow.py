@@ -18,10 +18,13 @@ class MainWindow(QWidget):
         #self.addRelationshipLine("firstClassName", "secondClassName", 200, 100, 400, 200)
         #self.deleteRelationshipLine("firstClassName", "secondClassName")
         
+        self.windowSetup()
+        #self.showMaximized()
+
+    def windowSetup(self):
         self.drawWindow()
         self.centerWindow()
         self.drawMenuBar()
-        #self.showMaximized()
 
     def drawWindow(self):
         self.setWindowTitle('UML Editor')
@@ -96,7 +99,7 @@ class MainWindow(QWidget):
     def paintEvent(self, event):
         paint = QPainter()
         paint.begin(self)
-        paint.fillRect(0, 0, 1000, 800, QBrush(Qt.white))
+        paint.fillRect(0, 0, 1000, 900, QBrush(Qt.white))
         self.drawLines(paint)
         paint.end()
 

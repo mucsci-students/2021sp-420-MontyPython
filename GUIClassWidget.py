@@ -30,7 +30,9 @@ class ClassWidget(QWidget):
         middle = self.getWidgetMiddle()
         self.middleX = middle[0]
         self.middleY = middle[1]
-    
+
+        parentWindow.update()
+
     # Sets new coordinates for the widget and updates the widget location
     # Note: x and y coords for labels are based on the top left corner of the label
     def setCoordinates(self, newX, newY):
@@ -46,16 +48,19 @@ class ClassWidget(QWidget):
     def setName(self, newName):
         self.name = newName
         self.nameLbl.setText(newName)
+        self.update()
 
     # Updates field label text
     def setField(self, newField):
         self.field = newField
         self.fieldLbl.setText(newField)
+        self.update()
     
     # Updates method label text
     def setMethod(self, newMethod):
         self.method = newMethod
         self.methodLbl.setText(newMethod)
+        self.update()
 
     # Deletes the instance of Class Widget
     def delete(self):

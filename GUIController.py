@@ -51,7 +51,7 @@ class GUIController:
         self.setSignal("Change Relationship", self.renRelationshipMenu)
 
         # TODO: Delete these when done testing
-        #classWidget = ClassWidget(view, self.coordinateList[0][0], self.coordinateList[0][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
+        # classWidget = ClassWidget(view, self.coordinateList[0][0], self.coordinateList[0][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
         #classWidget = ClassWidget(view, self.coordinateList[1][0], self.coordinateList[1][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
         #classWidget = ClassWidget(view, self.coordinateList[2][0], self.coordinateList[2][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
         #classWidget = ClassWidget(view, self.coordinateList[3][0], self.coordinateList[3][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
@@ -84,6 +84,20 @@ class GUIController:
             print(e)
 
         print(self.model.classDict)
+
+        # Add class to the view
+        x = self.coordinateList[self.classWidgetCount][0]
+        y = self.coordinateList[self.classWidgetCount][1]
+        # Field and method empty for now
+        self.classWidgetDict[name] = ClassWidget(self.view, x, y, name, "", "")
+        self.classWidgetCount = self.classWidgetCount + 1
+
+        self.view.windowSetup()
+        
+        #self.view.addRelationshipLine("test", "test", 100, 200, 600, 800)
+        #self.view.update()
+        #self.view.repaint()
+
         # Take the info from the addClass menu, store in the classcollection and find a way to display it on the main window
 
     def deleteClass(self, name):
