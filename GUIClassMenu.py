@@ -23,7 +23,7 @@ class ClassMenu(QDialog):
         btnSubmit.resize(250, 50)
 
         # This needs to be an anonymous function for the signal to work
-        btnSubmit.clicked.connect(lambda: this.addClassData(txtName.text()))
+        btnSubmit.clicked.connect(lambda: controller.addClass(txtName.text()))
 
         self.exec_()
 

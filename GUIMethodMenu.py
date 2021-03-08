@@ -55,7 +55,7 @@ class MethodMenu(QDialog):
 
         # This needs to be an anonymous function for the signal to work
         btnParams.clicked.connect(lambda: self.addParameterToTable())
-        btnSubmit.clicked.connect(lambda: controller.addMethod(txtClassName.text(), txtMethodName.text(), txtType.text(), "Loop through and add this"))
+        btnSubmit.clicked.connect(lambda: controller.addMethod(txtClassName.text(), txtMethodName.text(), txtType.text(), self.paramTable))
 
         self.exec_()
 
