@@ -42,8 +42,8 @@ class MethodTest(unittest.TestCase):
 
         # Class object w/ params
         classB = Class("Pizza")
-        classB.addMethod("addCheese", "void", ("string", "cheese"))
-        self.assertRaises(KeyError, classB.addMethod, "addCheese", "void", ("string", "cheese"))
+        classB.addMethod("addCheese", "void", [("string", "cheese")])
+        self.assertRaises(KeyError, classB.addMethod, "addCheese", "void", [("string", "cheese")])
 
         # ClassCollection
         collection = ClassCollection()
