@@ -1,93 +1,103 @@
+MontyPython UML Editor
+===============================================================================
 
-------------------------------
-This program accepts user input to add, delete, display, and modify elements of a text representation of a UML diagram.
+With this CLI you can add, delete, display, and modify elements of a text
+version of a UML diagram.
 
-This program accepts the following commands.
-Commands are case-insensitive. 
-Typing in an incomplete command will prompt the user for missing parameters.
+Commands are case-insensitive, typing an incomplete command will show you what
+parameters you are missing. Use up and down arrow keys to navigate previously
+typed commands. Tab-completion also supported.
 
---------- Interface ---------
-Exit: Exits the application.
+===============================================================================
+--------------- Interface ---------------
 
-Help: Displays this text.
+exit               
+    : Exits the program
 
-List Relationships: Displays all relationships that exist between classes within the current UML diagram.
+help [<command-name>]
+    : Displays this text if no argument specified. otherwise shows help message
+      for specific command if it exists
 
-List Classes: Lists the contents of all classes within the current UML diagram.
+list_relationships <class> 
+    : Displays relationships between classes
 
-List Class: Asks for the name of the class in the current UML diagram and lists the contents of that class.
+list_classes
+    : Lists contents of all classes including methods w/ parameters and fields
 
---------- Save/Load ---------
-Save: Asks for the name of the file and saves the contents of the current UML diagram under that file name. 
-If the name given is "foo", the file will be foo.monty.
+list_class <class>
+    : List contents of a single class
 
-Load: Asks for the name of the file to load from and loads the contents of that file as the current UML diagram. 
-If the name given is "foo", the file loaded will be foo.monty.
+--------------- Save/Load ---------------
 
---------- Classes ---------
-Add Class: Asks for the name of the new class and adds that class to the current UML diagram.
+save <filename>
+    : Saves current diagram under supplied filename with a .monty extentsion
 
-Delete Class: Asks for the name of the class and deletes that class from the current UML diagram.
+load <filename>
+    : Loads diagram from file <filename>.monty
 
-Rename Class: Asks for the original name and new name of the class in the current UML diagram.
-Changes the old name of the class to the new name.
+---------------- Classes ----------------
 
---------- Relationships ---------
-Add Relationship: Asks for a source class and a destination class in the current UML diagram and a type of relationship. 
-Adds a relationship between the two classes with that type of relationship.
+add_class <name>
+    : Adds new class with supplied name to UML diagram
 
-Delete Relationship: Asks for a source class and destination class in the current UML diagram and deletes their relationship if one exists.
+delete_class <name>
+    : Deletes class with supplied name from UML diagram
 
-Rename Relationship: Asks for a source class and destination class in the current UML diagram and a type of relationship. 
-The type of the relationship between these two classes is then changed.
+rename_class <old-name> <new-name>
+    : Renames class with current name <old-name> to <new-name>
 
---------- Methods ---------
-Add Method: Asks for the name of the class in the UML diagram to add a method to, the method's name, and its return type. 
-The user is then asked to supply any parameters for the method. 
-The format for adding parameters is alternating type and name, with type being the first word. Ex. int foo int bar. 
-The user may enter no parameters by sending an empty line. 
-NOTE: If an odd number of words are supplied (ex. int foo int bar str), then the final word is ignored.
+------------- Relationships -------------
 
-Delete Method: Asks for the name of the class in the UML diagram that the method is in, and the name of the method. 
-The user then must select which form of the method to delete. This then deletes the selected instance of the method.
+add_relationship <src-class> <dst-class> <relationship-type>
+    : Adds relationship ship of type <relationship-type> from a source class to
+      a destination class
 
-Rename Method: Asks for the name of the class in the UML diagram, the current name of the method, and the new name for the method. 
-The user then must select which form of the method to rename. This instance of the method is then given the new name.
+delete_relationship <src-class> <dst-class>
+    : Deletes relationship between a source and destination class
 
---------- Fields ---------
-Add Field: Asks for the name of the class in the UML diagram to add a field to, the field's name, and its type. 
-A field of this name and type is then added to the class.
+rename_relationship <src-class> <dst-class> <new-relationship-type>
+    : Changes relationship type to <new-relationship-type>
 
-Delete Field: Asks for the name of the class in the UML diagram that the field is in, and the name of the field. 
-The field of this name is then removed from the class.
+---------------- Methods ----------------
 
-Rename Field: Asks for the name of the class in the UML diagram that the field is in, the field's old name, and the field's new name. 
-The field of the old name is then renamed to the new name within the class.
+add_method <class> <method-name> <return-type> [<param-type> <param-name>]...
+    : Adds a method to a class with optional parameters
 
---------- Parameters ---------
-Add Parameter: Asks for the name of the class in the UML diagram and a method name within that class to add a parameter to. 
-The user then must select which form of the method to add a parameter to.
-The user is then asked to provide a type and a name for the new parameter.
-NOTE: User input past the first type and name are ignored.
+delete_method <class> <method-name>
+    : Deletes method from specified class. If multiple methods exist with the
+      same name, user will be prompted to pick one from a numbered list based
+      on parameters.
 
-Remove Parameter: Asks for the name of the class in the UML diagram and a method name within that class to remove a parameter from. 
-The user then must select which form of the method to remove a parameter from.
-The user is then asked to provide the name of the parameter to remove.
+rename_method: <class> <old-method-name> <new-method-name>
+    : Renames method in a class to <new-method-name>. If multiple methods exist
+      with the same name, user will be prompted to pick one from a numbered 
+      list based on parameters.
 
-Remove Parameters: Asks for the name of the class in the UML diagram and a method name within that class to remove a parameter from. 
-The user then must select which form of the method to remove parameters from. 
-All parameters are removed from this instance of the method.
+----------------- Fields ----------------
 
-Change Parameter: Asks for the name of the class in the UML diagram and a method name within that class to remove a parameter from. 
-The user then must select which form of the method to change a parameter of. 
-The user is then asked to provide the name of the parameter to change, the new type for the parameter, and the new name for the parameter. 
-The chosen parameter is then changed within this instance of the method.
+add_field <class> <field-type> <field-name>
+    : Adds a field to a class
 
-Change Parameters: Asks for the name of the class in the UML diagram and a method name within that class to remove a parameter from. 
-The user then must select which form of the method to change all parameters of. 
-The user is then asked to provide a list of parameters to replace the current list for this instance of the method. 
-The format for adding parameters is alternating type and name, with type being the first word. Ex. int foo int bar. 
-The user may enter no parameters by sending an empty line. 
-NOTE: If an odd number of words are supplied (ex. int foo int bar str), then the final word is ignored.
+delete_field <class> <field-name>
+    : Deletes a field from a class
 
-------------------------------
+rename_field <class> <old-field-name> <new-field-name>
+    : Renames field from <old-field-name> to <new-field-name>
+
+--------------- Parameters --------------
+
+add_parameters <class> <method-name> <param-type> <param-name>...
+    : Adds parameters to a class method. If multiple methods exist with the 
+      same name, user will be prompted to pick one from a numbered list based 
+      on already existing parameters.
+
+delete_parameters <class> <method-name> <param-name>...
+    : Deletes listed parameters from a class method. If multiple methods exist
+      with the same name, user will be prompted to pick one from a numbered 
+      list based on already existing parameters.
+
+change_parameters <class> <method-name> <param-type> <param-name>...
+    : Changes out parameters in a class method with a new list of supplied
+      parameters. If multiple methods exist with the same name, user will be
+      prompted to pick one from a numbered list based on already existing
+      parameters.
