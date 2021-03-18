@@ -151,7 +151,7 @@ class ClassCollection():
         
         # --------------------------- ( Method ) ----------------------------- #
 
-        def addMethod(self, className, methodName, returnType, parameters = []):
+        def addMethod(self, className, methodName, returnType, parameters):
             if className not in self.classDict:
                 raise KeyError(f"{className} does not exist")
             self.classDict[className].addMethod(methodName, returnType, parameters)
