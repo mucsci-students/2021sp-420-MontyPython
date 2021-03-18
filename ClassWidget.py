@@ -10,56 +10,51 @@ class ClassWidget(Frame):
         # Contains objects NameText, NameBox, FieldText, FieldBox, MethodText, MethodBox
         self.objectDict = {}
 
-        #TODO: If anything is updated, boxes will have to be redrawn
+        # Creates the text boxes. Everything is based around these
+        self.initTxtBoxes()
 
-        # Gets coordiantes of the name, field, and method text box to use in other methods
-        # [x1, y1, x2, y2]
-        self.nameLoc = self.canvas.bbox(self.objectDict["NameText"])
-        self.fieldLoc = self.canvas.bbox(self.objectDict["FieldText"])
-        self.methodLoc = self.canvas.bbox(self.objectDict["MethodText"])
+        # Gets default coordiantes of the name, field, and method text box to use in other methods [x1, y1, x2, y2]
+        self.nameLoc = self.canvas.bbox(self.getNameObject())
+        self.fieldLoc = self.canvas.bbox(self.getFieldObject())
+        self.methodLoc = self.canvas.bbox(self.getMethodObject())
 
-    def initBoxes(self):
+        # Update where boxes show up on the GUI
+        self.updateBoxes()
+
+    def initTxtBoxes(self):
         self.createTextBox(200, 200, "Name", "Name")
         self.createTextBox(200, 300, "Field", "")
         self.createTextBox(200, 400, "Method", "")
 
-        # Set widths of all boxes to match the largest one
-        self.setWidths()
-
     # Creates the text for the text box. 
-    # x, y = coordinates
-    # Identifier = Name, Field, or Method 
-    # Txt = the text to go inside the box
+    # x, y = coordinates, Identifier = Name, Field, or Method , Txt = the text to go inside the box
     def createTextBox(self, x, y, identifier, txt):
         # create_text(x, y, options ...)
         self.objectDict[identifier + "Text"] = self.canvas.create_text(x, y, text=txt, fill="black")
     
-    # Creates box that goes around text. 
-    # Identifier = Name, Field, or Method
-    # txtBox = objectDict entry
-    # w = width
+    # Creates box that goes around text.
+    # Identifier = Name, Field, or Method, txtBox = objectDict entry, w = width
     def drawBox(self, w, identifier, txtBox):
         # bbox returns a list [x1, y1, x2, y2]
         boundingBox = self.canvas.bbox(txtBox)
 
-        # Create the actual box
-        # create_rectangle: x1, y1, x2, y2, options..
-        # (x1, y1) top left corner, (x2, y2) bottom right corner
+        # Create the actual box. create_rectangle: x1, y1, x2, y2, options.. (x1, y1) top left corner, (x2, y2) bottom right corner
         self.objectDict[identifier + "Box"] = self.canvas.create_rectangle(boundingBox[0], boundingBox[1], (boundingBox[0] + w), boundingBox[3], outline="black", fill="white")
        
         # Moves items up to be in front of other objects
         self.canvas.tag_raise(self.objectDict[identifier + "Box"])
         self.canvas.tag_raise(self.objectDict[identifier + "Text"])
-        
+
+        self.updateBboxes()
+
     
     # Finds the box with the largest width and sets all boxes to that width
-    # TODO: Stopped here, width isn't workign properly
     # NOTE: I think this shifts things over because the boxes are in the center, not the sides
     def setWidths(self):
         # Get widths
-        nameWidth = self.nameLoc[2] - self.nameLoc[0]
-        fieldWidth = self.fieldLoc[2] - self.fieldLoc[0]
-        methodWidth = self.methodLoc[2] - self.methodLoc[0]
+        nameWidth = self.getNameWidth()
+        fieldWidth = self.getFieldWidth()
+        methodWidth = self.getMethodWidth()
 
         # Find largest
         if methodWidth > fieldWidth and methodWidth > nameWidth:
@@ -70,24 +65,92 @@ class ClassWidget(Frame):
             w = nameWidth
 
         # Update text boxes with the new widths
-        self.canvas.itemconfig(self.objectDict["NameText"], width=w)
-        self.canvas.itemconfig(self.objectDict["FieldText"], width=w)
-        self.canvas.itemconfig(self.objectDict["MethodText"], width=w)
+        self.canvas.itemconfig(self.getNameObject(), width=w)
+        self.canvas.itemconfig(self.getFieldObject(), width=w)
+        self.canvas.itemconfig(self.getMethodObject(), width=w)
 
+        self.updateBboxes()
         self.canvas.update()
 
-        self.drawBox(w, "Name", self.objectDict["NameText"])
-        self.drawBox(w, "Field", self.objectDict["FieldText"])
-        self.drawBox(w, "Method", self.objectDict["MethodText"])
+        self.drawBox(w, "Name", self.getNameObject())
+        self.drawBox(w, "Field", self.getFieldObject())
+        self.drawBox(w, "Method", self.getMethodObject())
 
     # Shifts the three individual boxes together to look like one box
     def moveText(self):
-        nameHeight = self.nameLoc[3] - self.nameLoc[1]
-        fieldHeight = self.fieldLoc[3] - self.fieldLoc[1]
-        methodHeight = self.methodLoc[3] - self.methodLoc[1]
+        # Heights
+        nameHeight = self.getNameHeight()
+        fieldHeight = self.getFieldHeight()
+        methodHeight = self.getMethodHeight()
+
+        # Coords for the center (?) of the boxes
+        nameCoords = self.getNameCoords()
+        fieldCoords = self.getFieldCoords()
+        methodCoords = self.getMethodCoords()
 
         # Update the locations of the text boxes based on the heights
-        self.canvas.move(obj, event.x - self.mouseX, event.y - self.mouseY)
+        print( )
+        print(nameCoords)
+
+
+    # TODO: Stopped here. Trying to figure out bbox updates
+    # Needed for drawing boxes and moving the text
+    def updateBboxes(self):
+        self.nameLoc = self.canvas.bbox(self.getNameObject())
+        self.fieldLoc = self.canvas.bbox(self.getFieldObject())
+        self.methodLoc = self.canvas.bbox(self.getMethodObject())
+
+    # Runs methods that update the location/sizes of the boxes based on the contents
+    def updateBoxes(self):
+        # Set widths of all boxes to match the largest one
+        self.setWidths()
+        # Move the boxes to appear on top of eachother
+        self.moveText()
+
+    # ------------------------------------------- #
+    # Getters for each individual text box
+    # ------------------------------------------- #
+
+    def getNameObject(self):  
+        return self.objectDict["NameText"]
+    
+    def getFieldObject(self):
+        return self.objectDict["FieldText"]
+    
+    def getMethodObject(self):
+        return self.objectDict["MethodText"]
+    
+    def getNameCoords(self):
+        return self.canvas.coords(self.getNameObject())
+
+    def getFieldCoords(self):
+        return self.canvas.coords(self.getFieldObject())
+
+    def getMethodCoords(self):
+        return self.canvas.coords(self.getMethodObject())
+
+    def getNameWidth(self):
+        return self.nameLoc[2] - self.nameLoc[0]
+
+    def getFieldWidth(self):
+        return self.fieldLoc[2] - self.fieldLoc[0]
+
+    def getMethodWidth(self):
+        return self.methodLoc[2] - self.methodLoc[0]
+
+    def getNameHeight(self):
+        return self.nameLoc[3] - self.nameLoc[1]
+
+    def getFieldHeight(self):
+        return self.fieldLoc[3] - self.fieldLoc[1]
+
+    def getMethodHeight(self):
+        return self.methodLoc[3] - self.methodLoc[1]
+
+
+
+    
+
 
 
 
