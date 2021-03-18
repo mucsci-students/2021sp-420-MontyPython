@@ -159,7 +159,7 @@ class ClassCollection():
         def deleteMethod(self, className, methodName, parameters):
             if className not in self.classDict:
                 raise KeyError(f"{className} does not exist")
-            self.classDict[className].deleteMethod(methodName, parameters
+            self.classDict[className].deleteMethod(methodName, parameters)
         
         def renameMethod(self, className, methodName, parameters, newName):
             if className not in self.classDict:
