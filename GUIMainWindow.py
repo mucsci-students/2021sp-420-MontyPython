@@ -39,7 +39,7 @@ class MainWindow(Frame):
     def boxTest(self):
         box = PopupBox("test")
 
-    def drawLines
+    #def drawLines
 
 
         
