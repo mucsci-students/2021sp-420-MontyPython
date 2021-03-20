@@ -1,5 +1,4 @@
 import cmd
-import pyreadline
 import os
 import sys
 from colorama import init, Fore
@@ -8,6 +7,11 @@ from ClassCollection import ClassCollection
 from Command import Command
 from Momento import Momento
 import Interface
+
+if os.name == 'nt':
+    import pyreadline
+else:
+    import readline
 
 class MontyREPL(cmd.Cmd):
     def __init__(self, completekey='tab', stdin=None, stdout=None):
