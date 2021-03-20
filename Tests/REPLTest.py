@@ -2,7 +2,7 @@ import unittest
 import sys
 import Interface
 import io
-from NewREPL import MontyREPL
+from REPL import MontyREPL
 from ClassCollection import ClassCollection
 from Class import Class
 

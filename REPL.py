@@ -250,4 +250,5 @@ class MontyREPL(cmd.Cmd):
             self.print_cmd_help(line.split()[0])
             return False
 
-MontyREPL().cmdloop()
+if __name__ == '__main__':
+    MontyREPL().cmdloop()
