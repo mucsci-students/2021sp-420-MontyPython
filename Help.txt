@@ -75,7 +75,7 @@ rename_method <class> <old-method-name> <new-method-name>
 
 ----------------- Fields ----------------
 
-add_field <class> <field-type> <field-name>
+add_field <class> <field-name> <field-type>
     Adds a field to a class
 
 delete_field <class> <field-name>
@@ -86,13 +86,13 @@ rename_field <class> <old-field-name> <new-field-name>
 
 --------------- Parameters --------------
 
-add_parameters <class> <method-name> <param-type> <param-name>...
-    Adds parameters to a class method. If multiple methods exist with the 
+add_parameter <class> <method-name> <param-type> <param-name>
+    Adds a parameter to a class method. If multiple methods exist with the 
     same name, user will be prompted to pick one from a numbered list based 
     on already existing parameters.
 
-delete_parameters <class> <method-name> <param-name>...
-    Deletes listed parameters from a class method. If multiple methods exist
+delete_parameter <class> <method-name> <param-name>
+    Deletes a parameter from a class method. If multiple methods exist
     with the same name, user will be prompted to pick one from a numbered 
     list based on already existing parameters.
 

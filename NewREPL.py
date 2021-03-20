@@ -1,8 +1,8 @@
 import cmd
 import pyreadline
 import os
-import colorama
 import sys
+from colorama import init, Fore
 
 from ClassCollection import ClassCollection
 from Command import Command
@@ -12,13 +12,13 @@ import Interface
 class MontyREPL(cmd.Cmd):
     def __init__(self, completekey='tab', stdin=None, stdout=None):
         super().__init__(completekey, stdin, stdout)
-        colorama.init(autoreset=True)
+        init(autoreset=True)
         self.saveStates = []
         self.classes = ClassCollection()
-        self.intro = (colorama.Fore.GREEN + '\nMontyPython UML Editor\n' + '='*80 + 
+        self.intro = (Fore.GREEN + '\nMontyPython UML Editor\n' + '='*80 + 
             '\nType help [verbose|<command-name>] or ? for help on commands.\n')
 
-        self.prompt = colorama.Fore.CYAN + 'monty> '
+        self.prompt = Fore.CYAN + 'monty> '
         dh = 'Type help [verbose|<command_name>] for descriptions'
         self.doc_header = dh
 
@@ -62,9 +62,21 @@ class MontyREPL(cmd.Cmd):
             print(f'{r.src} --> {r.dst} ({r.typ})')
     def do_list_classes(self, args):
         for c in self.classes.classDict:
-            print(c)
+            self.do_list_class(c)
     def do_list_class(self, args):
-        pass
+        c = args.split()[0]
+        print(c)
+        if len(self.classes.classDict[c].fieldDict) > 0:
+            print('-'*24)
+        for field in self.classes.classDict[c].fieldDict:
+            print(f'  {self.classes.classDict[c].fieldDict[field]}')
+        if len(self.classes.classDict[c].methodDict) > 0:
+            print('-'*24)
+        for method in self.classes.classDict[c].methodDict:
+            for m in self.classes.classDict[c].methodDict[method]:
+                print(f'  {m}')
+        print('-'*24)
+        print()
     def do_save(self, args):
         if len(args) > 0:
             Interface.saveFile(self.classes, args)
@@ -106,31 +118,58 @@ class MontyREPL(cmd.Cmd):
         self.execute(self.classes.addMethod, args)
     def do_delete_method(self, args):
         args = args.split()
-        for method in self.classes.getClass(args[0]).methodDict[args[1]]:
-            print(method)
-            
+        methods = self.classes.getClass(args[0]).methodDict[args[1]]
+        for method, idx in zip(methods, range(1, len(methods) + 1)):
+            print(f'{idx}. {method}')
+        num = int(input(Fore.CYAN + 'Method number: ')) - 1
+        self.execute(self.classes.deleteMethod, [args[0], args[1], methods[num].parameters])
     def do_rename_method(self, args):
-        pass
+        args = args.split()
+        methods = self.classes.getClass(args[0]).methodDict[args[1]]
+        for method, idx in zip(methods, range(1, len(methods) + 1)):
+            print(f'{idx}. {method}')
+        num = int(input(Fore.CYAN + 'Method number: ')) - 1
+        self.execute(self.classes.renameMethod, [args[0], args[1], methods[num].parameters, args[2]])
 
     # Fields
     def do_add_field(self, args):
-        pass
+        self.execute(self.classes.addField, args)
     def do_delete_field(self, args):
-        pass
+        self.execute(self.classes.deleteField, args)
     def do_rename_field(self, args):
-        pass
+        self.execute(self.classes.renameField, args)
 
     # Parameters
-    def do_add_parameters(self, args):
-        pass
-    def do_delete_parameters(self, args):
-        pass
+    def do_add_parameter(self, args):
+        args = args.split()
+        methods = self.classes.getClass(args[0]).methodDict[args[1]]
+        for method, idx in zip(methods, range(1, len(methods) + 1)):
+            print(f'{idx}. {method}')
+        num = int(input(Fore.CYAN + 'Method number: ')) - 1
+        self.execute(self.classes.addParameter, [args[0], args[1], methods[num].parameters, args[2], args[3]])
+        
+    def do_delete_parameter(self, args):
+        args = args.split()
+        methods = self.classes.getClass(args[0]).methodDict[args[1]]
+        for method, idx in zip(methods, range(1, len(methods) + 1)):
+            print(f'{idx}. {method}')
+        num = int(input(Fore.CYAN + 'Method number: ')) - 1
+        self.execute(self.classes.deleteParameter, [args[0], args[1], methods[num].parameters, args[2], args[3]])
+        
     def do_change_parameters(self, args):
-        pass
+        args = args.split()
+        methods = self.classes.getClass(args[0]).methodDict[args[1]]
+        new_params = []
+        for i in range(2, len(args), 2):
+            new_params.append([args[i], args[i + 1]])
+        for method, idx in zip(methods, range(1, len(methods) + 1)):
+            print(f'{idx}. {method}')
+        num = int(input(Fore.CYAN + 'Method number: ')) - 1
+        self.execute(self.classes.changeAllParameters, [args[0], args[1], methods[num].parameters, new_params])
+        
+    # help_cmd functions
     def do_verbose(self, args):
         self.do_help('verbose')
-    
-    # help_cmd functions
     def help_exit(self):
         self.print_cmd_help('exit')
     def help_help(self):
@@ -201,15 +240,15 @@ class MontyREPL(cmd.Cmd):
         command.execute()
         self.saveStates.append(Momento(command, self.classes))
     def onecmd(self, line):
-        # try:
+        try:
             return super().onecmd(line)
-        # except Exception as e:
-        #     if '()' not in str(e):
-        #         print(e)
-        #     else:
-        #         print('Missing arguments')
-        #     self.print_cmd_help(line.split()[0])
-        #     return False
+        except Exception as e:
+            if '()' not in str(e):
+                print(e)
+            else:
+                print('Wrong number of arguments')
+            self.print_cmd_help(line.split()[0])
+            return False
 
 
 if __name__ == '__main__':

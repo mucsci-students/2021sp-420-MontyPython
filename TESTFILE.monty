@@ -1,0 +1,1 @@
+[{"A": [{"testMethod": [["void", []]]}, {"testField": "int"}], "B": [{"testMethod": [["int", [["int", "x"], ["int", "y"]]], ["int", [["int", "x"], ["int", "y"], ["int", "z"]]]]}, {}]}, {}]

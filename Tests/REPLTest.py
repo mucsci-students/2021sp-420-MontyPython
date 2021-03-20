@@ -11,13 +11,13 @@ class REPLTest(unittest.TestCase):
         repl = MontyREPL()
         repl.do_add_class('A')
         repl.do_add_class('B')
-        repl.do_add_relationship('A', 'B', 'aggregation')
+        repl.do_add_relationship('A B aggregation')
 
         oldStdOut = sys.stdout
         sys.stdout = newStdOut = io.StringIO()
         
-        repl.do_list_relationships('A B aggregation')
-        self.assertEqual(newStdOut.getvalue().strip(), 'A -> B (aggregation)')
+        repl.do_list_relationships('A B')
+        self.assertEqual(newStdOut.getvalue().strip(), 'A --> B (aggregation)')
         
         sys.stdout = oldStdOut
 
@@ -31,7 +31,11 @@ class REPLTest(unittest.TestCase):
         sys.stdout = newStdOut = io.StringIO()
         repl.do_list_classes('')
 
-        self.assertEqual(newStdOut.getvalue().strip(), 'A\nB\nC')
+        testStr = ('A' + '\n------------------------\n\n' + 
+                   'B' + '\n------------------------\n\n' + 
+                   'C' + '\n------------------------' )
+
+        self.assertEqual(newStdOut.getvalue().strip(), testStr)
         
         sys.stdout = oldStdOut
     
@@ -44,7 +48,7 @@ class REPLTest(unittest.TestCase):
         sys.stdout = newStdOut = io.StringIO()
         repl.do_list_class('A')
 
-        self.assertEqual(newStdOut.getvalue().strip(), '-A')
+        self.assertEqual(newStdOut.getvalue().strip(), 'A' + '\n' + '-'*24)
 
         sys.stdout = oldStdOut
 
