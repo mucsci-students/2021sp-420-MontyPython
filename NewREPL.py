@@ -47,72 +47,87 @@ class MontyREPL(cmd.Cmd):
     #
     # These are all standalone functions that don't affect the ClassCollection,
     # therefore there is no Command object created for any of these.
-    def do_exit(self, *args):
+    def do_exit(self, args):
         Interface.exit()
-    def do_help(self, *args):
-        if args[0] == 'verbose':
+    def do_help(self, args):
+        if args == 'verbose':
             Interface.help()
         else:
-            cmd.Cmd.do_help(self, *args)
-    def do_clear(self, *args):
+            cmd.Cmd.do_help(self, args)
+    def do_clear(self, args):
         os.system('cls' if os.name == 'nt' else 'clear')
-    def do_list_relationships(self, *args):
+    def do_list_relationships(self, args):
         for rel in self.classes.relationshipDict:
-            print(f'{rel.src} --> {rel.dst} ({rel.typ})')
-    def do_list_classes(self, *args):
+            r = self.classes.relationshipDict[rel]
+            print(f'{r.src} --> {r.dst} ({r.typ})')
+    def do_list_classes(self, args):
         for c in self.classes.classDict:
             print(c)
-    def do_list_class(self, *args):
+    def do_list_class(self, args):
         pass
-    def do_save(self, *args):
-        if len(args[0]) > 0:
-            Interface.saveFile(self.classes, args[0])
+    def do_save(self, args):
+        if len(args) > 0:
+            Interface.saveFile(self.classes, args)
         else:
             self.help_save()
-    def do_load(self, *args):
-        if len(args[0]) > 0:
-            Interface.loadFile(self.classes, args[0])
+    def do_load(self, args):
+        if len(args) > 0:
+            Interface.loadFile(self.classes, args)
+        else:
+            self.help_load()
 
     # Classes
-    def do_add_class(self, *args):
-        self.execute(self.classes.addClass, *args)
-    def do_delete_class(self, *args):
-        pass
-    def do_rename_class(self, *args):
-        pass
+    def do_add_class(self, args):
+        self.execute(self.classes.addClass, args)
+    def do_delete_class(self, args):
+        self.execute(self.classes.deleteClass, args)
+    def do_rename_class(self, args):
+        self.execute(self.classes.renameClass, args)
 
     # Relationships
-    def do_add_relationship(self, *args):
-        pass
-    def do_delete_relationship(self, *args):
-        pass
-    def do_rename_relationship(self, *args):
-        pass
+    def do_add_relationship(self, args):
+        self.execute(self.classes.addRelationship, args)
+    def do_delete_relationship(self, args):
+        self.execute(self.classes.deleteRelationship, args)
+    def do_rename_relationship(self, args):
+        self.execute(self.classes.renameRelationship, args)
 
     # Methods
-    def do_add_method(self, *args):
-        pass
-    def do_delete_method(self, *args):
-        pass
-    def do_rename_method(self, *args):
+    def do_add_method(self, args):
+        args = args.split()
+        params = []
+        for i in range(3, len(args), 2):
+            try:
+                params.append([args[i], args[i + 1]])
+            except IndexError:
+                raise IndexError('Odd number of arguments for method parameters. '+ 
+                'Method not added')
+        args = args[:3] + [params]
+        self.execute(self.classes.addMethod, args)
+    def do_delete_method(self, args):
+        args = args.split()
+        for method in self.classes.getClass(args[0]).methodDict[args[1]]:
+            print(method)
+            
+    def do_rename_method(self, args):
         pass
 
     # Fields
-    def do_add_field(self, *args):
+    def do_add_field(self, args):
         pass
-    def do_delete_field(self, *args):
+    def do_delete_field(self, args):
         pass
-    def do_rename_field(self, *args):
+    def do_rename_field(self, args):
         pass
 
     # Parameters
-    def do_add_parameters(self, *args):
+    def do_add_parameters(self, args):
         pass
-    def do_delete_parameters(self, *args):
+    def do_delete_parameters(self, args):
         pass
-    def do_change_parameters(self, *args):
+    def do_change_parameters(self, args):
         pass
-    def do_verbose(self, *args):
+    def do_verbose(self, args):
         self.do_help('verbose')
     
     # help_cmd functions
@@ -179,16 +194,22 @@ class MontyREPL(cmd.Cmd):
         pass
     def emptyline(self):
         pass
-    def execute(self, function, *args):
+    def execute(self, function, args):
+        if isinstance(args, str):
+            args = args.split()
         command = Command(function, *args)
         command.execute()
         self.saveStates.append(Momento(command, self.classes))
     def onecmd(self, line):
-        try:
+        # try:
             return super().onecmd(line)
-        except Exception as e:
-            print(e)
-            return False
+        # except Exception as e:
+        #     if '()' not in str(e):
+        #         print(e)
+        #     else:
+        #         print('Missing arguments')
+        #     self.print_cmd_help(line.split()[0])
+        #     return False
 
 
 if __name__ == '__main__':

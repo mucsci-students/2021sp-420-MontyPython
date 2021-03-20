@@ -2,10 +2,7 @@ MontyPython UML Editor
 ===============================================================================
 
 With this CLI you can add, delete, display, and modify elements of a text
-version of a UML diagram.
-
-Commands are case-insensitive, typing an incomplete command will show you what
-parameters you are missing. Use up and down arrow keys to navigate previously
+version of a UML diagram. Use up and down arrow keys to navigate previously
 typed commands. Tab-completion also supported.
 
 ===============================================================================
