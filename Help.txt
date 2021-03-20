@@ -11,93 +11,96 @@ typed commands. Tab-completion also supported.
 ===============================================================================
 --------------- Interface ---------------
 
-exit               
-    : Exits the program
+exit
+    Exits the program
 
-help [<command-name>]
-    : Displays this text if no argument specified. otherwise shows help message
-      for specific command if it exists
+help [verbose|<command-name>]
+    Shows list of commands if no argument specified. Otherwise shows a help
+    for specific command if it exists, or if 'all' prints verbose help doc.
+
+clear
+    Clears the console
 
 list_relationships <class> 
-    : Displays relationships between classes
+    Displays relationships between classes
 
 list_classes
-    : Lists contents of all classes including methods w/ parameters and fields
+    Lists contents of all classes including methods w/ parameters and fields
 
 list_class <class>
-    : List contents of a single class
+    List contents of a single class
 
 --------------- Save/Load ---------------
 
 save <filename>
-    : Saves current diagram under supplied filename with a .monty extentsion
+    Saves current diagram under supplied filename with a .monty extentsion
 
 load <filename>
-    : Loads diagram from file <filename>.monty
+    Loads diagram from file <filename>.monty
 
 ---------------- Classes ----------------
 
 add_class <name>
-    : Adds new class with supplied name to UML diagram
+    Adds new class with supplied name to UML diagram
 
 delete_class <name>
-    : Deletes class with supplied name from UML diagram
+    Deletes class with supplied name from UML diagram
 
 rename_class <old-name> <new-name>
-    : Renames class with current name <old-name> to <new-name>
+    Renames class with current name <old-name> to <new-name>
 
 ------------- Relationships -------------
 
 add_relationship <src-class> <dst-class> <relationship-type>
-    : Adds relationship ship of type <relationship-type> from a source class to
-      a destination class
+    Adds relationship ship of type <relationship-type> from a source class to
+    a destination class
 
 delete_relationship <src-class> <dst-class>
-    : Deletes relationship between a source and destination class
+    Deletes relationship between a source and destination class
 
 rename_relationship <src-class> <dst-class> <new-relationship-type>
-    : Changes relationship type to <new-relationship-type>
+    Changes relationship type to <new-relationship-type>
 
 ---------------- Methods ----------------
 
 add_method <class> <method-name> <return-type> [<param-type> <param-name>]...
-    : Adds a method to a class with optional parameters
+    Adds a method to a class with optional parameters
 
 delete_method <class> <method-name>
-    : Deletes method from specified class. If multiple methods exist with the
-      same name, user will be prompted to pick one from a numbered list based
-      on parameters.
+    Deletes method from specified class. If multiple methods exist with the
+    same name, user will be prompted to pick one from a numbered list based
+    on parameters.
 
-rename_method: <class> <old-method-name> <new-method-name>
-    : Renames method in a class to <new-method-name>. If multiple methods exist
-      with the same name, user will be prompted to pick one from a numbered 
-      list based on parameters.
+rename_method <class> <old-method-name> <new-method-name>
+    Renames method in a class to <new-method-name>. If multiple methods exist
+    with the same name, user will be prompted to pick one from a numbered 
+    list based on parameters.
 
 ----------------- Fields ----------------
 
 add_field <class> <field-type> <field-name>
-    : Adds a field to a class
+    Adds a field to a class
 
 delete_field <class> <field-name>
-    : Deletes a field from a class
+    Deletes a field from a class
 
 rename_field <class> <old-field-name> <new-field-name>
-    : Renames field from <old-field-name> to <new-field-name>
+    Renames field from <old-field-name> to <new-field-name>
 
 --------------- Parameters --------------
 
 add_parameters <class> <method-name> <param-type> <param-name>...
-    : Adds parameters to a class method. If multiple methods exist with the 
-      same name, user will be prompted to pick one from a numbered list based 
-      on already existing parameters.
+    Adds parameters to a class method. If multiple methods exist with the 
+    same name, user will be prompted to pick one from a numbered list based 
+    on already existing parameters.
 
 delete_parameters <class> <method-name> <param-name>...
-    : Deletes listed parameters from a class method. If multiple methods exist
-      with the same name, user will be prompted to pick one from a numbered 
-      list based on already existing parameters.
+    Deletes listed parameters from a class method. If multiple methods exist
+    with the same name, user will be prompted to pick one from a numbered 
+    list based on already existing parameters.
 
 change_parameters <class> <method-name> <param-type> <param-name>...
-    : Changes out parameters in a class method with a new list of supplied
-      parameters. If multiple methods exist with the same name, user will be
-      prompted to pick one from a numbered list based on already existing
-      parameters.
+    Changes out parameters in a class method with a new list of supplied
+    parameters. If multiple methods exist with the same name, user will be
+    prompted to pick one from a numbered list based on already existing
+    parameters.
