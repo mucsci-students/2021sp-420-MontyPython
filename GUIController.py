@@ -48,8 +48,7 @@ class GUIController:
             self.model.deleteClass(name)
 
         except Exception as e:
-            print(e)
-        
+            print(e)       
 
         print(self.model.classDict)
         
