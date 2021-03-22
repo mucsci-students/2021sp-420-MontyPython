@@ -16,6 +16,10 @@ class MainWindow(Frame):
 
         # TODO: delete when done testing
         self.testWidget = ClassWidget(self, self.canvas)
+        
+        self.testWidget.setNameText("test")
+        self.testWidget.setFieldText("test")
+        self.testWidget.setMethodText("test")
 
     def setup(self):
 
