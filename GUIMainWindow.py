@@ -1,16 +1,15 @@
 from tkinter import *
-import GUIMenuBar
 from ClassWidget import ClassWidget
-from popuptest import PopupBox
 
 # Inherits from frame class in tkinter
 class MainWindow(Frame):
 
     def __init__(self, master=None):
         Frame.__init__(self, master)   
-           
+
         # Master is root   
         self.master = master
+
         # Sets up window layout
         self.setup()
         #self.lineDict = []                  
@@ -20,16 +19,13 @@ class MainWindow(Frame):
         
 
     def setup(self):
-
+        # Note: Menu bar is created within the controller
         # Set root's title
         self.master.title("UML Editor")
 
         # This widget will take up the full space of root
         # TODO: Figure out why this is causing problems, and if it's needed
         #self.pack(fill="both")
-
-        # Menu is set up in a different file to increase readability
-        self.menu = GUIMenuBar.menu(self, self.master) 
 
         # Create canvas for objects to be drawn on
         self.canvas = Canvas(self.master)
@@ -41,10 +37,7 @@ class MainWindow(Frame):
     def boxTest(self):
         box = PopupBox("test")
 
-
     #def drawLines
 
-
-        
 # root window created. Here, that would be the only window, but
 # you can later have windows within windows.
