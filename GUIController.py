@@ -1,8 +1,7 @@
 import sys
 from ClassCollection import ClassCollection
 import Interface
-from popuptest import AlertBox, AddClassBox, DeleteClassBox
-from popuptest import *
+from PopupBoxes import *
 import GUIMenuBar
 
 # A default collection
