@@ -200,6 +200,6 @@ class GUIController:
         }
         
         # Show window
-        box = windows[windowType](windowType)
+        box = windows[windowType](windowType, self)
 
     

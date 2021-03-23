@@ -4,40 +4,36 @@ from tkinter import *
 # This needs to be modified, but it works
 class AlertBox(object):
     pass
+
 class AddClassBox(object):
     root = None
 
-    def __init__(self, msg):
+    def __init__(self, msg, controller):
 
         self.top = Toplevel(AddClassBox.root)
 
-        frm = Frame(self.top, width=200, height=100, borderwidth=4, relief='ridge')
-        frm.pack()
+        frm = Frame(self.top, width=200, height=200, borderwidth=4, relief='ridge')
+        frm.pack(fill="both", expand=True)
         frm.pack_propagate(0)
 
         lbl = Label(frm, text="Class Name")
         lbl.pack(padx=4, pady=4)
 
-        self.name = Entry(frm)
-        self.name.pack(padx=4, pady=4)
+        name = Entry(frm)
+        name.pack(padx=4, pady=4)
 
         btnCreate = Button(frm, text='Create')
-        btnCreate['command'] =  self.on_button
+        btnCreate['command'] =  lambda: controller.addClass(name.get())
         btnCreate.pack(padx=4, pady=4)
 
         btnCancel = Button(frm, text='Cancel')
         btnCancel['command'] = self.top.destroy
-        btnCancel.pack(padx=4, pady=4)
-
-    def on_button(self):
-        t = self.name.get()
-        lambda: controller.addClass(t)
-       
-        
+        btnCancel.pack(padx=4, pady=4)     
+           
 class DeleteClassBox(object):
     root = None
 
-    def __init__(self, msg):
+    def __init__(self, msg, controller):
 
         self.top = Toplevel(DeleteClassBox.root)
 
@@ -51,10 +47,11 @@ class DeleteClassBox(object):
         btnCancel = Button(frm, text='Cancel')
         btnCancel['command'] = self.top.destroy
         btnCancel.pack(padx=4, pady=4)
+
 class RenameClassBox(object):
     root = None
 
-    def __init__(self, msg):
+    def __init__(self, msg, controller):
 
         self.top = Toplevel(RenameClassBox.root)
 
@@ -68,10 +65,11 @@ class RenameClassBox(object):
         btnCancel = Button(frm, text='Cancel')
         btnCancel['command'] = self.top.destroy
         btnCancel.pack(padx=4, pady=4)
+
 class AddFieldBox(object):
     root = None
 
-    def __init__(self, msg):
+    def __init__(self, msg, controller):
 
         self.top = Toplevel(AddFieldBox.root)
 
@@ -85,10 +83,11 @@ class AddFieldBox(object):
         btnCancel = Button(frm, text='Cancel')
         btnCancel['command'] = self.top.destroy
         btnCancel.pack(padx=4, pady=4)
+
 class RenameFieldBox(object):
     root = None
 
-    def __init__(self, msg):
+    def __init__(self, msg, controller):
 
         self.top = Toplevel(RenameFieldBox.root)
 
@@ -102,10 +101,11 @@ class RenameFieldBox(object):
         btnCancel = Button(frm, text='Cancel')
         btnCancel['command'] = self.top.destroy
         btnCancel.pack(padx=4, pady=4)
+
 class DeleteFieldBox(object):
     root = None
 
-    def __init__(self, msg):
+    def __init__(self, msg, controller):
 
         self.top = Toplevel(DeleteFieldBox.root)
 
@@ -119,10 +119,11 @@ class DeleteFieldBox(object):
         btnCancel = Button(frm, text='Cancel')
         btnCancel['command'] = self.top.destroy
         btnCancel.pack(padx=4, pady=4)
+
 class AddMethodBox(object):
     root = None
 
-    def __init__(self, msg):
+    def __init__(self, msg, controller):
 
         self.top = Toplevel(AddMethodBox.root)
 
@@ -136,10 +137,11 @@ class AddMethodBox(object):
         btnCancel = Button(frm, text='Cancel')
         btnCancel['command'] = self.top.destroy
         btnCancel.pack(padx=4, pady=4)
+
 class DeleteMethodBox(object):
     root = None
 
-    def __init__(self, msg):
+    def __init__(self, msg, controller):
 
         self.top = Toplevel(DeleteMethodBox.root)
 
@@ -153,10 +155,11 @@ class DeleteMethodBox(object):
         btnCancel = Button(frm, text='Cancel')
         btnCancel['command'] = self.top.destroy
         btnCancel.pack(padx=4, pady=4)
+
 class RenameMethodBox(object):
     root = None
 
-    def __init__(self, msg):
+    def __init__(self, msg, controller):
 
         self.top = Toplevel(RenameMethodBox.root)
 
@@ -170,10 +173,11 @@ class RenameMethodBox(object):
         btnCancel = Button(frm, text='Cancel')
         btnCancel['command'] = self.top.destroy
         btnCancel.pack(padx=4, pady=4)
+
 class AddParameterBox(object):
     root = None
 
-    def __init__(self, msg):
+    def __init__(self, msg, controller):
 
         self.top = Toplevel(AddParameterBox.root)
 
@@ -187,10 +191,11 @@ class AddParameterBox(object):
         btnCancel = Button(frm, text='Cancel')
         btnCancel['command'] = self.top.destroy
         btnCancel.pack(padx=4, pady=4)
+
 class DeleteParameterBox(object):
     root = None
 
-    def __init__(self, msg):
+    def __init__(self, msg, controller):
 
         self.top = Toplevel(DeleteParameterBox.root)
 
@@ -204,10 +209,11 @@ class DeleteParameterBox(object):
         btnCancel = Button(frm, text='Cancel')
         btnCancel['command'] = self.top.destroy
         btnCancel.pack(padx=4, pady=4)
+
 class ChangeParameterBox(object):
     root = None
 
-    def __init__(self, msg):
+    def __init__(self, msg, controller):
 
         self.top = Toplevel(ChangeParameterBox.root)
 
@@ -221,10 +227,11 @@ class ChangeParameterBox(object):
         btnCancel = Button(frm, text='Cancel')
         btnCancel['command'] = self.top.destroy
         btnCancel.pack(padx=4, pady=4)
+
 class AddRelationshipBox(object):
     root = None
 
-    def __init__(self, msg):
+    def __init__(self, msg, controller):
 
         self.top = Toplevel(AddRelationshipBox.root)
 
@@ -238,10 +245,11 @@ class AddRelationshipBox(object):
         btnCancel = Button(frm, text='Cancel')
         btnCancel['command'] = self.top.destroy
         btnCancel.pack(padx=4, pady=4)
+
 class DeleteRelationshipBox(object):
     root = None
 
-    def __init__(self, msg):
+    def __init__(self, msg, controller):
 
         self.top = Toplevel(DeleteRelationshipBox.root)
 
@@ -255,10 +263,11 @@ class DeleteRelationshipBox(object):
         btnCancel = Button(frm, text='Cancel')
         btnCancel['command'] = self.top.destroy
         btnCancel.pack(padx=4, pady=4)
+        
 class ChangeRelationshipBox(object):
     root = None
 
-    def __init__(self, msg):
+    def __init__(self, msg, controller):
 
         self.top = Toplevel(ChangeRelationshipBox.root)
 
