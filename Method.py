@@ -12,4 +12,12 @@ class Method:
         # [(retType1, name1), (retType2, name2), ...]
         self.parameters = parameters.copy()
     def __repr__(self):
-        return f'{self.name}, {self.parameters}'
+        if len(self.parameters) > 0:
+            paramStr = ''
+            for param in self.parameters:
+                paramStr += f'{param[0]} {param[1]}, '
+            return f'{self.returnType} {self.name}({paramStr[:-2]})'
+        else:
+            return f'{self.returnType} {self.name}()'
+    def __str__(self):
+        return self.__repr__()

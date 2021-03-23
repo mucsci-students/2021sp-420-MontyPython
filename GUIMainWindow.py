@@ -13,6 +13,7 @@ class MainWindow(Frame):
         self.master = master
         # Sets up window layout
         self.setup()
+        #self.lineDict = []                  
 
         # TODO: delete when done testing
         self.testWidget = ClassWidget(self, self.canvas, "Test", 800, 800)
@@ -40,9 +41,8 @@ class MainWindow(Frame):
     def boxTest(self):
         box = PopupBox("test")
 
-    
 
-        
+    #def drawLines
 
 
         
