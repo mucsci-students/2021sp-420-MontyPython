@@ -17,17 +17,6 @@ class MainWindow(Frame):
         # TODO: delete when done testing
         self.testWidget = ClassWidget(self, self.canvas, "Test", 200, 200)
         
-        # self.testWidget.setNameText("test")
-        # self.testWidget.setFieldText("test")
-        # self.testWidget.setMethodText("test")
-        # self.testWidget.moveBox(300, 400)
-
-        # self.testWidget.setNameText("test")
-        # self.testWidget.setFieldText("test")
-        # self.testWidget.setMethodText("test")
-
-        # self.testWidget.moveBox(400, 500)
-        # self.testWidget.deleteBoxesFromCanvas()
 
     def setup(self):
 

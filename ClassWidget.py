@@ -113,9 +113,7 @@ class ClassWidget(Frame):
         self.methodBoundingBox = self.canvas.coords(self.getMethodBoxObject())
     
     # Finds the box with the largest width and sets all boxes to that width
-    # TODO: Need to trace through and figure out how to update boxes logically. too many things rely on eachother right now.
     def setTextWidths(self):
-        # TODO: Something is wrong with namewidth. when changing textbox text, it doesn't change. It has odd results here, and when drawing circles based on the bounding boxes.
         # The width never changes from the original one that the name is set through.
         # Get widths
         nameWidth = self.getNameWidth()
@@ -137,7 +135,7 @@ class ClassWidget(Frame):
             w = nameWidth
 
         # Update text with the new widths
-        # TODO THIS PART DOESN'T WORK.
+        # TODO This part doesn't work.
         #self.canvas.itemconfig(self.getNameObject(), width=w)
         #self.canvas.itemconfig(self.getFieldObject(), width=w)
         #self.canvas.itemconfig(self.getMethodObject(), width=w)
@@ -207,7 +205,6 @@ class ClassWidget(Frame):
     # This method populates widgetCoordinates list with lists of coordinate pairs
     # These are the coordinates for each of the four corners of the class widget,
     # Along with the center edge points between the corners
-    # TODO: For some reason, nameBoundingBox is off, Shifted over to the right a very small amount
     def updateCoordinateList(self):
         # If the list has elements, delete all elements
         if self.widgetCoordinates:
