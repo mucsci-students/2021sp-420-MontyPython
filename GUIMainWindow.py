@@ -15,7 +15,7 @@ class MainWindow(Frame):
         self.setup()
 
         # TODO: delete when done testing
-        self.testWidget = ClassWidget(self, self.canvas, "Test", 200, 200)
+        self.testWidget = ClassWidget(self, self.canvas, "Test", 800, 800)
         
 
     def setup(self):
@@ -24,7 +24,8 @@ class MainWindow(Frame):
         self.master.title("UML Editor")
 
         # This widget will take up the full space of root
-        self.pack(fill=BOTH, expand=1)
+        # TODO: Figure out why this is causing problems, and if it's needed
+        #self.pack(fill="both")
 
         # Menu is set up in a different file to increase readability
         self.menu = GUIMenuBar.menu(self, self.master) 
@@ -33,7 +34,7 @@ class MainWindow(Frame):
         self.canvas = Canvas(self.master)
 
         # Both: Fills horizontally and vertically, expand: widget expands to fill extra space
-        self.canvas.pack(fill="both", expand=True)
+        self.canvas.pack(fill=BOTH, expand=1)
 
     # Test popup box. Triggered in GUIMenuBar
     def boxTest(self):
