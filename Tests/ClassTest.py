@@ -14,7 +14,7 @@ class ClassTests(unittest.TestCase):
     def testDeleteClass(self):
         collection = ClassCollection()
         collection.addClass("A")
-        collection.addAttribute("A", "count")
+        #collection.addAttribute("A", "count")
         collection.deleteClass("A")
         self.assertIsNone( collection.getClass("A"))
 
@@ -29,7 +29,7 @@ class ClassTests(unittest.TestCase):
         collection = ClassCollection()
         collection.addClass("A")
         collection.renameClass("A","B")
-        collection.addAttribute("B", "count")
+      #  collection.addAttribute("B", "count")
         self.assertRaises(KeyError, collection.deleteClass, "A")
         self.assertIsNotNone( collection.getClass("B"))
         collection.deleteClass("B")
