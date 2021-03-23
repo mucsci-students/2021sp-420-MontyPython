@@ -13,6 +13,7 @@ args = parser.parse_args()
 argsDict = vars(args)
 
 if argsDict['cli']:
-    import REPL
+    from REPL import MontyREPL
+    MontyREPL().cmdloop()
 else:
     import GUI
