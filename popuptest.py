@@ -1,6 +1,6 @@
 from tkinter import *
-from GUIController import GUIController
-import GUI
+
+#import GUI
 # This needs to be modified, but it works
 class AlertBox(object):
     pass

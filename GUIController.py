@@ -1,7 +1,9 @@
 import sys
 from ClassCollection import ClassCollection
 import Interface
-
+from popuptest import AlertBox, AddClassBox, DeleteClassBox
+from popuptest import *
+import GUIMenuBar
 
 # A default collection
 collection = ClassCollection()
@@ -10,6 +12,10 @@ class GUIController:
     def __init__(self, model, view):
         self.model = model
         self.view = view
+        self.root = self.view.master
+
+        # Creates the view's menu bar
+        self.createMenuBar()
 
         # Jen note: This was old sprint 2 code but I might need it for sprint 3 stuff, so I kept it for now. 
         # -------------------------------------------------- * 
@@ -165,3 +171,36 @@ class GUIController:
 
         print(self.model.classDict)
 
+    # --------------------------------
+    # Menu Methods
+    # --------------------------------
+
+    def createMenuBar(self):
+        GUIMenuBar.menu(self, self.view, self.root)
+
+    # Create a window using the factory method
+    def windowFactory(self, windowType = "alertBox"):
+    
+        windows = {
+            "alertBox": AlertBox,
+            "Add Class": AddClassBox,
+            "Delete Class": DeleteClassBox,
+            "Rename Class": RenameClassBox,
+            "Add Field": AddFieldBox,
+            "Delete Field": DeleteFieldBox,
+            "Rename Field": RenameFieldBox,
+            "Add Method": AddMethodBox,
+            "Delete Method": DeleteMethodBox,
+            "Rename Method": RenameMethodBox,
+            "Add Parameter": AddParameterBox,
+            "Delete Parameter": DeleteParameterBox,
+            "Change Parameter": ChangeParameterBox,
+            "Add Relationship": AddRelationshipBox,
+            "Delete Relationship": DeleteRelationshipBox,
+            "Change Relationship": ChangeRelationshipBox
+        }
+        
+        # Show window
+        box = windows[windowType](windowType)
+
+    
