@@ -6,10 +6,11 @@ from Method import Method
 
 class Class():
 
-        def __init__(self, name):
+        def __init__(self, name, xCor = -1, yCor = -1):
             self.name = name
             self.attributeDict = {}
-        
+            self.xCor = xCor
+            self.yCor = yCor
         # methodDict structure
         #     'methodName1': [method1, method2, ...]
             self.methodDict = {}
@@ -230,6 +231,15 @@ class Class():
                 raise KeyError(f"{name} is not an attribute for {self.name}")
             return self.attributeDict[name]
 
-        # Helper function for unit tests
-        def getAttributes(self):
-            return self.attributeDict
+        # --------------------------- ( Coordinates ) ----------------------------- #
+        def getX(self):
+            return self.xCor
+
+        def getY(self):
+            return self.yCor
+
+        def setX(self, X):
+            self.xCor = X
+            
+        def setY(self, Y):
+            self.yCor = Y
