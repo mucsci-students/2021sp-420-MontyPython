@@ -1,283 +1,177 @@
 from tkinter import *
+from tkinter.font import Font, nametofont
+from tkinter.ttk import Combobox
 
-#import GUI
+class GenericBox:
+    root = None
+    
+    def __init__(self, msg, controller):
+        self.top = Toplevel(GenericBox.root)
+        self.top.resizable(False, False)
+        self.top.title(msg)
+
+        self.frame = Frame(self.top, borderwidth=4, relief='ridge')
+        self.frame.pack(fill='both', expand=True)
+
+        f = Font(name='TkDefaultFont', exists=True).actual()['family']
+        self.font = Font(family=f, size=12)
+
+    def addButton(self, txt, r, c, stick, cmd, px=4, py=4, ipx=20):
+        btn = Button(self.frame, text=txt)
+        btn['command'] = cmd
+        btn.grid(row=r, column=c, sticky=stick, padx=px, pady=py, ipadx=20)
+        btn.configure(font=self.font)
+        return btn
+    
+    def addLabel(self, txt, r, c, stick=W, px=4, py=4):
+        lbl = Label(self.frame, text=txt)
+        lbl.grid(row=r, column=c, sticky=stick, padx=px, pady=py)
+        lbl.configure(font=self.font)
+        return lbl
+    
+    def addEntry(self, r, c, stick=W, px=4, py=4, ipx=50):
+        entry = Entry(self.frame)
+        entry.grid(row=r, column=c, sticky=stick, padx=px, pady=py, ipadx=ipx)
+        entry.configure(font=self.font)
+        return entry
+
 # This needs to be modified, but it works
-class AlertBox(object):
+class AlertBox(GenericBox):
     pass
 
-class AddClassBox(object):
-    root = None
-
+class AddClassBox(GenericBox):
     def __init__(self, msg, controller):
+        super().__init__(msg, controller)
 
-        self.top = Toplevel(AddClassBox.root)
+        self.addLabel('Class Name', 0, 0)
 
-        frm = Frame(self.top, width=200, height=200, borderwidth=4, relief='ridge')
-        frm.pack(fill="both", expand=True)
-        frm.pack_propagate(0)
+        name = self.addEntry(0, 1)
 
-        lbl = Label(frm, text="Class Name")
-        lbl.pack(padx=4, pady=4)
+        self.addButton('Create', 1, 0, W, lambda: controller.addClass(name.get()))
+        self.addButton('Cancel', self.top.destroy, 1, 1, E)
 
-        name = Entry(frm)
-        name.pack(padx=4, pady=4)
-
-        btnCreate = Button(frm, text='Create')
-        btnCreate['command'] =  lambda: controller.addClass(name.get())
-        btnCreate.pack(padx=4, pady=4)
-
-        btnCancel = Button(frm, text='Cancel')
-        btnCancel['command'] = self.top.destroy
-        btnCancel.pack(padx=4, pady=4)     
-           
-class DeleteClassBox(object):
-    root = None
-
+class DeleteClassBox(GenericBox):
     def __init__(self, msg, controller):
+        super().__init__(msg, controller)
 
-        self.top = Toplevel(DeleteClassBox.root)
+        self.addLabel('Class Name', 0, 0)
 
-        frm = Frame(self.top, width=200, height=100, borderwidth=4, relief='ridge')
-        frm.pack()
-        frm.pack_propagate(0)
+        name = self.addEntry(0, 1)
 
-        lbl = Label(frm, text=msg)
-        lbl.pack(padx=4, pady=4)
+        self.addButton('Delete', 1, 0, W, lambda: controller.deleteClass(name.get()))
+        self.addButton('Cancel', 1, 1, E, self.top.destroy)
 
-        btnCancel = Button(frm, text='Cancel')
-        btnCancel['command'] = self.top.destroy
-        btnCancel.pack(padx=4, pady=4)
-
-class RenameClassBox(object):
-    root = None
-
+class RenameClassBox(GenericBox):
     def __init__(self, msg, controller):
+        super().__init__(msg, controller)
 
-        self.top = Toplevel(RenameClassBox.root)
+        self.addLabel('Old Class Name', 0, 0)
+        self.addLabel('New Class Name', 1, 0)
 
-        frm = Frame(self.top, width=200, height=100, borderwidth=4, relief='ridge')
-        frm.pack()
-        frm.pack_propagate(0)
-
-        lbl = Label(frm, text=msg)
-        lbl.pack(padx=4, pady=4)
-
-        btnCancel = Button(frm, text='Cancel')
-        btnCancel['command'] = self.top.destroy
-        btnCancel.pack(padx=4, pady=4)
-
-class AddFieldBox(object):
-    root = None
-
-    def __init__(self, msg, controller):
-
-        self.top = Toplevel(AddFieldBox.root)
-
-        frm = Frame(self.top, width=200, height=100, borderwidth=4, relief='ridge')
-        frm.pack()
-        frm.pack_propagate(0)
-
-        lbl = Label(frm, text=msg)
-        lbl.pack(padx=4, pady=4)
-
-        btnCancel = Button(frm, text='Cancel')
-        btnCancel['command'] = self.top.destroy
-        btnCancel.pack(padx=4, pady=4)
-
-class RenameFieldBox(object):
-    root = None
-
-    def __init__(self, msg, controller):
-
-        self.top = Toplevel(RenameFieldBox.root)
-
-        frm = Frame(self.top, width=200, height=100, borderwidth=4, relief='ridge')
-        frm.pack()
-        frm.pack_propagate(0)
-
-        lbl = Label(frm, text=msg)
-        lbl.pack(padx=4, pady=4)
-
-        btnCancel = Button(frm, text='Cancel')
-        btnCancel['command'] = self.top.destroy
-        btnCancel.pack(padx=4, pady=4)
-
-class DeleteFieldBox(object):
-    root = None
-
-    def __init__(self, msg, controller):
-
-        self.top = Toplevel(DeleteFieldBox.root)
-
-        frm = Frame(self.top, width=200, height=100, borderwidth=4, relief='ridge')
-        frm.pack()
-        frm.pack_propagate(0)
-
-        lbl = Label(frm, text=msg)
-        lbl.pack(padx=4, pady=4)
-
-        btnCancel = Button(frm, text='Cancel')
-        btnCancel['command'] = self.top.destroy
-        btnCancel.pack(padx=4, pady=4)
-
-class AddMethodBox(object):
-    root = None
-
-    def __init__(self, msg, controller):
-
-        self.top = Toplevel(AddMethodBox.root)
-
-        frm = Frame(self.top, width=200, height=100, borderwidth=4, relief='ridge')
-        frm.pack()
-        frm.pack_propagate(0)
-
-        lbl = Label(frm, text=msg)
-        lbl.pack(padx=4, pady=4)
-
-        btnCancel = Button(frm, text='Cancel')
-        btnCancel['command'] = self.top.destroy
-        btnCancel.pack(padx=4, pady=4)
-
-class DeleteMethodBox(object):
-    root = None
-
-    def __init__(self, msg, controller):
-
-        self.top = Toplevel(DeleteMethodBox.root)
-
-        frm = Frame(self.top, width=200, height=100, borderwidth=4, relief='ridge')
-        frm.pack()
-        frm.pack_propagate(0)
-
-        lbl = Label(frm, text=msg)
-        lbl.pack(padx=4, pady=4)
-
-        btnCancel = Button(frm, text='Cancel')
-        btnCancel['command'] = self.top.destroy
-        btnCancel.pack(padx=4, pady=4)
-
-class RenameMethodBox(object):
-    root = None
-
-    def __init__(self, msg, controller):
-
-        self.top = Toplevel(RenameMethodBox.root)
-
-        frm = Frame(self.top, width=200, height=100, borderwidth=4, relief='ridge')
-        frm.pack()
-        frm.pack_propagate(0)
-
-        lbl = Label(frm, text=msg)
-        lbl.pack(padx=4, pady=4)
-
-        btnCancel = Button(frm, text='Cancel')
-        btnCancel['command'] = self.top.destroy
-        btnCancel.pack(padx=4, pady=4)
-
-class AddParameterBox(object):
-    root = None
-
-    def __init__(self, msg, controller):
-
-        self.top = Toplevel(AddParameterBox.root)
-
-        frm = Frame(self.top, width=200, height=100, borderwidth=4, relief='ridge')
-        frm.pack()
-        frm.pack_propagate(0)
-
-        lbl = Label(frm, text=msg)
-        lbl.pack(padx=4, pady=4)
-
-        btnCancel = Button(frm, text='Cancel')
-        btnCancel['command'] = self.top.destroy
-        btnCancel.pack(padx=4, pady=4)
-
-class DeleteParameterBox(object):
-    root = None
-
-    def __init__(self, msg, controller):
-
-        self.top = Toplevel(DeleteParameterBox.root)
-
-        frm = Frame(self.top, width=200, height=100, borderwidth=4, relief='ridge')
-        frm.pack()
-        frm.pack_propagate(0)
-
-        lbl = Label(frm, text=msg)
-        lbl.pack(padx=4, pady=4)
-
-        btnCancel = Button(frm, text='Cancel')
-        btnCancel['command'] = self.top.destroy
-        btnCancel.pack(padx=4, pady=4)
-
-class ChangeParameterBox(object):
-    root = None
-
-    def __init__(self, msg, controller):
-
-        self.top = Toplevel(ChangeParameterBox.root)
-
-        frm = Frame(self.top, width=200, height=100, borderwidth=4, relief='ridge')
-        frm.pack()
-        frm.pack_propagate(0)
-
-        lbl = Label(frm, text=msg)
-        lbl.pack(padx=4, pady=4)
-
-        btnCancel = Button(frm, text='Cancel')
-        btnCancel['command'] = self.top.destroy
-        btnCancel.pack(padx=4, pady=4)
-
-class AddRelationshipBox(object):
-    root = None
-
-    def __init__(self, msg, controller):
-
-        self.top = Toplevel(AddRelationshipBox.root)
-
-        frm = Frame(self.top, width=200, height=100, borderwidth=4, relief='ridge')
-        frm.pack()
-        frm.pack_propagate(0)
-
-        lbl = Label(frm, text=msg)
-        lbl.pack(padx=4, pady=4)
-
-        btnCancel = Button(frm, text='Cancel')
-        btnCancel['command'] = self.top.destroy
-        btnCancel.pack(padx=4, pady=4)
-
-class DeleteRelationshipBox(object):
-    root = None
-
-    def __init__(self, msg, controller):
-
-        self.top = Toplevel(DeleteRelationshipBox.root)
-
-        frm = Frame(self.top, width=200, height=100, borderwidth=4, relief='ridge')
-        frm.pack()
-        frm.pack_propagate(0)
-
-        lbl = Label(frm, text=msg)
-        lbl.pack(padx=4, pady=4)
-
-        btnCancel = Button(frm, text='Cancel')
-        btnCancel['command'] = self.top.destroy
-        btnCancel.pack(padx=4, pady=4)
+        oldName = self.addEntry(0, 1)
+        newName = self.addEntry(1, 1)
         
-class ChangeRelationshipBox(object):
+        self.addButton('Rename', 2, 0, W,
+                        lambda: controller.renameClass(oldName.get(), newName.get()))
+        self.addButton('Cancel', 2, 1, E, self.top.destroy)
+
+class AddFieldBox(GenericBox):
+    def __init__(self, msg, controller):
+        super().__init__(msg, controller)
+
+        self.addLabel('Class Name', 0, 0)
+        self.addLabel('Field Type', 1, 0)
+        self.addLabel('Field Name', 2, 0)
+
+        className = self.addEntry(0, 1)
+        fieldType = self.addEntry(1, 1)
+        fieldName = self.addEntry(2, 1)
+
+        self.addButton('Create', 3, 0, W,
+                        lambda: controller.addField(className.get(), fieldName.get(), typeName.get()))
+        self.addButton('Cancel', 3, 1, E, self.top.destroy)
+
+class DeleteFieldBox(GenericBox):
+    def __init__(self, msg, controller):
+        super().__init__(msg, controller)
+
+        self.addLabel('Class Name', 0, 0)
+        self.addLabel('Field Name', 1, 0)
+
+        className = self.addEntry(0, 1)
+        fieldName = self.addEntry(1, 1)
+
+        self.addButton('Delete', 2, 0, W,
+                       lambda: controller.deleteField(className.get(), fieldName.get()))
+        self.addButton('Cancel', 2, 1, E, self.top.destroy)
+
+class RenameFieldBox(GenericBox):
     root = None
 
     def __init__(self, msg, controller):
+        super().__init__(msg, controller)
+       
+        self.addLabel('Class Name', 0, 0)
+        self.addLabel('Old Field Name', 1, 0)
+        self.addLabel('New Field Name', 2, 0)
 
-        self.top = Toplevel(ChangeRelationshipBox.root)
+        className = self.addEntry(0, 1)
+        oldName = self.addEntry(1, 1)
+        newName = self.addEntry(2, 1)
 
-        frm = Frame(self.top, width=200, height=100, borderwidth=4, relief='ridge')
-        frm.pack()
-        frm.pack_propagate(0)
+        self.addButton('Create', 3, 0, W,
+                        lambda: controller.addField(className.get(), oldName.get(), newName.get()))
+        self.addButton('Cancel', 3, 1, E, self.top.destroy)
 
-        lbl = Label(frm, text=msg)
-        lbl.pack(padx=4, pady=4)
+class AddMethodBox(GenericBox):
+    def __init__(self, msg, controller):
+        super().__init__(msg, controller)
 
-        btnCancel = Button(frm, text='Cancel')
-        btnCancel['command'] = self.top.destroy
-        btnCancel.pack(padx=4, pady=4)
+class DeleteMethodBox(GenericBox):
+    def __init__(self, msg, controller):
+        super().__init__(msg, controller)
+
+class RenameMethodBox(GenericBox):
+    def __init__(self, msg, controller):
+        super().__init__(msg, controller)
+
+class AddParameterBox(GenericBox):
+    def __init__(self, msg, controller):
+        super().__init__(msg, controller)
+
+class DeleteParameterBox(GenericBox):
+    def __init__(self, msg, controller):
+        super().__init__(msg, controller)
+
+class ChangeParameterBox(GenericBox):
+    def __init__(self, msg, controller):
+        super().__init__(msg, controller)
+
+class AddRelationshipBox(GenericBox):
+    def __init__(self, msg, controller):
+        super().__init__(msg, controller)
+
+        self.addLabel('Source Class', 0, 0)
+        self.addLabel('Destination Class', 1, 0)
+        self.addLabel('Relationship Type', 2, 0)
+
+        sourceClass = self.addEntry(0, 1)
+        destClass = self.addEntry(1, 1)
+
+        types = ['aggregation', 'composition', 'inheritance', 'realization']
+
+        relType = Combobox(self.frame, values=types)
+        relType.grid(row=2, column=1, sticky=W, padx=4, pady=4)
+        relType.configure(font=self.font)
+
+        self.addButton('Create', 3, 0, W,
+                lambda: controller.addField(sourceClass.get(), destClass.get(), relType.current()))
+        self.addButton('Cancel', 3, 1, E, self.top.destroy)
+
+class DeleteRelationshipBox(GenericBox):
+    def __init__(self, msg, controller):
+        super().__init__(msg, controller)
+        
+class ChangeRelationshipBox(GenericBox):
+    def __init__(self, msg, controller):
+        super().__init__(msg, controller)
