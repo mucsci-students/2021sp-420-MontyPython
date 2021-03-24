@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter.font import Font, nametofont
+from tkinter.font import Font
 from tkinter.ttk import Combobox
 
 class GenericBox:
@@ -15,6 +15,15 @@ class GenericBox:
 
         f = Font(name='TkDefaultFont', exists=True).actual()['family']
         self.font = Font(family=f, size=12)
+
+    # Parameters for add functions:
+    # r - row in grid
+    # c - column in grid
+    # stick - edge/corner element will stick to
+    # txt - text shown
+    # px - padding x
+    # py - padding y
+    # ipx - internal padding, i.e. width
 
     def addButton(self, txt, r, c, stick, cmd, px=4, py=4, ipx=20):
         btn = Button(self.frame, text=txt)
@@ -48,7 +57,7 @@ class AddClassBox(GenericBox):
         name = self.addEntry(0, 1)
 
         self.addButton('Create', 1, 0, W, lambda: controller.addClass(name.get()))
-        self.addButton('Cancel', self.top.destroy, 1, 1, E)
+        self.addButton('Cancel', 1, 1, E, self.top.destroy)
 
 class DeleteClassBox(GenericBox):
     def __init__(self, msg, controller):
@@ -120,7 +129,7 @@ class RenameFieldBox(GenericBox):
         newName = self.addEntry(2, 1)
 
         self.addButton('Create', 3, 0, W,
-                        lambda: controller.addField(className.get(), oldName.get(), newName.get()))
+                        lambda: controller.renameField(className.get(), oldName.get(), newName.get()))
         self.addButton('Cancel', 3, 1, E, self.top.destroy)
 
 class AddMethodBox(GenericBox):
@@ -159,13 +168,12 @@ class AddRelationshipBox(GenericBox):
         destClass = self.addEntry(1, 1)
 
         types = ['aggregation', 'composition', 'inheritance', 'realization']
-
         relType = Combobox(self.frame, values=types)
         relType.grid(row=2, column=1, sticky=W, padx=4, pady=4)
         relType.configure(font=self.font)
 
         self.addButton('Create', 3, 0, W,
-                lambda: controller.addField(sourceClass.get(), destClass.get(), relType.current()))
+                lambda: controller.addRelationship(sourceClass.get(), destClass.get(), relType.current()))
         self.addButton('Cancel', 3, 1, E, self.top.destroy)
 
 class DeleteRelationshipBox(GenericBox):
