@@ -106,39 +106,39 @@ class GUIController:
 
         print(self.model.classDict[className].methodDict)
 
-    def deleteMethod(self, className, methodName):
+    def deleteMethod(self, className, methodName, parameters):
         try:
-            self.model.deleteMethod(className, methodName)
+            self.model.deleteMethod(className, methodName, parameters)
         except Exception as e:
             print(e)
 
         print(self.model.classDict)    
 
-    def renameMethod(self, className, methodName, newName):
+    def renameMethod(self, className, methodName, parameters, newName):
         try:
-            self.model.renameMethod(className, methodName, newName)
+            self.model.renameMethod(className, methodName, parameters, newName)
         except Exception as e:
             print(e)
 
         print(self.model.classDict)
 
-    def addParameter(self, className, methodName, typ, name):
+    def addParameter(self, className, methodName, parameters, typ, name):
         try:
-            self.model.addParameter(className, methodName, typ, name)
+            self.model.addParameter(className, methodName, parameters, typ, name)
         except Exception as e:
             print(e)
         
         print(self.model.classDict)
 
-    def removeParameter(self, className, methodName, name):
+    def removeParameter(self, className, methodName, parameters, name):
         try:
-            self.model.removeParameter(className, methodName, name)
+            self.model.removeParameter(className, methodName, parameters, name)
         except Exception as e:
             print(e)
 
         print(self.model.classDict)
 
-    def changeParameter(self, className, methodName, name, newType, newName):
+    def changeParameter(self, className, methodName, parameters, name, newType, newName):
         try:
             self.model.changeParameter(className, methodName, name, newType, newName)
         except Exception as e:
