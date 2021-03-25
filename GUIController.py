@@ -47,7 +47,7 @@ class GUIController:
             self.classWidgetCount = self.classWidgetCount + 1
             
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
      
@@ -56,7 +56,7 @@ class GUIController:
             self.model.deleteClass(name)
 
         except Exception as e:
-            print(e)       
+            errorBox = self.windowFactory("alertBox", e)       
 
         print(self.model.classDict)
         
@@ -65,7 +65,7 @@ class GUIController:
             self.model.renameClass(oldName, newName)
 
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
 
@@ -74,7 +74,7 @@ class GUIController:
             self.model.addRelationship(firstClassName, secondClassName, typ)
 
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.relationshipDict)
 
@@ -82,7 +82,7 @@ class GUIController:
         try:
             self.model.deleteRelationship(firstClassName, secondClassName)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.relationshipDict)
 
@@ -90,7 +90,7 @@ class GUIController:
         try:
             self.model.renameRelationship(firstClassName, secondClassName, typ)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.relationshipDict)
 
@@ -102,7 +102,7 @@ class GUIController:
 
             self.model.addMethod(className, methodName, returnType, paramList)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict[className].methodDict)
 
@@ -110,7 +110,7 @@ class GUIController:
         try:
             self.model.deleteMethod(className, methodName, parameters)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)    
 
@@ -118,7 +118,7 @@ class GUIController:
         try:
             self.model.renameMethod(className, methodName, parameters, newName)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
 
@@ -126,7 +126,7 @@ class GUIController:
         try:
             self.model.addParameter(className, methodName, parameters, typ, name)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
         
         print(self.model.classDict)
 
@@ -134,7 +134,7 @@ class GUIController:
         try:
             self.model.removeParameter(className, methodName, parameters, name)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
 
@@ -142,7 +142,7 @@ class GUIController:
         try:
             self.model.changeParameter(className, methodName, name, newType, newName)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
 
@@ -153,7 +153,7 @@ class GUIController:
             self.view.classWidgetDict[className].setField(newName)
             
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
 
@@ -161,7 +161,7 @@ class GUIController:
         try:
             self.model.deleteField(className, name)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
 
@@ -169,7 +169,7 @@ class GUIController:
         try:
             self.model.renameField(className, oldName, newName)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
 
@@ -181,7 +181,7 @@ class GUIController:
         GUIMenuBar.menu(self, self.view, self.root)
 
     # Create a window using the factory method
-    def windowFactory(self, windowType = "alertBox"):
+    def windowFactory(self, windowType = "alertBox", errorMsg = ""):
     
         windows = {
             "alertBox": AlertBox,
@@ -203,6 +203,6 @@ class GUIController:
         }
         
         # Show window
-        box = windows[windowType](windowType, self)
+        box = windows[windowType](windowType, errorMsg, self)
 
     

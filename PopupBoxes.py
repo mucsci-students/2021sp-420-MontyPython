@@ -5,7 +5,7 @@ from tkinter.ttk import Combobox
 class GenericBox:
     root = None
     
-    def __init__(self, msg, controller):
+    def __init__(self, msg, errorMsg, controller):
         self.top = Toplevel(GenericBox.root)
         self.top.resizable(False, False)
         self.top.title(msg)
@@ -45,11 +45,17 @@ class GenericBox:
         return entry
 
 class AlertBox(GenericBox):
-    pass
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
+        errorString = f'Error: {errorMsg}'
+        self.addLabel(errorString, 0, 0)
+        self.frame.grab_set()
+        
+
 
 class AddClassBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Class Name', 0, 0)
 
@@ -59,8 +65,8 @@ class AddClassBox(GenericBox):
         self.addButton('Cancel', 1, 1, E, self.top.destroy)
 
 class DeleteClassBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Class Name', 0, 0)
 
@@ -70,8 +76,8 @@ class DeleteClassBox(GenericBox):
         self.addButton('Cancel', 1, 1, E, self.top.destroy)
 
 class RenameClassBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Old Class Name', 0, 0)
         self.addLabel('New Class Name', 1, 0)
@@ -84,8 +90,8 @@ class RenameClassBox(GenericBox):
         self.addButton('Cancel', 2, 1, E, self.top.destroy)
 
 class AddFieldBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Class Name', 0, 0)
         self.addLabel('Field Type', 1, 0)
@@ -100,8 +106,8 @@ class AddFieldBox(GenericBox):
         self.addButton('Cancel', 3, 1, E, self.top.destroy)
 
 class DeleteFieldBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Class Name', 0, 0)
         self.addLabel('Field Name', 1, 0)
@@ -114,8 +120,8 @@ class DeleteFieldBox(GenericBox):
         self.addButton('Cancel', 2, 1, E, self.top.destroy)
 
 class RenameFieldBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
        
         self.addLabel('Class Name', 0, 0)
         self.addLabel('Old Field Name', 1, 0)
@@ -130,8 +136,8 @@ class RenameFieldBox(GenericBox):
         self.addButton('Cancel', 3, 1, E, self.top.destroy)
 
 class AddMethodBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         PARAM_LIMIT = 10
 
@@ -216,8 +222,8 @@ class AddMethodBox(GenericBox):
 
 
 class DeleteMethodBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Class Name', 0, 0)
         self.addLabel('Method Name', 1, 0)
@@ -260,8 +266,8 @@ class DeleteMethodBox(GenericBox):
         self.addButton('Cancel', 4, 1, E, self.top.destroy)
 
 class RenameMethodBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Class Name', 0, 0)
         self.addLabel('Old Method Name', 1, 0)
@@ -307,8 +313,8 @@ class RenameMethodBox(GenericBox):
         self.addButton('Cancel', 5, 1, E, self.top.destroy)
 
 class AddParameterBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Class Name', 0, 0)
         self.addLabel('Method Name', 1, 0)
@@ -356,8 +362,8 @@ class AddParameterBox(GenericBox):
 
 
 class DeleteParameterBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Class Name', 0, 0)
         self.addLabel('Method Name', 1, 0)
@@ -402,8 +408,8 @@ class DeleteParameterBox(GenericBox):
         self.addButton('Cancel', 5, 1, E, self.top.destroy)
 
 class ChangeParameterBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Class Name', 0, 0)
         self.addLabel('Method Name', 1, 0)
@@ -452,8 +458,8 @@ class ChangeParameterBox(GenericBox):
         self.addButton('Cancel', 7, 1, E, self.top.destroy)
 
 class AddRelationshipBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Source Class', 0, 0)
         self.addLabel('Destination Class', 1, 0)
@@ -472,8 +478,8 @@ class AddRelationshipBox(GenericBox):
         self.addButton('Cancel', 3, 1, E, self.top.destroy)
 
 class DeleteRelationshipBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Source Class', 0, 0)
         self.addLabel('Destination Class', 1, 0)
@@ -486,8 +492,8 @@ class DeleteRelationshipBox(GenericBox):
         self.addButton('Cancel', 2, 1, E, self.top.destroy)
         
 class ChangeRelationshipBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Source Class', 0, 0)
         self.addLabel('Destination Class', 1, 0)
