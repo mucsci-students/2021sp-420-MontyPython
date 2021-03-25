@@ -188,25 +188,21 @@ class ClassCollection():
 
         def getField(self, className, name):
             if name not in self.classDict[className].fieldDict:
-                print(f"Error: {name} does not exist in {className}")
-                return None
+                raise KeyError(f'Error: Field {name} does not exist in {className}')
             return self.classDict[className].getField(name)
 
         # ---------------------- ( Coorodiantes ) ----------------------- #
         
         def getClassCoordinates(self, name):
             if name not in self.classDict:
-                print(f"Error: Class {name} does not exist")
-                return None
+                raise KeyError(f'Error: Class {name} does not exist')
             return (self.classDict[name].getX, self.classDict[name].getY)
 
         def setClassCoordinates(self, name, X, Y):
             if name not in self.classDict:
-                print(f"Error: Class {name} does not exist")
-                return None
+                raise KeyError(f'Error: Class {name} does not exist')
             self.classDict[name].setX(X)
             self.classDict[name].setY(Y)
-            return
         
         # ---------------------- ( Helper Functions ) ----------------------- #
 
@@ -214,23 +210,38 @@ class ClassCollection():
         # Returns if the provided name exists within classDict
         def getClass(self, name):
             if name not in self.classDict:
-                print(f"Error: {name} does not exist")
-                return None
+                raise KeyError(f'Error: Class {name} does not exist')
 
             return self.classDict[name]
 
         def getRelationship(self, firstClassName, secondClassName):
             if (firstClassName, secondClassName) not in self.relationshipDict:
-                print(f"Error: relationship, {firstClassName}, {secondClassName} does not exist")
-                return None
+                raise KeyError(f'Error: relationship, {firstClassName}, {secondClassName} does not exist')
             
             return self.relationshipDict[(firstClassName, secondClassName)]
 
         # Used in REPL to direct user to a specific method of a given name
         # Returns a list of all methods under said given name
         def getMethodsByName(self, className, methodName):
+            if className not in self.classDict:
+                raise KeyError(f'Error: Class {className} does not exist')
             if methodName not in self.classDict[className].methodDict:
-                print(f"Error: no method {methodName} in {className} exists")
-                return None
+                raise KeyError(f'Error: No method {methodName} in {className} exists')
 
             return self.classDict[className].methodDict[methodName]
+
+        def getMethod(self, className, methodName, overloadIndex):
+            if className not in self.classDict:
+                raise KeyError(f'Error: Class {className} does not exist')
+            if methodName not in self.classDict[className].methodDict:
+                raise KeyError(f'Error: No method {methodName} in {className} exists')
+
+            return self.classDict[className].methodDict[methodName][overloadIndex]
+        
+        def getAllMethods(self, className):
+            if className not in self.classDict:
+                raise KeyError(f'Error: Class {className} does not exist')
+
+            return self.classDict[className].methodDict
+        
+        

@@ -16,7 +16,7 @@ class ClassTests(unittest.TestCase):
         collection.addClass("A")
         #collection.addAttribute("A", "count")
         collection.deleteClass("A")
-        self.assertIsNone( collection.getClass("A"))
+        self.assertRaises(KeyError, collection.getClass, "A")
 
      # Checks if a class is successfully deleted
     def testRenameClass(self):
@@ -33,8 +33,8 @@ class ClassTests(unittest.TestCase):
         self.assertRaises(KeyError, collection.deleteClass, "A")
         self.assertIsNotNone( collection.getClass("B"))
         collection.deleteClass("B")
-        self.assertIsNone( collection.getClass("A"))
-        self.assertIsNone( collection.getClass("B"))
+        self.assertRaises(KeyError, collection.getClass, "A")
+        self.assertRaises(KeyError, collection.getClass, "B")
 
     #Ensure relations are also removed when a class is removed
     def testDeleteClassWithRelationship(self):
@@ -43,7 +43,7 @@ class ClassTests(unittest.TestCase):
         collection.addClass("B")
         collection.addRelationship("A", "B", "composition")
         collection.deleteClass("A")
-        self.assertIsNone( collection.getClass("A"))
+        self.assertRaises(KeyError, collection.getClass, "A")
         self.assertIsNotNone( collection.getClass("B"))
         self.assertEqual( collection.relationshipDict, {})
 
