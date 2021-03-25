@@ -10,12 +10,11 @@ class MainWindow(Frame):
         # Master is root   
         self.master = master
 
+        self.classDict = {}
+
         # Sets up window layout
         self.setup()
-        #self.lineDict = []                  
-
-        # TODO: delete when done testing
-        self.testWidget = ClassWidget(self, self.canvas, "Test", 800, 800)
+        #self.lineDict = []          
         
 
     def setup(self):
@@ -32,6 +31,11 @@ class MainWindow(Frame):
 
         # Both: Fills horizontally and vertically, expand: widget expands to fill extra space
         self.canvas.pack(fill=BOTH, expand=1)
+
+    
+    def addClass(self, className, x, y):
+        # Note: Coordinates here are set to a default, but they should change
+        self.classDict[className] = ClassWidget(self, self.canvas, className, x, y)
 
     # Test popup box. Triggered in GUIMenuBar
     def boxTest(self):

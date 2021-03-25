@@ -18,8 +18,8 @@ class GUIController:
 
         # Jen note: This was old sprint 2 code but I might need it for sprint 3 stuff, so I kept it for now. 
         # -------------------------------------------------- * 
-        #self.coordinateList = [[50, 100], [50, 400], [400, 100], [400, 400], [750, 100], [750, 400], [50, 750], [400, 750], [750, 750]]
-        self.unusedGridList = [[0, 0], [0, 1], [1, 0], [1, 1], [2, 0], [2, 1], [0, 2], [1, 2], [2, 2]]
+        self.coordinateList = [[50, 100], [50, 400], [400, 100], [400, 400], [750, 100], [750, 400], [50, 750], [400, 750], [750, 750]]
+        #self.unusedGridList = [[0, 0], [0, 1], [1, 0], [1, 1], [2, 0], [2, 1], [0, 2], [1, 2], [2, 2]]
         self.usedGridDict = {}
         #self.classWidgetDict = {}
         # Update this when classes are added/removed to get the correct coordinates
@@ -42,6 +42,9 @@ class GUIController:
     def addClass(self, name):
         try:
             self.model.addClass(name)
+            coordinates = self.coordinateList[self.classWidgetCount]
+            self.view.addClass(name, coordinates[0], coordinates[1])
+            self.classWidgetCount = self.classWidgetCount + 1
             
         except Exception as e:
             print(e)
