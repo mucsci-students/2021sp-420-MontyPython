@@ -212,9 +212,32 @@ class AddMethodBox(GenericBox):
 
         def buttonEvent():
             params = []
+
+            errorFlag = False
+            errorString = ''
+
+            if className.get() == '':
+                errorString += "\nPlease provide a class name\n"
+                errorFlag = True
+            
+            if methodName.get() == '':
+                errorString += "Please provide a method name\n"
+                errorFlag = True
+
+            if self.paramCount.get() == '':
+                errorString += "Please provide a parameter number"
+                errorFlag = True
+
+            if errorFlag:
+                alertBox = controller.windowFactory("alertBox", errorString)
+                return
+
             for t,n in zip(self.paramTypes, self.paramNames):
                 params.append([t.get(), n.get()])
-            controller.addMethod(className.get(), methodName.get(), returnType.get(), params)
+            try:
+                controller.addMethod(className.get(), methodName.get(), returnType.get(), params)
+            except Exception as e:
+                errorBox = controller.windowFactory("alertBox", e)
             keyEvent(None)
 
         self.addButton('Add', 6+PARAM_LIMIT, 0, SW, buttonEvent)
@@ -258,8 +281,32 @@ class DeleteMethodBox(GenericBox):
         methodNum = self.addEntry(3, 1, ipx=0)
 
         def buttonEvent():
-            controller.deleteMethod(className.get(), methodName.get(), 
-                       controller.model.classDict[className.get()].methodDict[methodName.get()][int(methodNum.get())-1].parameters)
+
+            errorFlag = False
+            errorString = ''
+
+            if className.get() == '':
+                errorString += "Please provide a class name\n"
+                errorFlag = True
+            
+            if methodName.get() == '':
+                errorString += "Please provide a method name\n"
+                errorFlag = True
+
+            if methodNum.get() == '':
+                errorString += "Please provide a method number"
+                errorFlag = True
+
+            if errorFlag:
+                alertBox = controller.windowFactory("alertBox", errorString)
+                return
+
+            try:
+                controller.deleteMethod(className.get(), methodName.get(), 
+                        controller.model.classDict[className.get()].methodDict[methodName.get()][int(methodNum.get())-1].parameters)
+            except Exception as e:
+                alertBox = controller.windowFactory("alertBox", e)
+
             keyEvent(None)
 
         self.addButton('Delete', 4, 0, W, buttonEvent)
