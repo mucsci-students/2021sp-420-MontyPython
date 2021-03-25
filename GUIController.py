@@ -13,11 +13,6 @@ class GUIController:
         self.view = view
         self.root = self.view.master
 
-        self.model.addClass('A')
-        self.model.addMethod('A', 'testMethod', 'int', [['int', 'p1']])
-        self.model.addMethod('A', 'testMethod', 'int')
-        self.model.addMethod('A', 'testMethod', 'int', [['int', 'p1'],  ['int', 'p2']])
-
         # Creates the view's menu bar
         self.createMenuBar()
 
