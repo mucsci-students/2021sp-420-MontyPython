@@ -130,24 +130,6 @@ class ClassCollection():
                 raise ValueError(f"Invalid Type: {typ}. Valid types are: aggregation, composition, inheritance, realization")
 
             self.relationshipDict[(firstClassName, secondClassName)].typ = typ
-            
-        # -------------------------- ( Attribute ) -------------------------- #
-        ## Wrapper functions for dealing with attributes of a specific class.
-
-        #def addAttribute(self, className, attributeName):
-         #   if className not in self.classDict:
-         #       raise KeyError(f"{className} does not exist")
-         #   self.classDict[className].addAttribute(attributeName)
-
-       # def deleteAttribute(self, className, attributeName):
-         #   if className not in self.classDict:
-        #        raise KeyError(f"{className} does not exist")
-        #    self.classDict[className].deleteAttribute(attributeName)
-
-       # def renameAttribute(self, className, oldAttributeName, newAttributeName):
-         #   if className not in self.classDict:
-         #       raise KeyError(f"{className} does not exist")
-         #   self.classDict[className].renameAttribute(oldAttributeName, newAttributeName)
         
         # --------------------------- ( Method ) ----------------------------- #
 
@@ -236,14 +218,6 @@ class ClassCollection():
                 return None
 
             return self.classDict[name]
-        
-        #def getAttribute(self, className, attributeName):
-        #    return self.classDict[className].getAttribute(attributeName)
-
-        # Used in unit tests
-        # Returns all attributes that exist within the provided class
-        #def getAttributes(self, className):
-        #    return self.classDict[className].getAttributes()
 
         def getRelationship(self, firstClassName, secondClassName):
             if (firstClassName, secondClassName) not in self.relationshipDict:
