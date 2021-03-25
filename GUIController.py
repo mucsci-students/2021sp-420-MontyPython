@@ -40,6 +40,10 @@ class GUIController:
         sys.exit()
 
     def addClass(self, name):
+        if name == '':
+            alertBox = self.windowFactory("alertBox", "Please provide a class name")
+            return
+
         try:
             self.model.addClass(name)
             coordinates = self.coordinateList[self.classWidgetCount]
@@ -52,6 +56,10 @@ class GUIController:
         print(self.model.classDict)
      
     def deleteClass(self, name):
+        if name == '':
+            alertBox = self.windowFactory("alertBox", "Please provide a class name")
+            return
+
         try:
             self.model.deleteClass(name)
 
