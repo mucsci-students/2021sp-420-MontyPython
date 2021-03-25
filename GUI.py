@@ -4,7 +4,6 @@ import ClassCollection
 import tkinter as tk
 from GUIMainWindow import MainWindow
 
-
 model = ClassCollection.ClassCollection()
 
 # App instance

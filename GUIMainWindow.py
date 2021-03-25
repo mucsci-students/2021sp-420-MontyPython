@@ -1,16 +1,15 @@
 from tkinter import *
-import GUIMenuBar
 from ClassWidget import ClassWidget
-from popuptest import PopupBox
 
 # Inherits from frame class in tkinter
 class MainWindow(Frame):
 
     def __init__(self, master=None):
         Frame.__init__(self, master)   
-           
+
         # Master is root   
         self.master = master
+
         # Sets up window layout
         self.setup()
 
@@ -20,25 +19,36 @@ class MainWindow(Frame):
         #(firstname, secondname): (x1, y1, x2, y2, type )
         #Types: 0 - aggregation 1 - Composition 2 - inheritance 3- realization
         # TODO: delete when done testing
+<<<<<<< HEAD
 
         self.testWidget = ClassWidget(self, self.canvas)
+=======
+        self.testWidget = ClassWidget(self, self.canvas, "Test", 800, 800)
+        
+>>>>>>> develop
 
     def setup(self):
-
+        # Note: Menu bar is created within the controller
         # Set root's title
         self.master.title("UML Editor")
 
         # This widget will take up the full space of root
+<<<<<<< HEAD
         #self.pack(fill=BOTH, expand=1)
 
         # Menu is set up in a different file to increase readability
         self.menu = GUIMenuBar.menu(self, self.master) 
+=======
+        # TODO: Figure out why this is causing problems, and if it's needed
+        #self.pack(fill="both")
+>>>>>>> develop
 
         # Create canvas for objects to be drawn on
         self.canvas = Canvas(self.master)
         
         # Both: Fills horizontally and vertically, expand: widget expands to fill extra space
         self.canvas.pack(fill=BOTH, expand=1)
+<<<<<<< HEAD
         self.drawLines()
         #st = (200, 600)
         #nd = (100, 400)
@@ -51,6 +61,8 @@ class MainWindow(Frame):
         #self.canvas.create_line( point2[0], point2[1], nd[0], nd[1], )
         #self.canvas.create_line(300, 40, 300, 300, arrow=FIRST)
         
+=======
+>>>>>>> develop
 
     # Test popup box. Triggered in GUIMenuBar
     def boxTest(self):
@@ -80,7 +92,5 @@ class MainWindow(Frame):
     def deleteLine(self, firstClassName, secondClassName):
          del self.lineDict[(firstClassName, secondClassName)]
 
-
-        
 # root window created. Here, that would be the only window, but
 # you can later have windows within windows.
