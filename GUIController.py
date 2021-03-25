@@ -132,15 +132,15 @@ class GUIController:
         
         print(self.model.classDict)
 
-    def removeParameter(self, className, methodName, name):
+    def removeParameter(self, className, methodName, parameters, name):
         try:
-            self.model.removeParameter(className, methodName, name)
+            self.model.removeParameter(className, methodName, parameters, name)
         except Exception as e:
             print(e)
 
         print(self.model.classDict)
 
-    def changeParameter(self, className, methodName, name, newType, newName):
+    def changeParameter(self, className, methodName, parameters, name, newType, newName):
         try:
             self.model.changeParameter(className, methodName, name, newType, newName)
         except Exception as e:

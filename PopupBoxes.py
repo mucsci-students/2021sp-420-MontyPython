@@ -44,7 +44,6 @@ class GenericBox:
         entry.configure(font=self.font, text=txt)
         return entry
 
-# This needs to be modified, but it works
 class AlertBox(GenericBox):
     pass
 
@@ -115,8 +114,6 @@ class DeleteFieldBox(GenericBox):
         self.addButton('Cancel', 2, 1, E, self.top.destroy)
 
 class RenameFieldBox(GenericBox):
-    root = None
-
     def __init__(self, msg, controller):
         super().__init__(msg, controller)
        
@@ -313,13 +310,146 @@ class AddParameterBox(GenericBox):
     def __init__(self, msg, controller):
         super().__init__(msg, controller)
 
+        self.addLabel('Class Name', 0, 0)
+        self.addLabel('Method Name', 1, 0)
+        self.addLabel('Parameter Name', 2, 0)
+        self.addLabel('Parameter Type', 3, 0)
+
+        self.addLabel('Overloaded Methods', 4, 0)
+        self.overloadLabel = self.addLabel('', 4, 1)
+
+        className = self.addEntry(0, 1)
+        methodName = self.addEntry(1, 1)
+        paramType = self.addEntry(2, 1)
+        paramName = self.addEntry(3, 1)
+
+        # Yes I am defining a function within a function otherwise the lambda in
+        # the self.top.bind call is horrendous
+        # 
+        # This function essentially updates the Overloaded Methods label based
+        # on what is in the methodName textbox. If a method that is in there
+        # happens to exist, it will list every instance of the method within
+        # that class, that way the user knows not to add dupl icate methods.
+        def keyEvent(event):
+            sv = StringVar()
+            if (className.get() in controller.model.classDict and 
+                methodName.get() in controller.model.classDict[className.get()].methodDict):
+                methods = list(map(str, controller.model.classDict[className.get()].methodDict[methodName.get()]))
+                s = ''
+                for i in range(len(methods)):
+                    s += f'{i+1}. {methods[i]}\n'
+                sv.set(s.strip())
+            self.overloadLabel.configure(textvariable=sv, justify=LEFT)
+
+        self.top.bind('<Key>', lambda e: keyEvent(e))
+
+        self.addLabel('Method Number', 5, 0)
+        methodNum = self.addEntry(5, 1, ipx=0)
+
+        def buttonEvent():
+            controller.addParameter(className.get(), methodName.get(), 
+                       controller.model.classDict[className.get()].methodDict[methodName.get()][int(methodNum.get())-1].parameters, paramType.get(), paramName.get())
+            keyEvent(None)
+
+        self.addButton('Add', 6, 0, W, buttonEvent)
+        self.addButton('Cancel', 6, 1, E, self.top.destroy)
+
+
 class DeleteParameterBox(GenericBox):
     def __init__(self, msg, controller):
         super().__init__(msg, controller)
 
+        self.addLabel('Class Name', 0, 0)
+        self.addLabel('Method Name', 1, 0)
+        self.addLabel('Parameter Name', 2, 0)
+
+        self.addLabel('Overloaded Methods', 3, 0)
+        self.overloadLabel = self.addLabel('', 3, 1)
+
+        className = self.addEntry(0, 1)
+        methodName = self.addEntry(1, 1)
+        paramName = self.addEntry(2, 1)
+
+        # Yes I am defining a function within a function otherwise the lambda in
+        # the self.top.bind call is horrendous
+        # 
+        # This function essentially updates the Overloaded Methods label based
+        # on what is in the methodName textbox. If a method that is in there
+        # happens to exist, it will list every instance of the method within
+        # that class, that way the user knows not to add dupl icate methods.
+        def keyEvent(event):
+            sv = StringVar()
+            if (className.get() in controller.model.classDict and 
+                methodName.get() in controller.model.classDict[className.get()].methodDict):
+                methods = list(map(str, controller.model.classDict[className.get()].methodDict[methodName.get()]))
+                s = ''
+                for i in range(len(methods)):
+                    s += f'{i+1}. {methods[i]}\n'
+                sv.set(s.strip())
+            self.overloadLabel.configure(textvariable=sv, justify=LEFT)
+
+        self.top.bind('<Key>', lambda e: keyEvent(e))
+
+        self.addLabel('Method Number', 4, 0)
+        methodNum = self.addEntry(4, 1, ipx=0)
+
+        def buttonEvent():
+            controller.removeParameter(className.get(), methodName.get(), 
+                       controller.model.classDict[className.get()].methodDict[methodName.get()][int(methodNum.get())-1].parameters, paramName.get())
+            keyEvent(None)
+
+        self.addButton('Delete', 5, 0, W, buttonEvent)
+        self.addButton('Cancel', 5, 1, E, self.top.destroy)
+
 class ChangeParameterBox(GenericBox):
     def __init__(self, msg, controller):
         super().__init__(msg, controller)
+
+        self.addLabel('Class Name', 0, 0)
+        self.addLabel('Method Name', 1, 0)
+        self.addLabel('Old Parameter Name', 2, 0)
+        self.addLabel('New Parameter Type', 3, 0)
+        self.addLabel('New Parameter Name', 4, 0)
+
+        self.addLabel('Overloaded Methods', 5, 0)
+        self.overloadLabel = self.addLabel('', 5, 1)
+
+        className = self.addEntry(0, 1)
+        methodName = self.addEntry(1, 1)
+        oldParamName = self.addEntry(2, 1)
+        newParamType = self.addEntry(3, 1)
+        newParamName = self.addEntry(4, 1)
+
+        # Yes I am defining a function within a function otherwise the lambda in
+        # the self.top.bind call is horrendous
+        # 
+        # This function essentially updates the Overloaded Methods label based
+        # on what is in the methodName textbox. If a method that is in there
+        # happens to exist, it will list every instance of the method within
+        # that class, that way the user knows not to add dupl icate methods.
+        def keyEvent(event):
+            sv = StringVar()
+            if (className.get() in controller.model.classDict and 
+                methodName.get() in controller.model.classDict[className.get()].methodDict):
+                methods = list(map(str, controller.model.classDict[className.get()].methodDict[methodName.get()]))
+                s = ''
+                for i in range(len(methods)):
+                    s += f'{i+1}. {methods[i]}\n'
+                sv.set(s.strip())
+            self.overloadLabel.configure(textvariable=sv, justify=LEFT)
+
+        self.top.bind('<Key>', lambda e: keyEvent(e))
+
+        self.addLabel('Method Number', 6, 0)
+        methodNum = self.addEntry(6, 1, ipx=0)
+
+        def buttonEvent():
+            controller.changeParameter(className.get(), methodName.get(), 
+                       controller.model.classDict[className.get()].methodDict[methodName.get()][int(methodNum.get())-1].parameters, oldParamName.get(), newParamName.get(), newParamName.get())
+            keyEvent(None)
+
+        self.addButton('Rename', 7, 0, W, buttonEvent)
+        self.addButton('Cancel', 7, 1, E, self.top.destroy)
 
 class AddRelationshipBox(GenericBox):
     def __init__(self, msg, controller):
