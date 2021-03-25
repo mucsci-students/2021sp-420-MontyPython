@@ -105,7 +105,7 @@ class GUIController:
     def deleteMethod(self, className, methodName, methodNum):
         try:
             idx = int(methodNum) - 1
-            params = self.model.getMethod(className, methodNum, idx).parameters
+            params = self.model.getMethod(className, methodName, idx).parameters
             self.model.deleteMethod(className, methodName, params)
         except Exception as e:
             print(e)
