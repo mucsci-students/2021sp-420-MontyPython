@@ -280,7 +280,7 @@ class ClassWidget(Frame):
     def getMethodCoords(self):
         return self.canvas.coords(self.getMethodObject())
 
-    # Returns a list of two coordinateds for the top right corner of the widget. [x, y]
+    # Returns a list of two coordinateds for the top left corner of the widget. [x, y]
     def getWidgetCoords(self):
         return self.canvas.coords(self.getNameObject())
 
