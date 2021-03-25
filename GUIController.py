@@ -13,10 +13,10 @@ class GUIController:
         self.view = view
         self.root = self.view.master
 
-        # self.model.addClass('A')
-        # self.model.addMethod('A', 'testMethod', 'int', [['int', 'p1']])
-        # self.model.addMethod('A', 'testMethod', 'int')
-        # self.model.addMethod('A', 'testMethod', 'int', [['int', 'p1'],  ['int', 'p2']])
+        self.model.addClass('A')
+        self.model.addMethod('A', 'testMethod', 'int', [['int', 'p1']])
+        self.model.addMethod('A', 'testMethod', 'int')
+        self.model.addMethod('A', 'testMethod', 'int', [['int', 'p1'],  ['int', 'p2']])
 
         # Creates the view's menu bar
         self.createMenuBar()
@@ -108,25 +108,25 @@ class GUIController:
 
         print(self.model.classDict[className].methodDict)
 
-    def deleteMethod(self, className, methodName):
+    def deleteMethod(self, className, methodName, parameters):
         try:
-            self.model.deleteMethod(className, methodName)
+            self.model.deleteMethod(className, methodName, parameters)
         except Exception as e:
             print(e)
 
         print(self.model.classDict)    
 
-    def renameMethod(self, className, methodName, newName):
+    def renameMethod(self, className, methodName, parameters, newName):
         try:
-            self.model.renameMethod(className, methodName, newName)
+            self.model.renameMethod(className, methodName, parameters, newName)
         except Exception as e:
             print(e)
 
         print(self.model.classDict)
 
-    def addParameter(self, className, methodName, typ, name):
+    def addParameter(self, className, methodName, parameters, typ, name):
         try:
-            self.model.addParameter(className, methodName, typ, name)
+            self.model.addParameter(className, methodName, parameters, typ, name)
         except Exception as e:
             print(e)
         
