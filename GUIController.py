@@ -69,6 +69,21 @@ class GUIController:
         print(self.model.classDict)
         
     def renameClass(self, oldName, newName):
+        errorFlag = False
+        errorString = ''
+
+        if oldName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a class name'
+        
+        if newName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a new class name'
+        
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
+
         try:
             self.model.renameClass(oldName, newName)
 
@@ -155,6 +170,21 @@ class GUIController:
         print(self.model.classDict)
 
     def addField(self, className, name, dataType):
+        errorFlag = False
+        errorString = ''
+
+        if name == '':
+            errorFlag = True
+            errorString += '\nPlease provide a field name'
+        
+        if dataType == '':
+            errorFlag = True
+            errorString += '\nPlease provide a datatype'
+        
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
+
         try:
             self.model.addField(className, name, dataType)
 
