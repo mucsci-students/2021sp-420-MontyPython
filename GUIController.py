@@ -118,52 +118,58 @@ class GUIController:
         print(self.model.relationshipDict)
 
     def addMethod(self, className, methodName, returnType, parameters):
-        paramList = []
         try:
-            for x in range(parameters.rowCount()):
-                paramList.append((parameters.item(x,0).text(), parameters.item(x,1).text()))
-
-            self.model.addMethod(className, methodName, returnType, paramList)
+            self.model.addMethod(className, methodName, returnType, parameters)
         except Exception as e:
             errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict[className].methodDict)
 
-    def deleteMethod(self, className, methodName, parameters):
+    def deleteMethod(self, className, methodName, methodNum):
         try:
-            self.model.deleteMethod(className, methodName, parameters)
+            idx = int(methodNum) - 1
+            params = self.model.getMethod(className, methodName, idx).parameters
+            self.model.deleteMethod(className, methodName, params)
         except Exception as e:
             errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)    
 
-    def renameMethod(self, className, methodName, parameters, newName):
+    def renameMethod(self, className, methodName, methodNum, newName):
         try:
-            self.model.renameMethod(className, methodName, parameters, newName)
+            idx = int(methodNum) - 1
+            params = self.model.getMethod(className, methodNum, idx).parameters
+            self.model.renameMethod(className, methodName, params, newName)
         except Exception as e:
             errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
 
-    def addParameter(self, className, methodName, parameters, typ, name):
+    def addParameter(self, className, methodName, methodNum, typ, name):
         try:
-            self.model.addParameter(className, methodName, parameters, typ, name)
+            idx = int(methodNum) - 1
+            params = self.model.getMethod(className, methodNum, idx).parameters
+            self.model.addParameter(className, methodName, params, typ, name)
         except Exception as e:
             errorBox = self.windowFactory("alertBox", e)
         
         print(self.model.classDict)
 
-    def removeParameter(self, className, methodName, parameters, name):
+    def removeParameter(self, className, methodName, methodNum, name):
         try:
-            self.model.removeParameter(className, methodName, parameters, name)
+            idx = int(methodNum) - 1
+            params = self.model.getMethod(className, methodNum, idx).parameters
+            self.model.removeParameter(className, methodName, params, name)
         except Exception as e:
             errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
 
-    def changeParameter(self, className, methodName, parameters, name, newType, newName):
+    def changeParameter(self, className, methodName, methodNum, name, newType, newName):
         try:
-            self.model.changeParameter(className, methodName, name, newType, newName)
+            idx = int(methodNum) - 1
+            params = self.model.getMethod(className, methodNum, idx).parameters
+            self.model.changeParameter(className, methodName, params, name, newType, newName)
         except Exception as e:
             errorBox = self.windowFactory("alertBox", e)
 
@@ -210,6 +216,21 @@ class GUIController:
             errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
+    
+    def listMethods(self, className, methodName, numbered=True):
+        if className in self.model.classDict and methodName in self.model.getAllMethods(className):
+            methods = self.model.getMethodsByName(className, methodName)
+            if not numbered:
+                return '\n'.join(map(str, methods))
+            else:
+                lstStr = ''
+                for i in range(len(methods)):
+                    lstStr += f'{i+1}. {methods[i]}'
+                return lstStr.strip()
+        return ''
+    
+    def getClasses(self):
+        return list(self.model.classDict.keys())
 
     # --------------------------------
     # Menu Methods
