@@ -594,7 +594,7 @@ class AddRelationshipBox(GenericBox):
         relType = self.addDropdown(2, 1, types)
 
         self.addButton('Create', 3, 0, W,
-                        lambda: controller.addRelationship(sourceClass.get(), destClass.get(), relType.current()))
+                        lambda: controller.addRelationship(sourceClass.get(), destClass.get(), relType.get()))
         self.addButton('Cancel', 3, 1, E, self.top.destroy)
 
 class DeleteRelationshipBox(GenericBox):
@@ -626,5 +626,5 @@ class ChangeRelationshipBox(GenericBox):
         relType = self.addDropdown(2, 1, types)
 
         self.addButton('Create', 3, 0, W,
-                        lambda: controller.renameRelationship(sourceClass.get(), destClass.get(), relType.current()))
+                        lambda: controller.renameRelationship(sourceClass.get(), destClass.get(), relType.get()))
         self.addButton('Cancel', 3, 1, E, self.top.destroy)

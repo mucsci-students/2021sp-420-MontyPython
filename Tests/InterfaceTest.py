@@ -35,32 +35,13 @@ class InterfaceTest(unittest.TestCase):
         self.assertTrue(os.path.isfile("file1.monty"))
         os.remove("file1.monty")
 
-    #WARNING: deletes file1.monty in current directory to clean up after test
-    #If the test is failing, comment out the final line of "os.remove("file1.monty")"
-    #to manually check file contents
-    #NOTE: test currently only checks for logic within save function
-    #Once GUI coordinates are ironed out, update test with non-dummy coordinates
-    #Will need to import GUI files to compare file's coordinates with actual ones
-    def testSaveCorrectFileContentsGUI(self):
-        comparisonString = "[{\"foo\": [{\"buzz\": [[\"int\", []], [\"int\", [[\"int\", \"a\"], [\"int\", \"b\"]]]]}, {\"test\": \"int\"}], \"bar\": [{}, {}]}, {\"foo, bar\": \"aggregation\"}, {\"foo\": [-2, -2], \"bar\": [-2, -2]}]"
-        collection = ClassCollection()
-        collection.addClass("foo")
-        collection.addClass("bar")
-        collection.addRelationship("foo", "bar", "aggregation")
-        collection.addMethod("foo", "buzz", "int", [])
-        collection.addMethod("foo", "buzz", "int", [("int", "a"), ("int", "b")])
-        collection.addField("foo", "test", "int")
-        Interface.saveFile(collection, "file1", "gui")
-        with open("file1.monty", "r") as f:
-            lines = f.readlines()
-            self.assertTrue((lines[0] == comparisonString) and (len(lines) == 1))
-        os.remove("file1.monty")
+    #TODO: save with GUI test
 
     #WARNING: deletes file1.monty in current directory to clean up after test
     #If the test is failing, comment out the final line of "os.remove("file1.monty")"
     #to manually check file contents
     def testSaveCorrectFileContentsCLI(self):
-        comparisonString = "[{\"foo\": [{\"buzz\": [[\"int\", []], [\"int\", [[\"int\", \"a\"], [\"int\", \"b\"]]]]}, {\"test\": \"int\"}], \"bar\": [{}, {}]}, {\"foo, bar\": \"aggregation\"}, {\"foo\": [-1, -1], \"bar\": [-1, -1]}]"
+        comparisonString = "[{\"foo\": [{\"buzz\": [[\"int\", []], [\"int\", [[\"int\", \"a\"], [\"int\", \"b\"]]]]}, {\"test\": \"int\"}], \"bar\": [{}, {}]}, {\"foo, bar\": \"aggregation\"}, {\"foo\": [-1, -1], \"bar\": [-1, -1]}, {\"foo, bar\": [-1, -1, -1, -1, \"aggregation\"]}]"
         collection = ClassCollection()
         collection.addClass("foo")
         collection.addClass("bar")

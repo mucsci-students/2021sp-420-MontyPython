@@ -112,6 +112,7 @@ def saveFile(collection, fileName=None, GUI="CLI", mainWindow=None):
         relationshipsDictionary[stringKey] = value.typ
     
     coordsDictionary = {}
+    linesDictionary = {}
     #If file already exists, pulls coordinates from loading the file
     #Downside: not backwards compatible with old saved files
     #Upside: easily preserves coordinates when editing in the CLI without
@@ -136,20 +137,23 @@ def saveFile(collection, fileName=None, GUI="CLI", mainWindow=None):
         #Logic for updating class coordinates from existing file
         #If class was removed, pops coords from coordsDictionary
         #If class was added, defaults coords for that class to (-1, -1)
+        coordsDictionaryReplica = coordsDictionary.copy()
         for key in coordsDictionary.keys():
             if key not in classesDictionary.keys():
-                coordsDictionary.pop(key)
+                coordsDictionaryReplica.pop(key)
         for key in classesDictionary.keys():
             if key not in coordsDictionary.keys():
-                coordsDictionary[key] = (-1, -1)
+                coordsDictionaryReplica[key] = (-1, -1)
+        coordsDictionary = coordsDictionaryReplica
 
         #Logic for updating line coordinates from existing file
         #If relationship was removed, pops coords from linesDictionary
         #If relationship was added, default coords are (-1, -1, -1, -1)
         #Type is pulled from relationship dictionary
+        linesDictionaryReplica = linesDictionary.copy()
         for key in linesDictionary.keys():
             if key not in relationshipsDictionary.keys():
-                linesDictionary.pop(key)
+                linesDictionaryReplica.pop(key)
         for key, relationType in relationshipsDictionary.items():
             if key not in linesDictionary.keys():
                 #Automatically finds coords for each class in a relationship
@@ -165,7 +169,8 @@ def saveFile(collection, fileName=None, GUI="CLI", mainWindow=None):
                 except ValueError:
                     SecondX, SecondY = (-1, -1)
 
-                linesDictionary[key] = (FirstX, FirstY, SecondX, SecondY, relationType)
+                linesDictionaryReplica[key] = (FirstX, FirstY, SecondX, SecondY, relationType)
+        linesDictionary = linesDictionaryReplica
 
     #If file does not exist and save is invoked in the CLI,
     #all class coords are set to the default of (-1, -1)
@@ -183,8 +188,8 @@ def saveFile(collection, fileName=None, GUI="CLI", mainWindow=None):
     else:
         #temp defaulting until coord dictionary is decided upon
         #different default value for testing
-        for key in classesDictionary.keys():
-            coordsDictionary[key] = (-2, -2)
+        for key, obj in mainWindow.classDict.items():
+            coordsDictionary[key] = (obj.x, obj.y)
         #Uncomment, changed to proper formatting once GUI coordinates are ironed out
         #coordsDictionary = coords
         for classesTuple, lineCoords in mainWindow.lineDict.items():
@@ -204,7 +209,7 @@ def loadFile(collection, fileName=None, GUI="CLI", mainWindow=None):
     if fileName == None:
         raise ValueError("No file name given to load")
 
-    if coords == None and GUI.lower() == "gui":
+    if mainWindow == None and GUI.lower() == "gui":
         raise ValueError("No coordinates dictionary given")
     
     #Adds file extension if not already included
