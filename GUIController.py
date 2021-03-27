@@ -93,6 +93,25 @@ class GUIController:
         print(self.model.classDict)
 
     def addRelationship(self, firstClassName, secondClassName, typ):
+        errorFlag = False
+        errorString = ''
+       
+        if firstClassName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a first class name'
+        
+        if secondClassName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a second class name'
+
+        if typ == -1:
+            errorFlag = True
+            errorString += '\nPlease provide a type name'
+
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
+        
         try:
             self.model.addRelationship(firstClassName, secondClassName, typ)
 
@@ -102,6 +121,21 @@ class GUIController:
         print(self.model.relationshipDict)
 
     def deleteRelationship(self, firstClassName, secondClassName):
+        errorFlag = False
+        errorString = ''
+    
+        if firstClassName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a first class name'
+        
+        if secondClassName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a second class name'
+
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
+
         try:
             self.model.deleteRelationship(firstClassName, secondClassName)
         except Exception as e:
@@ -110,6 +144,25 @@ class GUIController:
         print(self.model.relationshipDict)
 
     def renameRelationship(self, firstClassName, secondClassName, typ):
+        errorFlag = False
+        errorString = ''
+    
+        if firstClassName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a first class name'
+        
+        if secondClassName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a second class name'
+
+        if typ == -1:
+            errorFlag = True
+            errorString += '\nPlease provide a type name'
+
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
+
         try:
             self.model.renameRelationship(firstClassName, secondClassName, typ)
         except Exception as e:
@@ -179,6 +232,10 @@ class GUIController:
         errorFlag = False
         errorString = ''
 
+        if className == '':
+            errorFlag = True
+            errorString += '\nPlease provide a class name'
+
         if name == '':
             errorFlag = True
             errorString += '\nPlease provide a field name'
@@ -202,6 +259,21 @@ class GUIController:
         print(self.model.classDict)
 
     def deleteField(self, className, name):
+        errorFlag = False
+        errorString = ''
+
+        if className == '':
+            errorFlag = True
+            errorString += '\nPlease provide a class name'
+
+        if name == '':
+            errorFlag = True
+            errorString += '\nPlease provide a field name'
+        
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
+
         try:
             self.model.deleteField(className, name)
         except Exception as e:
@@ -210,6 +282,25 @@ class GUIController:
         print(self.model.classDict)
 
     def renameField(self, className, oldName, newName):
+        errorFlag = False
+        errorString = ''
+
+        if className == '':
+            errorFlag = True
+            errorString += '\nPlease provide a class name'
+
+        if oldName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a field name'
+
+        if newName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a new field name'
+        
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
+
         try:
             self.model.renameField(className, oldName, newName)
         except Exception as e:

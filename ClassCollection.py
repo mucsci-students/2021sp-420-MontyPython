@@ -178,12 +178,21 @@ class ClassCollection():
          # --------------------------- ( Field ) ----------------------------- #
          #error checking is done in Class.py
         def addField(self, className, name, dataType):
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+
             self.classDict[className].addField(name,dataType)
 
         def deleteField(self, className, name):
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+
             self.classDict[className].deleteField(name)
         
         def renameField(self, className, oldName, newName):
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+                
             self.classDict[className].renameField(oldName,newName)
 
         def getField(self, className, name):
