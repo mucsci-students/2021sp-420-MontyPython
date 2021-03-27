@@ -40,12 +40,19 @@ def listRelationships(collection):
 #           }
 #       ]
 #    }
+#
 #    {
 #    (classA, classB) : type
 #    } 
+#
 #    {
 #    "class A" : (X coord, Y coord)
 #    "class B" : (X coord, Y coord)
+#    }
+#
+#    {
+#    "class A, class B" : (A's X coord, A's Y coord, B's X coord, B's Y coord, relationship type)
+#    "class B, class C" : (B's X coord, B's Y coord, C's X coord, C's Y coord, relationship type)
 #    }
 #]
 
@@ -114,14 +121,16 @@ def saveFile(collection, fileName=None, GUI="CLI", mainWindow=None):
     coordsDictionary = {}
     linesDictionary = {}
     #If file already exists, pulls coordinates from loading the file
-    #Downside: not backwards compatible with old saved files
-    #Upside: easily preserves coordinates when editing in the CLI without
+    #Easily preserves coordinates when editing in the CLI without
     #having to have direct access or even have instances of the GUI classes open
     priorExistence = os.path.exists(fileName)
 
     #If file already exists and save is invoked in the CLI, loads file to find
     #already present coordinates. Handles checks for added/deleted classes
     #since the last save. Any class added in the CLI will have coords set to (-1, -1)
+    #Any line for a relationship added in the CLI will have coords set to (-1, -1, -1, -1)
+    #Any class or relationship line added in the GUI will have its coords maintained
+    #even when editing information about the class or relationship in the CLI
     if priorExistence and GUI.lower() != "gui":
         with open(fileName, "r") as f:
             oldClassesRelationshipsCoordsLinesList = json.load(f)
@@ -196,8 +205,8 @@ def saveFile(collection, fileName=None, GUI="CLI", mainWindow=None):
             classesString = ', '.join(str(s) for s in key)  
             linesDictionary[classesString] = lineCoords
 
-    #classesDictionary, relationshipsDicttionary, and coordsDictionary are
-    #formed into a list to be json dumped to the supplied file
+    #classesDictionary, relationshipsDicttionary, coordsDictionary, and linesDictionary
+    #are formed into a list to be json dumped to the supplied file
     classesRelationshipsCoordsLinesList = [classesDictionary, relationshipsDictionary, coordsDictionary, linesDictionary]
 
     with open(fileName, "w") as f:
@@ -209,6 +218,8 @@ def loadFile(collection, fileName=None, GUI="CLI", mainWindow=None):
     if fileName == None:
         raise ValueError("No file name given to load")
 
+    #Error handling if no main window object is supplied in the GUI
+    #This error should be inaccessible for a user
     if mainWindow == None and GUI.lower() == "gui":
         raise ValueError("No coordinates dictionary given")
     
@@ -228,8 +239,12 @@ def loadFile(collection, fileName=None, GUI="CLI", mainWindow=None):
         with open(fileName, "r") as f:
             classesRelationshipsCoordsLinesList = json.load(f)
 
-        #Splits classes,relationships, and coords dictionarys
-        #from the inputed list
+        #Splits classes, relationships, class coords, and relationship
+        #line coords from the inputed list
+        #Try-except clauses supply an empty dictionary if a given
+        #dictionary is missing 
+        #This allows for backwards compatibility for files missing
+        #coordinate dictionaries
         try:
             classesDictionary = classesRelationshipsCoordsLinesList[0]
         except IndexError:
@@ -242,6 +257,10 @@ def loadFile(collection, fileName=None, GUI="CLI", mainWindow=None):
             coordsDictionary = classesRelationshipsCoordsLinesList[2]
         except IndexError:
             coordsDictionary = {}
+        try:
+            linesDictionary = classesRelationshipsCoordsLinesList[3]
+        except IndexError:
+            linesDictionary = {}
 
         #Creates a class class for each entry in the classes dictionary
         #Within each class, creates an attribute class for each attribute
@@ -265,10 +284,16 @@ def loadFile(collection, fileName=None, GUI="CLI", mainWindow=None):
             classes = key.split(", ")
             collection.addRelationship(classes[0], classes[1], value)
 
-        #Skeleton for coordinate dictionary when that gets settled in the GUI
-        if GUI.lower() == "gui" and coords != None:
+        #Pulls coordinates from file
+        #Loads coordinates for classes and relationship lines
+        #into mainWindow.classDict and mainWindow.lineDict respectfully
+        if GUI.lower() == "gui" and mainWindow != None:
             for name, loc in coordsDictionary.items():
-                coords[name] = loc
+                mainWindow.classDict[name] = loc
+            for key, value in linesDictionary.items():
+                classes = key.split(", ")
+                mainWindow.lineDict[classes] = value
+
         
     #Raises an OS Error if the file does not exist
     else:
