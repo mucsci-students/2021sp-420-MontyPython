@@ -9,8 +9,8 @@ class MainWindow(Frame):
 
         # Master is root   
         self.master = master
-
-        self.lineDict = []
+        self.lineDict = {}
+        #(firstname, secondname): (x1, y1, x2, y2, type )
         self.lineObjList = []
         self.classDict = {}
 

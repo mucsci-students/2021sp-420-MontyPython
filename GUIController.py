@@ -27,11 +27,12 @@ class GUIController:
         self.classWidgetCount = 0
         # -------------------------------------------------- * 
 
-    def open(self):
-        pass
+    def open(self, name):
+        
 
-    def save(name):
-        pass
+    def save(self, name):
+        Interface.saveFile(self.model, name, GUI='GUI', coords=)
+        # Interface.saveFile(collection, "testGUI", "GUI")
 
     def help(self):
         pass
@@ -349,7 +350,8 @@ class GUIController:
             "Change Parameter": ChangeParameterBox,
             "Add Relationship": AddRelationshipBox,
             "Delete Relationship": DeleteRelationshipBox,
-            "Change Relationship": ChangeRelationshipBox
+            "Change Relationship": ChangeRelationshipBox,
+            "Save": SaveBox
         }
         
         # Show window
