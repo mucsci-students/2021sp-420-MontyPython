@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import filedialog
 from tkinter.font import Font
 from tkinter.ttk import Combobox
+from tkinter import filedialog
 
 class GenericBox:
     root = None
@@ -58,7 +59,15 @@ class AlertBox(GenericBox):
         self.addLabel(errorString, 0, 0)
         self.frame.grab_set()
         
+class SaveBox(GenericBox):
+    def __init__(self, msg, errorMsg, controller):
+        filename = filedialog.asksaveasfilename(filetypes=[('Monty Python UML File', '*.monty')])
+        controller.save(filename)       
 
+class LoadBox(GenericBox):
+    def __init__(self, msg, errorMsg, controller):
+        filename = filedialog.askopenfilename(filetypes=[('Monty Python UML File', '*.monty')])
+        controller.load(filename)       
 
 class AddClassBox(GenericBox):
     def __init__(self, msg, errorMsg, controller):
