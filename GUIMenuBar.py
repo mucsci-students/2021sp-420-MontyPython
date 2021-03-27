@@ -10,8 +10,8 @@ def menu(controller, view, root):
     # Create file object
     file = Menu(menu, tearoff = False) 
     # Add option to file, set function to trigger
-    file.add_command(label="Open") 
-    file.add_command(label="Save")
+    file.add_command(label="Open", command= lambda: controller.windowFactory("Open")) 
+    file.add_command(label="Save", command= lambda: controller.windowFactory("Save"))
     file.add_separator()
     file.add_command(label="Help")
     file.add_separator()
