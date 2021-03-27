@@ -19,8 +19,7 @@ class FieldTests(unittest.TestCase):
         collection.addClass("A")
         collection.addField("A", "name", "String")
         collection.deleteField("A", "name")
-        self.assertIsNone( collection.getField("A", "name"))
-
+        self.assertRaises(KeyError,  collection.getField, "A", "name")
 
      # Checks if a class is successfully deleted
     def testRenameField(self):
@@ -36,11 +35,11 @@ class FieldTests(unittest.TestCase):
         collection.addClass("A")
         collection.addField("A", "name", "String")
         collection.renameField("A", "name", "surname")
-        self.assertIsNone( collection.getField("A", "name"))
+        self.assertRaises(KeyError,  collection.getField, "A", "name")
         self.assertRaises(KeyError, collection.addField, "A", "surname", "String")
         collection.deleteField("A", "surname")
-        self.assertIsNone( collection.getField("A", "name"))
-        self.assertIsNone( collection.getField("A", "surname"))
+        self.assertRaises(KeyError,  collection.getField, "A", "name")
+        self.assertRaises(KeyError,  collection.getField, "A", "surname")
 
     #test error on adding duplicate classes
     def testAddDuplicateField(self):
