@@ -27,11 +27,11 @@ class GUIController:
         self.classWidgetCount = 0
         # -------------------------------------------------- * 
 
-    def open(self):
-        pass
+    def load(self, name):
+        print(name)
 
-    def save(name):
-        pass
+    def save(self, name):
+        print(name)
 
     def help(self):
         pass
@@ -349,7 +349,9 @@ class GUIController:
             "Change Parameter": ChangeParameterBox,
             "Add Relationship": AddRelationshipBox,
             "Delete Relationship": DeleteRelationshipBox,
-            "Change Relationship": ChangeRelationshipBox
+            "Change Relationship": ChangeRelationshipBox,
+            "Save": SaveBox,
+            "Open": LoadBox
         }
         
         # Show window
