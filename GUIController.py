@@ -27,11 +27,11 @@ class GUIController:
         self.classWidgetCount = 0
         # -------------------------------------------------- * 
 
-    def open(self):
-        pass
+    def load(self, name):
+        print(name)
 
-    def save(name):
-        pass
+    def save(self, name):
+        print(name)
 
     def help(self):
         pass
@@ -40,6 +40,10 @@ class GUIController:
         sys.exit()
 
     def addClass(self, name):
+        if name == '':
+            alertBox = self.windowFactory("alertBox", "Please provide a class name")
+            return
+
         try:
             self.model.addClass(name)
             coordinates = self.coordinateList[self.classWidgetCount]
@@ -47,133 +51,279 @@ class GUIController:
             self.classWidgetCount = self.classWidgetCount + 1
             
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
      
     def deleteClass(self, name):
+        if name == '':
+            alertBox = self.windowFactory("alertBox", "Please provide a class name")
+            return
+
         try:
             self.model.deleteClass(name)
 
         except Exception as e:
-            print(e)       
+            errorBox = self.windowFactory("alertBox", e)       
 
         print(self.model.classDict)
         
     def renameClass(self, oldName, newName):
+        errorFlag = False
+        errorString = ''
+
+        if oldName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a class name'
+        
+        if newName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a new class name'
+        
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
+
         try:
             self.model.renameClass(oldName, newName)
 
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
 
     def addRelationship(self, firstClassName, secondClassName, typ):
+        errorFlag = False
+        errorString = ''
+       
+        if firstClassName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a first class name'
+        
+        if secondClassName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a second class name'
+
+        if typ == -1:
+            errorFlag = True
+            errorString += '\nPlease provide a type name'
+
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
+        
         try:
             self.model.addRelationship(firstClassName, secondClassName, typ)
             self.view.addLine(firstClassName, secondClassName, typ)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.relationshipDict)
 
     def deleteRelationship(self, firstClassName, secondClassName):
+        errorFlag = False
+        errorString = ''
+    
+        if firstClassName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a first class name'
+        
+        if secondClassName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a second class name'
+
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
+
         try:
             self.model.deleteRelationship(firstClassName, secondClassName)
             self.view.deleteLine(firstClassName, secondClassName)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.relationshipDict)
 
+
     def changeRelationship(self, firstClassName, secondClassName, typ):
+        errorFlag = False
+        errorString = ''
+    
+        if firstClassName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a first class name'
+        
+        if secondClassName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a second class name'
+
+        if typ == -1:
+            errorFlag = True
+            errorString += '\nPlease provide a type name'
+
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
         try:
             self.model.renameRelationship(firstClassName, secondClassName, typ)
             self.view.renameLine(firstClassName, secondClassName, typ)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.relationshipDict)
 
     def addMethod(self, className, methodName, returnType, parameters):
-        paramList = []
         try:
-            for x in range(parameters.rowCount()):
-                paramList.append((parameters.item(x,0).text(), parameters.item(x,1).text()))
-
-            self.model.addMethod(className, methodName, returnType, paramList)
+            self.model.addMethod(className, methodName, returnType, parameters)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict[className].methodDict)
 
-    def deleteMethod(self, className, methodName, parameters):
+    def deleteMethod(self, className, methodName, methodNum):
         try:
-            self.model.deleteMethod(className, methodName, parameters)
+            idx = int(methodNum) - 1
+            params = self.model.getMethod(className, methodName, idx).parameters
+            self.model.deleteMethod(className, methodName, params)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)    
 
-    def renameMethod(self, className, methodName, parameters, newName):
+    def renameMethod(self, className, methodName, methodNum, newName):
         try:
-            self.model.renameMethod(className, methodName, parameters, newName)
+            idx = int(methodNum) - 1
+            params = self.model.getMethod(className, methodNum, idx).parameters
+            self.model.renameMethod(className, methodName, params, newName)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
 
-    def addParameter(self, className, methodName, parameters, typ, name):
+    def addParameter(self, className, methodName, methodNum, typ, name):
         try:
-            self.model.addParameter(className, methodName, parameters, typ, name)
+            idx = int(methodNum) - 1
+            params = self.model.getMethod(className, methodNum, idx).parameters
+            self.model.addParameter(className, methodName, params, typ, name)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
         
         print(self.model.classDict)
 
-    def removeParameter(self, className, methodName, parameters, name):
+    def removeParameter(self, className, methodName, methodNum, name):
         try:
-            self.model.removeParameter(className, methodName, parameters, name)
+            idx = int(methodNum) - 1
+            params = self.model.getMethod(className, methodNum, idx).parameters
+            self.model.removeParameter(className, methodName, params, name)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
 
-    def changeParameter(self, className, methodName, parameters, name, newType, newName):
+    def changeParameter(self, className, methodName, methodNum, name, newType, newName):
         try:
-            self.model.changeParameter(className, methodName, name, newType, newName)
+            idx = int(methodNum) - 1
+            params = self.model.getMethod(className, methodNum, idx).parameters
+            self.model.changeParameter(className, methodName, params, name, newType, newName)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
 
     def addField(self, className, name, dataType):
+        errorFlag = False
+        errorString = ''
+
+        if className == '':
+            errorFlag = True
+            errorString += '\nPlease provide a class name'
+
+        if name == '':
+            errorFlag = True
+            errorString += '\nPlease provide a field name'
+        
+        if dataType == '':
+            errorFlag = True
+            errorString += '\nPlease provide a datatype'
+        
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
+
         try:
             self.model.addField(className, name, dataType)
 
             self.view.classWidgetDict[className].setField(newName)
             
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
 
     def deleteField(self, className, name):
+        errorFlag = False
+        errorString = ''
+
+        if className == '':
+            errorFlag = True
+            errorString += '\nPlease provide a class name'
+
+        if name == '':
+            errorFlag = True
+            errorString += '\nPlease provide a field name'
+        
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
+
         try:
             self.model.deleteField(className, name)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
 
     def renameField(self, className, oldName, newName):
+        errorFlag = False
+        errorString = ''
+
+        if className == '':
+            errorFlag = True
+            errorString += '\nPlease provide a class name'
+
+        if oldName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a field name'
+
+        if newName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a new field name'
+        
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
+
         try:
             self.model.renameField(className, oldName, newName)
         except Exception as e:
-            print(e)
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
+    
+    def listMethods(self, className, methodName, numbered=True):
+        if className in self.model.classDict and methodName in self.model.getAllMethods(className):
+            methods = self.model.getMethodsByName(className, methodName)
+            if not numbered:
+                return '\n'.join(map(str, methods))
+            else:
+                lstStr = ''
+                for i in range(len(methods)):
+                    lstStr += f'{i+1}. {methods[i]}'
+                return lstStr.strip()
+        return ''
+    
+    def getClasses(self):
+        return list(self.model.classDict.keys())
 
     # --------------------------------
     # Menu Methods
@@ -183,7 +333,7 @@ class GUIController:
         GUIMenuBar.menu(self, self.view, self.root)
 
     # Create a window using the factory method
-    def windowFactory(self, windowType = "alertBox"):
+    def windowFactory(self, windowType = "alertBox", errorMsg = ""):
     
         windows = {
             "alertBox": AlertBox,
@@ -201,10 +351,12 @@ class GUIController:
             "Change Parameter": ChangeParameterBox,
             "Add Relationship": AddRelationshipBox,
             "Delete Relationship": DeleteRelationshipBox,
-            "Change Relationship": ChangeRelationshipBox
+            "Change Relationship": ChangeRelationshipBox,
+            "Save": SaveBox,
+            "Open": LoadBox
         }
         
         # Show window
-        box = windows[windowType](windowType, self)
+        box = windows[windowType](windowType, errorMsg, self)
 
     

@@ -1,11 +1,12 @@
 from tkinter import *
 from tkinter.font import Font
 from tkinter.ttk import Combobox
+from tkinter import filedialog
 
 class GenericBox:
     root = None
     
-    def __init__(self, msg, controller):
+    def __init__(self, msg, errorMsg, controller):
         self.top = Toplevel(GenericBox.root)
         self.top.resizable(False, False)
         self.top.title(msg)
@@ -43,13 +44,33 @@ class GenericBox:
         entry.grid(row=r, column=c, sticky=stick, padx=px, pady=py, ipadx=ipx)
         entry.configure(font=self.font, text=txt)
         return entry
+    
+    def addDropdown(self, r, c, entries, stick=W, px=4, py=4, ipx=40):
+        cb = Combobox(self.frame, values=entries)
+        cb.grid(row=r, column=c, sticky=stick, padx=px, pady=py, ipadx=ipx)
+        cb.configure(font=self.font)
+        return cb
 
 class AlertBox(GenericBox):
-    pass
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
+        errorString = f'Error: {errorMsg}'
+        self.addLabel(errorString, 0, 0)
+        self.frame.grab_set()
+        
+class SaveBox(GenericBox):
+    def __init__(self, msg, errorMsg, controller):
+        filename = filedialog.asksaveasfilename(filetypes=[('Monty Python UML File', '*.monty')])
+        controller.save(filename)       
+
+class LoadBox(GenericBox):
+    def __init__(self, msg, errorMsg, controller):
+        filename = filedialog.askopenfilename(filetypes=[('Monty Python UML File', '*.monty')])
+        controller.load(filename)       
 
 class AddClassBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Class Name', 0, 0)
 
@@ -59,24 +80,24 @@ class AddClassBox(GenericBox):
         self.addButton('Cancel', 1, 1, E, self.top.destroy)
 
 class DeleteClassBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Class Name', 0, 0)
 
-        name = self.addEntry(0, 1)
+        name = self.addDropdown(0, 1, controller.getClasses())
 
         self.addButton('Delete', 1, 0, W, lambda: controller.deleteClass(name.get()))
         self.addButton('Cancel', 1, 1, E, self.top.destroy)
 
 class RenameClassBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Old Class Name', 0, 0)
         self.addLabel('New Class Name', 1, 0)
 
-        oldName = self.addEntry(0, 1)
+        oldName = self.addDropdown(0, 1, controller.getClasses())
         newName = self.addEntry(1, 1)
         
         self.addButton('Rename', 2, 0, W,
@@ -84,14 +105,14 @@ class RenameClassBox(GenericBox):
         self.addButton('Cancel', 2, 1, E, self.top.destroy)
 
 class AddFieldBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Class Name', 0, 0)
         self.addLabel('Field Type', 1, 0)
         self.addLabel('Field Name', 2, 0)
 
-        className = self.addEntry(0, 1)
+        className = self.addDropdown(0, 1, controller.getClasses())
         fieldType = self.addEntry(1, 1)
         fieldName = self.addEntry(2, 1)
 
@@ -100,13 +121,13 @@ class AddFieldBox(GenericBox):
         self.addButton('Cancel', 3, 1, E, self.top.destroy)
 
 class DeleteFieldBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Class Name', 0, 0)
         self.addLabel('Field Name', 1, 0)
 
-        className = self.addEntry(0, 1)
+        className = self.addDropdown(0, 1, controller.getClasses())
         fieldName = self.addEntry(1, 1)
 
         self.addButton('Delete', 2, 0, W,
@@ -114,14 +135,14 @@ class DeleteFieldBox(GenericBox):
         self.addButton('Cancel', 2, 1, E, self.top.destroy)
 
 class RenameFieldBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
        
         self.addLabel('Class Name', 0, 0)
         self.addLabel('Old Field Name', 1, 0)
         self.addLabel('New Field Name', 2, 0)
 
-        className = self.addEntry(0, 1)
+        className = self.addDropdown(0, 1, controller.getClasses())
         oldName = self.addEntry(1, 1)
         newName = self.addEntry(2, 1)
 
@@ -130,10 +151,10 @@ class RenameFieldBox(GenericBox):
         self.addButton('Cancel', 3, 1, E, self.top.destroy)
 
 class AddMethodBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
-        PARAM_LIMIT = 10
+        PARAM_LIMIT = 16
 
         self.addLabel('Class Name', 0, 0)
         self.addLabel('Return Type', 1, 0)
@@ -143,7 +164,7 @@ class AddMethodBox(GenericBox):
         self.addLabel('Overloaded Methods', 3, 0)
         self.overloadLabel = self.addLabel('', 3, 1)
 
-        className = self.addEntry(0, 1)
+        className = self.addDropdown(0, 1, controller.getClasses())
         returnType = self.addEntry(1, 1)
         methodName = self.addEntry(2, 1)
 
@@ -153,18 +174,10 @@ class AddMethodBox(GenericBox):
         self.paramCount = self.addEntry(4, 1, ipx=0)
         self.oldParamCount = ''
 
-        # Yes I am defining a function within a function otherwise the lambda in
-        # the self.top.bind call is horrendous
-        # 
-        # This function essentially updates the Overloaded Methods label based
-        # on what is in the methodName textbox. If a method that is in there
-        # happens to exist, it will list every instance of the method within
-        # that class, that way the user knows not to add duplicate methods.
+        # Function that triggers everytime a key is pressed
         def keyEvent(event):
             sv = StringVar()
-            if (className.get() in controller.model.classDict and 
-                methodName.get() in controller.model.classDict[className.get()].methodDict):
-                sv.set('\n'.join(map(str, controller.model.classDict[className.get()].methodDict[methodName.get()])))
+            sv.set(controller.listMethods(className.get(), methodName.get(), numbered=False))
             self.overloadLabel.configure(textvariable=sv, justify=LEFT)
 
             # Get the parameter count as a string from the paramCount textbox
@@ -206,8 +219,33 @@ class AddMethodBox(GenericBox):
 
         def buttonEvent():
             params = []
+
+            errorFlag = False
+            errorString = ''
+
+            if className.get() == '':
+                errorString += "\nPlease provide a class name\n"
+                errorFlag = True
+            
+            if returnType.get() == '':
+                errorString += "Please provide a return type\n"
+                errorFlag = True
+            
+            if methodName.get() == '':
+                errorString += "Please provide a method name\n"
+                errorFlag = True       
+
+            if self.paramCount.get() == '':
+                errorString += "Please provide a parameter number"
+                errorFlag = True
+
+            if errorFlag:
+                alertBox = controller.windowFactory("alertBox", errorString)
+                return
+
             for t,n in zip(self.paramTypes, self.paramNames):
                 params.append([t.get(), n.get()])
+            
             controller.addMethod(className.get(), methodName.get(), returnType.get(), params)
             keyEvent(None)
 
@@ -216,8 +254,8 @@ class AddMethodBox(GenericBox):
 
 
 class DeleteMethodBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Class Name', 0, 0)
         self.addLabel('Method Name', 1, 0)
@@ -225,7 +263,7 @@ class DeleteMethodBox(GenericBox):
         self.addLabel('Overloaded Methods', 2, 0)
         self.overloadLabel = self.addLabel('', 2, 1)
 
-        className = self.addEntry(0, 1)
+        className = self.addDropdown(0, 1, controller.getClasses())
         methodName = self.addEntry(1, 1)
 
         # Yes I am defining a function within a function otherwise the lambda in
@@ -234,16 +272,10 @@ class DeleteMethodBox(GenericBox):
         # This function essentially updates the Overloaded Methods label based
         # on what is in the methodName textbox. If a method that is in there
         # happens to exist, it will list every instance of the method within
-        # that class, that way the user knows not to add dupl icate methods.
+        # that class, that way the user knows not to add duplicate methods.
         def keyEvent(event):
             sv = StringVar()
-            if (className.get() in controller.model.classDict and 
-                methodName.get() in controller.model.classDict[className.get()].methodDict):
-                methods = list(map(str, controller.model.classDict[className.get()].methodDict[methodName.get()]))
-                s = ''
-                for i in range(len(methods)):
-                    s += f'{i+1}. {methods[i]}\n'
-                sv.set(s.strip())
+            sv.set(controller.listMethods(className.get(), methodName.get()))
             self.overloadLabel.configure(textvariable=sv, justify=LEFT)
 
         self.top.bind('<Key>', lambda e: keyEvent(e))
@@ -252,16 +284,35 @@ class DeleteMethodBox(GenericBox):
         methodNum = self.addEntry(3, 1, ipx=0)
 
         def buttonEvent():
-            controller.deleteMethod(className.get(), methodName.get(), 
-                       controller.model.classDict[className.get()].methodDict[methodName.get()][int(methodNum.get())-1].parameters)
+
+            errorFlag = False
+            errorString = ''
+
+            if className.get() == '':
+                errorString += "\nPlease provide a class name\n"
+                errorFlag = True
+            
+            if methodName.get() == '':
+                errorString += "Please provide a method name\n"
+                errorFlag = True
+
+            if methodNum.get() == '':
+                errorString += "Please provide a method number"
+                errorFlag = True
+
+            if errorFlag:
+                alertBox = controller.windowFactory("alertBox", errorString)
+                return
+
+            controller.deleteMethod(className.get(), methodName.get(), methodNum.get())
             keyEvent(None)
 
         self.addButton('Delete', 4, 0, W, buttonEvent)
         self.addButton('Cancel', 4, 1, E, self.top.destroy)
 
 class RenameMethodBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Class Name', 0, 0)
         self.addLabel('Old Method Name', 1, 0)
@@ -270,7 +321,7 @@ class RenameMethodBox(GenericBox):
         self.addLabel('Overloaded Methods', 3, 0)
         self.overloadLabel = self.addLabel('', 3, 1)
 
-        className = self.addEntry(0, 1)
+        className = self.addDropdown(0, 1, controller.getClasses())
         methodName = self.addEntry(1, 1)
         newMethodName = self.addEntry(2, 1)
 
@@ -280,16 +331,10 @@ class RenameMethodBox(GenericBox):
         # This function essentially updates the Overloaded Methods label based
         # on what is in the methodName textbox. If a method that is in there
         # happens to exist, it will list every instance of the method within
-        # that class, that way the user knows not to add dupl icate methods.
+        # that class, that way the user knows not to add duplicate methods.
         def keyEvent(event):
             sv = StringVar()
-            if (className.get() in controller.model.classDict and 
-                methodName.get() in controller.model.classDict[className.get()].methodDict):
-                methods = list(map(str, controller.model.classDict[className.get()].methodDict[methodName.get()]))
-                s = ''
-                for i in range(len(methods)):
-                    s += f'{i+1}. {methods[i]}\n'
-                sv.set(s.strip())
+            sv.set(controller.listMethods(className.get(), methodName.get()))
             self.overloadLabel.configure(textvariable=sv, justify=LEFT)
 
         self.top.bind('<Key>', lambda e: keyEvent(e))
@@ -298,17 +343,38 @@ class RenameMethodBox(GenericBox):
         methodNum = self.addEntry(4, 1, ipx=0)
 
         def buttonEvent():
-            controller.renameMethod(className.get(), methodName.get(), 
-                       controller.model.classDict[className.get()].methodDict[methodName.get()][int(methodNum.get())-1].parameters,
-                       newMethodName.get())
+            errorFlag = False
+            errorString = ''
+
+            if className.get() == '':
+                errorString += "\nPlease provide a class name\n"
+                errorFlag = True
+            
+            if methodName.get() == '':
+                errorString += "Please provide a method name\n"
+                errorFlag = True
+
+            if methodNum.get() == '':
+                errorString += "Please provide a new method name\n"
+                errorFlag = True
+
+            if newMethodName.get() == '':
+                errorString += "Please provide a method number"
+                errorFlag = True
+
+            if errorFlag:
+                alertBox = controller.windowFactory("alertBox", errorString)
+                return
+
+            controller.renameMethod(className.get(), methodName.get(), methodNum.get(), newMethodName.get())
             keyEvent(None)
 
         self.addButton('Rename', 5, 0, W, buttonEvent)
         self.addButton('Cancel', 5, 1, E, self.top.destroy)
 
 class AddParameterBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Class Name', 0, 0)
         self.addLabel('Method Name', 1, 0)
@@ -318,7 +384,7 @@ class AddParameterBox(GenericBox):
         self.addLabel('Overloaded Methods', 4, 0)
         self.overloadLabel = self.addLabel('', 4, 1)
 
-        className = self.addEntry(0, 1)
+        className = self.addDropdown(0, 1, controller.getClasses())
         methodName = self.addEntry(1, 1)
         paramType = self.addEntry(2, 1)
         paramName = self.addEntry(3, 1)
@@ -329,16 +395,10 @@ class AddParameterBox(GenericBox):
         # This function essentially updates the Overloaded Methods label based
         # on what is in the methodName textbox. If a method that is in there
         # happens to exist, it will list every instance of the method within
-        # that class, that way the user knows not to add dupl icate methods.
+        # that class, that way the user knows not to add duplicate methods.
         def keyEvent(event):
             sv = StringVar()
-            if (className.get() in controller.model.classDict and 
-                methodName.get() in controller.model.classDict[className.get()].methodDict):
-                methods = list(map(str, controller.model.classDict[className.get()].methodDict[methodName.get()]))
-                s = ''
-                for i in range(len(methods)):
-                    s += f'{i+1}. {methods[i]}\n'
-                sv.set(s.strip())
+            sv.set(controller.listMethods(className.get(), methodName.get()))
             self.overloadLabel.configure(textvariable=sv, justify=LEFT)
 
         self.top.bind('<Key>', lambda e: keyEvent(e))
@@ -347,8 +407,34 @@ class AddParameterBox(GenericBox):
         methodNum = self.addEntry(5, 1, ipx=0)
 
         def buttonEvent():
-            controller.addParameter(className.get(), methodName.get(), 
-                       controller.model.classDict[className.get()].methodDict[methodName.get()][int(methodNum.get())-1].parameters, paramType.get(), paramName.get())
+            errorFlag = False
+            errorString = ''
+
+            if className.get() == '':
+                errorString += "\nPlease provide a class name\n"
+                errorFlag = True
+            
+            if methodName.get() == '':
+                errorString += "Please provide a method name\n"
+                errorFlag = True
+
+            if paramType.get() == '':
+                errorString += "Please provide a parameter type\n"
+                errorFlag = True
+            
+            if paramName.get() == '':
+                errorString += "Please provide a parameter name\n"
+                errorFlag = True
+
+            if methodNum.get() == '':
+                errorString += "Please provide a new method number\n"
+                errorFlag = True
+
+            if errorFlag:
+                alertBox = controller.windowFactory("alertBox", errorString)
+                return
+
+            controller.addParameter(className.get(), methodName.get(), methodNum.get(), paramType.get(), paramName.get())
             keyEvent(None)
 
         self.addButton('Add', 6, 0, W, buttonEvent)
@@ -356,8 +442,8 @@ class AddParameterBox(GenericBox):
 
 
 class DeleteParameterBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Class Name', 0, 0)
         self.addLabel('Method Name', 1, 0)
@@ -366,7 +452,7 @@ class DeleteParameterBox(GenericBox):
         self.addLabel('Overloaded Methods', 3, 0)
         self.overloadLabel = self.addLabel('', 3, 1)
 
-        className = self.addEntry(0, 1)
+        className = self.addDropdown(0, 1, controller.getClasses())
         methodName = self.addEntry(1, 1)
         paramName = self.addEntry(2, 1)
 
@@ -376,16 +462,10 @@ class DeleteParameterBox(GenericBox):
         # This function essentially updates the Overloaded Methods label based
         # on what is in the methodName textbox. If a method that is in there
         # happens to exist, it will list every instance of the method within
-        # that class, that way the user knows not to add dupl icate methods.
+        # that class, that way the user knows not to add duplicate methods.
         def keyEvent(event):
             sv = StringVar()
-            if (className.get() in controller.model.classDict and 
-                methodName.get() in controller.model.classDict[className.get()].methodDict):
-                methods = list(map(str, controller.model.classDict[className.get()].methodDict[methodName.get()]))
-                s = ''
-                for i in range(len(methods)):
-                    s += f'{i+1}. {methods[i]}\n'
-                sv.set(s.strip())
+            sv.set(controller.listMethods(className.get(), methodName.get()))
             self.overloadLabel.configure(textvariable=sv, justify=LEFT)
 
         self.top.bind('<Key>', lambda e: keyEvent(e))
@@ -394,16 +474,38 @@ class DeleteParameterBox(GenericBox):
         methodNum = self.addEntry(4, 1, ipx=0)
 
         def buttonEvent():
-            controller.removeParameter(className.get(), methodName.get(), 
-                       controller.model.classDict[className.get()].methodDict[methodName.get()][int(methodNum.get())-1].parameters, paramName.get())
+            errorFlag = False
+            errorString = ''
+
+            if className.get() == '':
+                errorString += "\nPlease provide a class name\n"
+                errorFlag = True
+            
+            if methodName.get() == '':
+                errorString += "Please provide a method name"
+                errorFlag = True
+
+            if methodNum.get() == '':
+                errorString += "\nPlease provide a method number"
+                errorFlag = True
+
+            if paramName.get() == '':
+                errorString += "\nPlease provide a parameter name"
+                errorFlag = True
+
+            if errorFlag:
+                alertBox = controller.windowFactory("alertBox", errorString)
+                return
+
+            controller.removeParameter(className.get(), methodName.get(), methodNum.get(), paramName.get())
             keyEvent(None)
 
         self.addButton('Delete', 5, 0, W, buttonEvent)
         self.addButton('Cancel', 5, 1, E, self.top.destroy)
 
 class ChangeParameterBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Class Name', 0, 0)
         self.addLabel('Method Name', 1, 0)
@@ -414,7 +516,7 @@ class ChangeParameterBox(GenericBox):
         self.addLabel('Overloaded Methods', 5, 0)
         self.overloadLabel = self.addLabel('', 5, 1)
 
-        className = self.addEntry(0, 1)
+        className = self.addDropdown(0, 1, controller.getClasses())
         methodName = self.addEntry(1, 1)
         oldParamName = self.addEntry(2, 1)
         newParamType = self.addEntry(3, 1)
@@ -426,16 +528,10 @@ class ChangeParameterBox(GenericBox):
         # This function essentially updates the Overloaded Methods label based
         # on what is in the methodName textbox. If a method that is in there
         # happens to exist, it will list every instance of the method within
-        # that class, that way the user knows not to add dupl icate methods.
+        # that class, that way the user knows not to add duplicate methods.
         def keyEvent(event):
             sv = StringVar()
-            if (className.get() in controller.model.classDict and 
-                methodName.get() in controller.model.classDict[className.get()].methodDict):
-                methods = list(map(str, controller.model.classDict[className.get()].methodDict[methodName.get()]))
-                s = ''
-                for i in range(len(methods)):
-                    s += f'{i+1}. {methods[i]}\n'
-                sv.set(s.strip())
+            sv.set(controller.listMethods(className.get(), methodName.get()))
             self.overloadLabel.configure(textvariable=sv, justify=LEFT)
 
         self.top.bind('<Key>', lambda e: keyEvent(e))
@@ -444,62 +540,90 @@ class ChangeParameterBox(GenericBox):
         methodNum = self.addEntry(6, 1, ipx=0)
 
         def buttonEvent():
-            controller.changeParameter(className.get(), methodName.get(), 
-                       controller.model.classDict[className.get()].methodDict[methodName.get()][int(methodNum.get())-1].parameters, oldParamName.get(), newParamName.get(), newParamName.get())
+            errorFlag = False
+            errorString = ''
+
+            if className.get() == '':
+                errorString += "\nPlease provide a class name\n"
+                errorFlag = True
+            
+            if methodName.get() == '':
+                errorString += "Please provide a method name"
+                errorFlag = True
+
+            if oldParamName.get() == '':
+                errorString += "\nPlease provide the old parameter name"
+                errorFlag = True
+
+            if newParamType.get() == '':
+                errorString += "\nPlease provide a new parameter type"
+                errorFlag = True
+
+            if newParamName.get() == '':
+                errorString += "\nPlease provide the new parameter name"
+                errorFlag = True
+
+            if methodNum.get() == '':
+                errorString += "\nPlease provide a method number"
+                errorFlag = True
+
+            if errorFlag:
+                alertBox = controller.windowFactory("alertBox", errorString)
+                return
+
+            controller.changeParameter(className.get(), methodName.get(), methodNum.get(), 
+                                       oldParamName.get(), newParamName.get(), newParamName.get())
             keyEvent(None)
 
         self.addButton('Rename', 7, 0, W, buttonEvent)
         self.addButton('Cancel', 7, 1, E, self.top.destroy)
 
 class AddRelationshipBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Source Class', 0, 0)
         self.addLabel('Destination Class', 1, 0)
         self.addLabel('Relationship Type', 2, 0)
 
-        sourceClass = self.addEntry(0, 1)
-        destClass = self.addEntry(1, 1)
+        sourceClass = self.addDropdown(0, 1, controller.getClasses())
+        destClass = self.addDropdown(1, 1, controller.getClasses())
 
         types = ['aggregation', 'composition', 'inheritance', 'realization']
-        relType = Combobox(self.frame, values=types)
-        relType.grid(row=2, column=1, sticky=W, padx=4, pady=4)
-        relType.configure(font=self.font)
+        relType = self.addDropdown(2, 1, types)
 
         self.addButton('Create', 3, 0, W,
                         lambda: controller.addRelationship(sourceClass.get(), destClass.get(), relType.get()))
         self.addButton('Cancel', 3, 1, E, self.top.destroy)
 
 class DeleteRelationshipBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Source Class', 0, 0)
         self.addLabel('Destination Class', 1, 0)
 
-        sourceClass = self.addEntry(0, 1)
-        destClass = self.addEntry(1, 1)
+        sourceClass = self.addDropdown(0, 1, controller.getClasses())
+        destClass = self.addDropdown(1, 1, controller.getClasses())
 
         self.addButton('Delete', 2, 0, W,
                         lambda: controller.deleteRelationship(sourceClass.get(), destClass.get()))
         self.addButton('Cancel', 2, 1, E, self.top.destroy)
         
 class ChangeRelationshipBox(GenericBox):
-    def __init__(self, msg, controller):
-        super().__init__(msg, controller)
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
 
         self.addLabel('Source Class', 0, 0)
         self.addLabel('Destination Class', 1, 0)
+        self.addLabel('Relationship Type', 2, 0)
 
-        sourceClass = self.addEntry(0, 1)
-        destClass = self.addEntry(1, 1)
+        sourceClass = self.addDropdown(0, 1, controller.getClasses())
+        destClass = self.addDropdown(1, 1, controller.getClasses())
 
         types = ['aggregation', 'composition', 'inheritance', 'realization']
-        relType = Combobox(self.frame, values=types)
-        relType.grid(row=2, column=1, sticky=W, padx=4, pady=4)
-        relType.configure(font=self.font)
+        relType = self.addDropdown(2, 1, types)
 
         self.addButton('Create', 3, 0, W,
-                        lambda: controller.changeRelationship(sourceClass.get(), destClass.get(), relType.current()))
+                        lambda: controller.renameRelationship(sourceClass.get(), destClass.get(), relType.current()))
         self.addButton('Cancel', 3, 1, E, self.top.destroy)
