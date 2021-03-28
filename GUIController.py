@@ -145,7 +145,7 @@ class GUIController:
         print(self.model.relationshipDict)
 
 
-    def changeRelationship(self, firstClassName, secondClassName, typ):
+    def renameRelationship(self, firstClassName, secondClassName, typ):
         errorFlag = False
         errorString = ''
     
