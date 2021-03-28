@@ -210,20 +210,20 @@ class ClassWidget(Frame):
         if self.widgetCoordinates:
             self.widgetCoordinates.clear()
 
-        # Top middle [1]
+        # Top middle [0]
         self.widgetCoordinates.append([((self.nameBoundingBox[0] + self.nameBoundingBox[2]) / 2), self.nameBoundingBox[1]])
-        # Left middle [3]
+        # Left middle [1]
         self.widgetCoordinates.append([self.nameBoundingBox[0], ((self.nameBoundingBox[1] + self.methodBoundingBox[3]) / 2)])
-         # Right middle [4]
+         # Right middle [2]
         self.widgetCoordinates.append([self.methodBoundingBox[2], ((self.nameBoundingBox[1] + self.methodBoundingBox[3]) / 2)])
-        # Bottom middle [6]
+        # Bottom middle [3]
         self.widgetCoordinates.append([((self.methodBoundingBox[0] + self.methodBoundingBox[2]) / 2), self.methodBoundingBox[3]])
 
-        # Top left [0]
+        # Top left [4]
         self.widgetCoordinates.append([self.nameBoundingBox[0], self.nameBoundingBox[1]])
-        # Top right [2]
+        # Top right [5]
         self.widgetCoordinates.append([self.nameBoundingBox[2], self.nameBoundingBox[1]])
-        # Bottom left [5]
+        # Bottom left [6]
         self.widgetCoordinates.append([self.methodBoundingBox[0], self.methodBoundingBox[3]])
         # Bottom right [7]
         self.widgetCoordinates.append([self.methodBoundingBox[2], self.methodBoundingBox[3]])
