@@ -307,6 +307,7 @@ class GUIController:
 
         try:
             self.model.addField(className, name, dataType)
+            # This has to be called twice for it to work
             self.updateWidgetField(className)
             self.updateWidgetField(className)
             
@@ -334,6 +335,7 @@ class GUIController:
 
         try:
             self.model.deleteField(className, name)
+            # This has to be called twice for it to work
             self.updateWidgetField(className)
             self.updateWidgetField(className)
         except Exception as e:
@@ -364,6 +366,7 @@ class GUIController:
 
         try:
             self.model.renameField(className, oldName, newName)
+            # This has to be called twice for it to work
             self.updateWidgetField(className)
             self.updateWidgetField(className)
         except Exception as e:
