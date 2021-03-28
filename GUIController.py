@@ -72,7 +72,7 @@ class GUIController:
     def addRelationship(self, firstClassName, secondClassName, typ):
         try:
             self.model.addRelationship(firstClassName, secondClassName, typ)
-
+            self.view.addLine(firstClassName, secondClassName, typ)
         except Exception as e:
             print(e)
 
@@ -81,14 +81,16 @@ class GUIController:
     def deleteRelationship(self, firstClassName, secondClassName):
         try:
             self.model.deleteRelationship(firstClassName, secondClassName)
+            self.view.deleteLine(firstClassName, secondClassName)
         except Exception as e:
             print(e)
 
         print(self.model.relationshipDict)
 
-    def renameRelationship(self, firstClassName, secondClassName, typ):
+    def changeRelationship(self, firstClassName, secondClassName, typ):
         try:
             self.model.renameRelationship(firstClassName, secondClassName, typ)
+            self.view.renameLine(firstClassName, secondClassName, typ)
         except Exception as e:
             print(e)
 

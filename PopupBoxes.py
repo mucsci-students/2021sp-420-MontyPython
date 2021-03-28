@@ -468,7 +468,7 @@ class AddRelationshipBox(GenericBox):
         relType.configure(font=self.font)
 
         self.addButton('Create', 3, 0, W,
-                        lambda: controller.addRelationship(sourceClass.get(), destClass.get(), relType.current()))
+                        lambda: controller.addRelationship(sourceClass.get(), destClass.get(), relType.get()))
         self.addButton('Cancel', 3, 1, E, self.top.destroy)
 
 class DeleteRelationshipBox(GenericBox):
