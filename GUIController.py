@@ -22,6 +22,7 @@ class GUIController:
         self.usedCoordinateDict = {}
         self.classWidgetCount = 0
 
+
     def load(self, name):
         print(name)
 
@@ -307,6 +308,7 @@ class GUIController:
         try:
             self.model.addField(className, name, dataType)
             self.updateWidgetField(className)
+            self.updateWidgetField(className)
             
         except Exception as e:
             print(traceback.format_exc())
@@ -332,6 +334,7 @@ class GUIController:
 
         try:
             self.model.deleteField(className, name)
+            self.updateWidgetField(className)
             self.updateWidgetField(className)
         except Exception as e:
             print(traceback.format_exc())
@@ -361,6 +364,7 @@ class GUIController:
 
         try:
             self.model.renameField(className, oldName, newName)
+            self.updateWidgetField(className)
             self.updateWidgetField(className)
         except Exception as e:
             print(traceback.format_exc())
