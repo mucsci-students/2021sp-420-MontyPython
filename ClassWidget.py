@@ -108,9 +108,12 @@ class ClassWidget(Frame):
     # Needed for drawing boxes and moving the text
     # Bounding boxes changed to the actual box around the text after creation
     def updateBoundingBoxes(self):
-        self.nameBoundingBox = self.canvas.coords(self.getNameBoxObject())
-        self.fieldBoundingBox = self.canvas.coords(self.getFieldBoxObject())
-        self.methodBoundingBox = self.canvas.coords(self.getMethodBoxObject())
+        self.nameBoundingBox = self.canvas.bbox(self.getNameObject())
+        self.fieldBoundingBox = self.canvas.bbox(self.getFieldObject())
+        self.methodBoundingBox = self.canvas.bbox(self.getMethodObject())
+        # self.nameBoundingBox = self.canvas.coords(self.getNameBoxObject())
+        # self.fieldBoundingBox = self.canvas.coords(self.getFieldBoxObject())
+        # self.methodBoundingBox = self.canvas.coords(self.getMethodBoxObject())
     
     # Finds the box with the largest width and sets all boxes to that width
     def setTextWidths(self):
@@ -236,7 +239,7 @@ class ClassWidget(Frame):
         self.updateWidget()
 
     def setFieldText(self, txt):
-        self.canvas.itemConfig(self.getFieldObject(), text=txt)
+        self.canvas.itemconfig(self.getFieldObject(), text=txt)
         self.updateWidget()
 
     def setMethodText(self, txt):
