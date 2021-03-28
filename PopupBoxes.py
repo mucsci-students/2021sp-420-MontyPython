@@ -244,7 +244,7 @@ class AddMethodBox(GenericBox):
                 return
 
             for t,n in zip(self.paramTypes, self.paramNames):
-                params.append([t.get(), n.get()])
+                params.append((t.get(), n.get()))
             
             controller.addMethod(className.get(), methodName.get(), returnType.get(), params)
             keyEvent(None)
