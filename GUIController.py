@@ -114,7 +114,7 @@ class GUIController:
         
         try:
             self.model.addRelationship(firstClassName, secondClassName, typ)
-
+            self.view.addLine(firstClassName, secondClassName, typ)
         except Exception as e:
             errorBox = self.windowFactory("alertBox", e)
 
@@ -138,10 +138,12 @@ class GUIController:
 
         try:
             self.model.deleteRelationship(firstClassName, secondClassName)
+            self.view.deleteLine(firstClassName, secondClassName)
         except Exception as e:
             errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.relationshipDict)
+
 
     def renameRelationship(self, firstClassName, secondClassName, typ):
         errorFlag = False
@@ -162,9 +164,9 @@ class GUIController:
         if errorFlag:
             alertBox = self.windowFactory("alertBox", errorString)
             return
-
         try:
             self.model.renameRelationship(firstClassName, secondClassName, typ)
+            self.view.renameLine(firstClassName, secondClassName, typ)
         except Exception as e:
             errorBox = self.windowFactory("alertBox", e)
 
