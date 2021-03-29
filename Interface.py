@@ -168,7 +168,7 @@ def saveFile(collection, fileName=None, GUI="CLI", mainWindow=None):
                 #Automatically finds coords for each class in a relationship
                 #Supplies those coordinates to linesDictionary
                 #Exception handling failsafes to (-1, -1, -1, -1)
-                classes = classesString.split(", ")
+                classes = key.split(", ")
                 try:
                     FirstX, FirstY = coordsDictionary[classes[0]]
                 except ValueError:
@@ -178,7 +178,7 @@ def saveFile(collection, fileName=None, GUI="CLI", mainWindow=None):
                 except ValueError:
                     SecondX, SecondY = (-1, -1)
 
-                linesDictionaryReplica[key] = (FirstX, FirstY, SecondX, SecondY, relationType)
+                linesDictionaryReplica[key] = (FirstX, FirstY, SecondX, SecondY, relationType, "top")
         linesDictionary = linesDictionaryReplica
 
     #If file does not exist and save is invoked in the CLI,
@@ -188,7 +188,7 @@ def saveFile(collection, fileName=None, GUI="CLI", mainWindow=None):
             coordsDictionary[key] = (-1, -1)
         
         for classesString, relationType in relationshipsDictionary.items():
-            linesDictionary[classesString] = (-1, -1, -1, -1, relationType)
+            linesDictionary[classesString] = (-1, -1, -1, -1, relationType, "top")
 
     #Regardless of file existence, if save is invoked in the GUI,
     #uses the mainWindow object (which is required if saving in the GUI)
