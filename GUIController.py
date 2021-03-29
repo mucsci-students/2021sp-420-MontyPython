@@ -370,7 +370,6 @@ class GUIController:
             self.model.renameField(className, oldName, newName)
             # This has to be called twice for it to work
             self.updateWidgetField(className)
-            self.updateWidgetField(className)
         except Exception as e:
             print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
@@ -385,8 +384,8 @@ class GUIController:
             else:
                 lstStr = ''
                 for i in range(len(methods)):
-                    lstStr += f'{i+1}. {methods[i]}'
-                return lstStr.strip()
+                    lstStr += f'{i+1}. {methods[i]}\n'
+                return lstStr.rstrip()
         return ''
     
     def getClasses(self):
@@ -432,18 +431,18 @@ class GUIController:
 
     def updateWidgetField(self, className):
         fieldStr = ""
-        for field in self.model.classDict[className].fieldDict:
-            fieldStr += f'{self.model.classDict[className].fieldDict[field]}\n'
+        for field in self.model.getFields(className).values():
+            fieldStr += f'{field}\n'
+        fieldStr = fieldStr.rstrip()
         size = len(fieldStr)
-        fieldStr = fieldStr[:size - 1]
         self.view.classDict[className].setFieldText(fieldStr)
 
     def updateWidgetMethod(self, className):
         methodStr = ""
-        for method in self.model.classDict[className].methodDict:
-            for m in self.model.classDict[className].methodDict[method]:
-                methodStr += f'{m}\n'    
+        for methodList in self.model.getAllMethods(className).values():
+            for method in methodList:
+                methodStr += f'{method}\n'
         size = len(methodStr)
-        methodStr = methodStr[:size - 1]
+        methodStr = methodStr.rstrip()
         self.view.classDict[className].setMethodText(methodStr)  
 

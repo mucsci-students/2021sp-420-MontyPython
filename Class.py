@@ -201,7 +201,8 @@ class Class():
                 raise KeyError(f"{oldName} is not a field for {self.name}")
             if newName in self.fieldDict:
                 raise KeyError(f"{newName} is already a field for {self.name}")
-            self.fieldDict[newName] = self.fieldDict.pop(oldName)
+            oldField = self.fieldDict.pop(oldName)
+            self.fieldDict[newName] = Field(newName, oldField.dataType)
 
         def getField(self, name):
             if name not in self.fieldDict:
