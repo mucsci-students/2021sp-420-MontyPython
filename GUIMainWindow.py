@@ -12,8 +12,10 @@ class MainWindow(Frame):
         self.master = master
 
         self.lineDict = {}
+
         #(firstname, secondname): (x1, y1, x2, y2, type, side )
         #Types: 0 - aggregation 1 - Composition 2 - inheritance 3- realization
+
         self.lineObjList = []
         #list of Canvas object Identifiers
 

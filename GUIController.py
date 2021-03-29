@@ -25,9 +25,10 @@ class GUIController:
 
     def load(self, name):
         print(name)
+        Interface.loadFile(self.model, name, "GUI", self.view)
 
     def save(self, name):
-        print(name)
+        Interface.saveFile(self.model, name, "GUI", self.view)
 
     def help(self):
         pass
@@ -421,6 +422,7 @@ class GUIController:
         }
         
         # Show window
+
         box = windows[windowType](windowType, errorMsg, self)
 
     # --------------------------------
