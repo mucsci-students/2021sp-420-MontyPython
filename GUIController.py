@@ -193,7 +193,7 @@ class GUIController:
     def renameMethod(self, className, methodName, methodNum, newName):
         try:
             idx = int(methodNum) - 1
-            params = self.model.getMethod(className, methodNum, idx).parameters
+            params = self.model.getMethod(className, methodName, idx).parameters
             self.model.renameMethod(className, methodName, params, newName)
         except Exception as e:
             errorBox = self.windowFactory("alertBox", e)
@@ -203,17 +203,17 @@ class GUIController:
     def addParameter(self, className, methodName, methodNum, typ, name):
         try:
             idx = int(methodNum) - 1
-            params = self.model.getMethod(className, methodNum, idx).parameters
+            params = self.model.getMethod(className, methodName, idx).parameters
             self.model.addParameter(className, methodName, params, typ, name)
         except Exception as e:
             errorBox = self.windowFactory("alertBox", e)
         
-        print(self.model.classDict)
+        print(self.model.classDict[className].methodDict)
 
     def removeParameter(self, className, methodName, methodNum, name):
         try:
             idx = int(methodNum) - 1
-            params = self.model.getMethod(className, methodNum, idx).parameters
+            params = self.model.getMethod(className, methodName, idx).parameters
             self.model.removeParameter(className, methodName, params, name)
         except Exception as e:
             errorBox = self.windowFactory("alertBox", e)
@@ -223,7 +223,7 @@ class GUIController:
     def changeParameter(self, className, methodName, methodNum, name, newType, newName):
         try:
             idx = int(methodNum) - 1
-            params = self.model.getMethod(className, methodNum, idx).parameters
+            params = self.model.getMethod(className, methodName, idx).parameters
             self.model.changeParameter(className, methodName, params, name, newType, newName)
         except Exception as e:
             errorBox = self.windowFactory("alertBox", e)

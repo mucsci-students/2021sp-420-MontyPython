@@ -114,6 +114,7 @@ class Class():
                     found = True
             if not found:
                 raise KeyError(f'Parameter {name} does not belong to {methodName}')
+            
             # Check if removing the parameter causes identical method signatures (illegal)
             testList = self.methodDict[methodName][methodIndex].parameters.copy()
             testList.remove((typ, name))           
@@ -161,9 +162,26 @@ class Class():
             if (newType, newName) in self.methodDict[methodName][methodIndex].parameters:
                 raise KeyError(f'Parameter {newName} already exists')
             # Append the new parameter (errors will be handled in addParameter)
-            self.addParameter(methodName, parameters, newType, newName)
-            # Remove the old parameter (errors will be handled in removeParameter)
-            self.removeParameter(methodName, self.methodDict[methodName][methodIndex].parameters, name)
+            try: 
+                # Yeah this isn't pretty. This fixed some wacky errors.
+                typ = ""
+                found = False
+                for tup in self.methodDict[methodName][methodIndex].parameters:
+                    if tup[1] == name:
+                        typ = tup[0]
+                        found = True
+                if not found:
+                    raise KeyError(f'Parameter {name} does not belong to {methodName}')
+                print(f'Before {parameters}')
+                c = parameters.copy()
+                self.removeParameter(methodName, c, name)
+                print(f'Before {parameters}')
+                c.remove((typ, name))
+                print(f'{parameters} After')
+                self.addParameter(methodName, c, newType, newName)
+      
+            except Exception as e:
+                raise KeyError(f'Error changing parameter')
 
         def changeAllParameters(self, methodName, parameters, newParameters):
             # Check if method with given signature exists
