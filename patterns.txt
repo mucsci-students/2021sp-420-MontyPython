@@ -1,6 +1,7 @@
 Command - CLI commands
 Momento - Saving stack of CLI commands
-Factory Method - Building menu windows
+Factory Method #1 - Building menu windows
+Factory Method #2 - Building lines between relationships
 Model/View/Controller - GUI
 Iterator - Lots of for each loops iterating through dictionaries
 Chain of responsibility - Passing the model around to different classes
