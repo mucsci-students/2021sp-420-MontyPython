@@ -75,7 +75,7 @@ def listRelationships(collection):
 
 def saveFile(collection, fileName=None, GUI="CLI", mainWindow=None):
     #Value Error if no file name is given
-    if fileName == None or fileName.endswith("\\"):
+    if fileName == None:
         raise ValueError("No file name given to save")
 
     #Adds file extension if not already included

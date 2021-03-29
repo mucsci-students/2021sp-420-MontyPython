@@ -41,7 +41,7 @@ class InterfaceTest(unittest.TestCase):
     #If the test is failing, comment out the final line of "os.remove("file1.monty")"
     #to manually check file contents
     def testSaveCorrectFileContentsCLI(self):
-        comparisonString = "[{\"foo\": [{\"buzz\": [[\"int\", []], [\"int\", [[\"int\", \"a\"], [\"int\", \"b\"]]]]}, {\"test\": \"int\"}], \"bar\": [{}, {}]}, {\"foo, bar\": \"aggregation\"}, {\"foo\": [-1, -1], \"bar\": [-1, -1]}, {\"foo, bar\": [-1, -1, -1, -1, \"aggregation\"]}]"
+        comparisonString = "[{\"foo\": [{\"buzz\": [[\"int\", []], [\"int\", [[\"int\", \"a\"], [\"int\", \"b\"]]]]}, {\"test\": \"int\"}], \"bar\": [{}, {}]}, {\"foo, bar\": \"aggregation\"}, {\"foo\": [-1, -1], \"bar\": [-1, -1]}, {\"foo, bar\": [-1, -1, -1, -1, \"aggregation\", \"top\"]}]"
         collection = ClassCollection()
         collection.addClass("foo")
         collection.addClass("bar")
