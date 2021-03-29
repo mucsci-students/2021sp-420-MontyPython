@@ -8,7 +8,7 @@ This command line program creates a text representation of a UML diagram though 
 
 ## Package Installation
 ### Method 1 - No virtual environment
-Assuming you are running [Python 3.9.1](https://www.python.org/downloads/) or later you can run the `Install.py` script by invoking `python Install.py`. This will install all of the required packages to your system so you can run the program. If it fails however, move on to Method 2.
+Assuming you are running [Python 3.9.1](https://www.python.org/downloads/) or later you can run `python -m pip install -r requirements.txt`. This will install all of the required packages to your system so you can run the program. If it fails however, move on to Method 2.
 
 ### Method 2 - Virtual environment using venv
 If the installation script does not work for whatever reason, you can try running it within a virtual environment using `venv`
