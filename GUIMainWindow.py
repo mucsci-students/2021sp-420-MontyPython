@@ -57,6 +57,10 @@ class MainWindow(Frame):
     def addClass(self, className, x, y):
         self.classDict[className] = ClassWidget(self, self.canvas, className, x, y)
 
+    def deleteClass(self, className):
+        self.classDict[className].deleteWidgetFromCanvas()
+        del self.classDict[className]
+
     # Test popup box. Triggered in GUIMenuBar
     def boxTest(self):
         box = PopupBox("test")

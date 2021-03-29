@@ -253,4 +253,8 @@ class ClassCollection():
 
             return self.classDict[className].methodDict
         
+        def getFields(self, className):
+            if className not in self.classDict:
+                raise KeyError(f'Error: Class {className} does not exist')
+            return self.classDict[className].fieldDict
         

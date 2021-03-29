@@ -67,9 +67,9 @@ class ClassWidget(Frame):
         # Update the coordiante list for relationships
         self.updateCoordinateList()
 
-        #self.printTest()
+        #self.circleTest()
 
-    def printTest(self):
+    def circleTest(self):
         for c in self.widgetCoordinates:
             self.createCircle(c[0], c[1])
             print(c[0], c[1])
@@ -108,6 +108,9 @@ class ClassWidget(Frame):
     # Needed for drawing boxes and moving the text
     # Bounding boxes changed to the actual box around the text after creation
     def updateBoundingBoxes(self):
+        # self.nameBoundingBox = self.canvas.bbox(self.getNameObject())
+        # self.fieldBoundingBox = self.canvas.bbox(self.getFieldObject())
+        # self.methodBoundingBox = self.canvas.bbox(self.getMethodObject())
         self.nameBoundingBox = self.canvas.coords(self.getNameBoxObject())
         self.fieldBoundingBox = self.canvas.coords(self.getFieldBoxObject())
         self.methodBoundingBox = self.canvas.coords(self.getMethodBoxObject())
@@ -181,9 +184,9 @@ class ClassWidget(Frame):
 
     def deleteTextFromCanvas(self):
         if "NameText" in self.objectDict:
-            nametxt = self.getNameBoxObject()
-            fieldTxt = self.getFieldBoxObject()
-            methodTxt = self.getMethodBoxObject()
+            nameTxt = self.getNameObject()
+            fieldTxt = self.getFieldObject()
+            methodTxt = self.getMethodObject()
 
             self.canvas.delete(nameTxt)
             self.canvas.delete(fieldTxt)
