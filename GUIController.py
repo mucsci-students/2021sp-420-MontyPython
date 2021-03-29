@@ -353,7 +353,8 @@ class GUIController:
             "Delete Relationship": DeleteRelationshipBox,
             "Change Relationship": ChangeRelationshipBox,
             "Save": SaveBox,
-            "Open": LoadBox
+            "Open": LoadBox,
+            "Help": HelpBox
         }
         
         # Show window

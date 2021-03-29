@@ -68,6 +68,14 @@ class LoadBox(GenericBox):
         filename = filedialog.askopenfilename(filetypes=[('Monty Python UML File', '*.monty')])
         controller.load(filename)       
 
+class HelpBox(GenericBox):
+    def __init__(self, msg, errorMsg, controller):
+        super().__init__(msg, errorMsg, controller)
+
+        lbl = self.addLabel('To interact with the UML diagram, use the menu at the top of the window.\nTo start, create a class.\nOnce a class is created, other elements can be added, deleted, and modified.\nUp to nine classes can exist in the current form of this program.', 0, 0)
+        lbl.configure(justify=LEFT)
+        self.addButton('OK', 1, 1, S, self.top.destroy)
+
 class AddClassBox(GenericBox):
     def __init__(self, msg, errorMsg, controller):
         super().__init__(msg, errorMsg, controller)
