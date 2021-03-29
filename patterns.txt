@@ -1,0 +1,7 @@
+Command - CLI commands
+Momento - Saving stack of CLI commands
+Factory Method - Building menu windows
+Model/View/Controller - GUI
+Iterator - Lots of for each loops iterating through dictionaries
+Chain of responsibility - Passing the model around to different classes
+Interpreter - CLI cmd module interpreting commands
