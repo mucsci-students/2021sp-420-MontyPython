@@ -1,154 +1,171 @@
-# Handles exit status
-import sys
+from tkinter import *
+from ClassWidget import ClassWidget
+import math
 
-# Import Qapplication and required widgets
-from PyQt5.QtWidgets import QApplication, QWidget, QMenuBar, QMenu, QLabel, QMainWindow, QAction, QPushButton, QDesktopWidget, QGridLayout
-from PyQt5.QtGui import QPainter, QPen, QBrush
-from PyQt5.QtCore import Qt
-
-from GUIClassWidget import ClassWidget
-
-class MainWindow(QWidget):
+# Inherits from frame class in tkinter
+class MainWindow(Frame):
+    
+    def __init__(self, master=None):
+        Frame.__init__(self, master)   
         
-    def __init__(self, parent = None):
-        super(MainWindow, self).__init__(parent)
+        # Master is root   
+        self.master = master
+
+        self.lineDict = {}
+
+        #(firstname, secondname): (x1, y1, x2, y2, type, side )
+        #Types: 0 - aggregation 1 - Composition 2 - inheritance 3- realization
+
+        self.lineObjList = []
+        #list of Canvas object Identifiers
+
+        self.classDict = {}
+
+        # Sets up window layout
+        self.setup()      
+
+    def setup(self):
+        # Note: Menu bar is created within the controller
+        # Set root's title
+        self.master.title("UML Editor")
+
+        # This widget will take up the full space of root
+
+        #self.pack(fill=BOTH, expand=1)
+
+        # Menu is set up in a different file to increase readability
+        #self.menu = GUIMenuBar.menu(self, self.master) 
+
+        # Create canvas for objects to be drawn on
+        self.canvas = Canvas(self.master)
         
-        self.menuObjects = {}
-        self.RelationshipCoordiantes = {}    #[(joe, secondClassName)] = [x1, y1, x2, y2]
-        #self.addRelationshipLine("firstClassName", "secondClassName", 200, 100, 400, 200)
-        #self.deleteRelationshipLine("firstClassName", "secondClassName")
-        self.classWidgetDict = {}
-        self.classLayoutDict = {}
+        # Both: Fills horizontally and vertically, expand: widget expands to fill extra space
+        self.canvas.pack(fill=BOTH, expand=1)
+
+        self.drawLines()
+        #st = (200, 600)
+        #nd = (100, 400)
+       
+        #point1 = ((nd[0] - st[0]) / 3 + st[0], (nd[1] - st[1]) / 3 + st[1])
+        #point2  = ((((nd[0] - st[0]) / 3) * 1) + st[0] , (((nd[1] - st[1]) / 3) * 1)  + st[1])
+        #point3
+        #point4
+        #self.canvas.create_line(st[0], st[1], point1[0], point1[1], )
+        #self.canvas.create_line( point2[0], point2[1], nd[0], nd[1], )
+        #self.canvas.create_line(300, 40, 300, 300, arrow=FIRST)
+
+
+    
+    def addClass(self, className, x, y):
+        self.classDict[className] = ClassWidget(self, self.canvas, className, x, y)
+
+    def deleteClass(self, className):
+        self.classDict[className].deleteWidgetFromCanvas()
+        del self.classDict[className]
+
+    # Test popup box. Triggered in GUIMenuBar
+    def boxTest(self):
+        box = PopupBox("test")
+
+
+    def drawLines(self):
+
+        # If it's not empty
+        if self.lineObjList:
+            #clear the list of canvas objects
+            for i in self.lineObjList:
+                self.canvas.delete(i)
+        # If it's not empty
+        if self.lineDict:
+            #update the list of canvas objects using the lineDictionary
+            #for key, value in d.items():
+            for key, line in self.lineDict.items():
+                if(line[4] == 0): #0 - aggregation               
+                    if(line[5] == 'top'):
+                        self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2], line[3] - 10 ))
+                        self.lineObjList.append(self.canvas.create_polygon(line[2], line[3], line[2] + 5 , line[3] - 5 ,line[2], line[3] - 10 ,line[2] - 5, line[3] - 5,fill="white", outline = "black"))
+                    if(line[5] == 'bottom'):
+                        self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2], line[3] + 10 ))
+                        self.lineObjList.append(self.canvas.create_polygon(line[2], line[3], line[2] + 5 , line[3] + 5 ,line[2], line[3] + 10 ,line[2] - 5, line[3] + 5,fill="white", outline = "black"))
+                    if(line[5] == 'left'):
+                        self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2] - 10, line[3]))
+                        self.lineObjList.append(self.canvas.create_polygon(line[2], line[3], line[2] - 5 , line[3] - 5 ,line[2] - 10, line[3] ,line[2] - 5, line[3] + 5,fill="white", outline = "black"))
+                    if(line[5] == 'right'):
+                        self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2] + 10, line[3] ))
+                        self.lineObjList.append(self.canvas.create_polygon(line[2], line[3], line[2] + 5 , line[3] - 5 ,line[2] + 10, line[3] ,line[2] + 5, line[3] + 5,fill="white", outline = "black"))
+                if (line[4] == 1): #1 - Composition
+                    if(line[5] == 'top'):
+                        self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2], line[3] - 10 ))
+                        self.lineObjList.append(self.canvas.create_polygon(line[2], line[3], line[2] + 5 , line[3] - 5 ,line[2], line[3] - 10 ,line[2] - 5, line[3] - 5, fill="black", outline = "black"))
+                    if(line[5] == 'bottom'):
+                        self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2], line[3] + 10 ))
+                        self.lineObjList.append(self.canvas.create_polygon(line[2], line[3], line[2] + 5 , line[3] + 5 ,line[2], line[3] + 10 ,line[2] - 5, line[3] + 5, fill="black", outline = "black"))
+                    if(line[5] == 'left'):
+                        self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2] - 10, line[3]))
+                        self.lineObjList.append(self.canvas.create_polygon(line[2], line[3], line[2] - 5 , line[3] - 5 ,line[2] - 10, line[3] ,line[2] - 5, line[3] + 5, fill="black", outline = "black"))
+                    if(line[5] == 'right'):
+                        self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2] + 10, line[3] ))
+                        self.lineObjList.append(self.canvas.create_polygon(line[2], line[3], line[2] + 5 , line[3] - 5 ,line[2] + 10, line[3] ,line[2] + 5, line[3] + 5, fill="black"))
+                if (line[4] == 2): #2 - inheritance
+                    self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2], line[3], arrow=LAST))
+                if(line[4] == 3): #3 - realization
+                    self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2], line[3], dash=(5, 1), arrow=LAST))
+    
+    def addLine(self, firstClassName, secondClassName, typ):
+        #Find coordinates for shortest distance
+        retVal = self.findShortestDistance(firstClassName, secondClassName)
+        bothCoords = retVal[0]
+        cord1 = bothCoords[0]
+        cord2 = bothCoords[1]
+        side = retVal[1]
+        typeList = ['aggregation', 'composition', 'inheritance', 'realization']
+        self.lineDict[(firstClassName, secondClassName)] = [cord1[0], cord1[1], cord2[0], cord2[1], typeList.index(typ), side]
+        self.drawLines()
+        self.canvas.update_idletasks
+
+    def deleteLine(self, firstClassName, secondClassName):
+        del self.lineDict[(firstClassName, secondClassName)]
+        self.drawLines()
+
+    def renameLine(self, firstClassName, secondClassName, typ):
+        del self.lineDict[(firstClassName, secondClassName)]
+        self.drawLines()
+        self.addLine(firstClassName, secondClassName, typ)
+        self.drawLines()
+
+    def findShortestDistance(self, firstClassName, secondClassName):
+        # Attain list of Snaps from the classes
+        firstClassSnaps = self.classDict[firstClassName].widgetCoordinates
+        secondClassSnaps = self.classDict[secondClassName].widgetCoordinates
+        self.shortestDistance = 1000000
+        firstClassCoord = 0
+        secondClassCoord = 0
+
+        #iterate through all pairs of coordinates 
+        for coord1 in firstClassSnaps:
+            for coord2 in secondClassSnaps:  
+                #calculate distance between points              
+                XDis = coord1[0] - coord2[0]
+                YDis = coord1[1] - coord2[1]
+                self.currentDistance = abs(YDis) + abs(XDis)
+                #check if any previous points were closer, it not. Replace it with the current distance
+                if (round(self.currentDistance) < self.shortestDistance):
+                    self.shortestDistance = self.currentDistance
+                    firstClassCoord = coord1
+                    secondClassCoord = coord2
+
+
+        if(secondClassCoord[0] == self.classDict[secondClassName].x):
+            return [(firstClassCoord, secondClassCoord), 'left']
         
-        self.drawWindow()
-        self.centerWindow()
+        if(secondClassCoord[0] == self.classDict[secondClassName].methodBoundingBox[2]):
+            return [(firstClassCoord, secondClassCoord), 'right']
 
-        self.layout = QGridLayout()
+        if(secondClassCoord[1] == self.classDict[secondClassName].y):
+            return [(firstClassCoord, secondClassCoord), 'top']
+    
         
-        self.setLayout(self.layout)
-
-        self.drawMenuBar()
-
-        #self.addClassWidget(100, 200, "test", "", "")
-        #self.showMaximized()
-        
-
-    #def windowSetup(self):
-        #self.drawWindow()
-        #self.centerWindow()
-        #self.drawMenuBar()
-        #for widget in self.classWidgetDict.values():
-            #widget.setParent = self
-            #widget.repaint()
+        #return the closet points between the two classes
+        return [(firstClassCoord, secondClassCoord), 'bottom']
 
 
-    def drawWindow(self):
-        self.setWindowTitle('UML Editor')
-        # Width, height
-        self.resize(1000, 900)
-
-        # TODO: For sprint 3, create scroll bar
-
-        # Style sheet can be used on all parts of GUI
-        self.setStyleSheet(open('GUIStyleSheet.css').read()) 
-
-    def centerWindow(self):
-        # Get widget geometry
-        widgetGeo = self.frameGeometry()
-        # Find the center of the desktop 
-        centerScreen = QDesktopWidget().availableGeometry().center()
-        # Move the widget center to the center of the screen
-        widgetGeo.moveCenter(centerScreen)
-        self.move(widgetGeo.topLeft())
-        
-    def drawMenuBar(self):
-        # Create bar
-        bar = QMenuBar(self)
-        self.layout.setMenuBar(bar)
-        # w, h
-        # TODO: Fix this so it goes across when window is resized
-        # This is a sketchy fix
-        #bar.resize(10000, 30)
-        
-
-        # Add menus to bar
-        menuFile = bar.addMenu("File")
-        menuClass = bar.addMenu("Classes")
-        menuField = bar.addMenu("Fields")
-        menuMethod = bar.addMenu("Methods")
-        menuRelationship = bar.addMenu("Relationships")
-        
-        # Add submenus and connect signals to them
-        # Submenu: File  
-        #self.menuObjects["Open"] = menuFile.addAction("Open")
-        #self.menuObjects["Save"] = menuFile.addAction("Save")
-        #menuFile.addSeparator()
-        self.menuObjects["Help"] = menuFile.addAction("Help")
-        #menuFile.addSeparator()
-        self.menuObjects["Exit"] = menuFile.addAction("Exit")
-
-        # Submenu: Edit Elements -- Class
-        self.menuObjects["Add Class"] = menuClass.addAction("Add Class")
-        self.menuObjects["Delete Class"] = menuClass.addAction("Delete Class")
-        self.menuObjects["Rename Class"] = menuClass.addAction("Rename Class")
-
-        # Submenu: Edit Elements -- Field
-        self.menuObjects["Add Field"] = menuField.addAction("Add Field")
-        self.menuObjects["Delete Field"] = menuField.addAction("Delete Field")
-        self.menuObjects["Rename Field"] = menuField.addAction("Rename Field")
-
-        # Submenu: Edit Elements -- Method
-        self.menuObjects["Add Method"] = menuMethod.addAction("Add Method")
-        #self.menuObjects["Delete Method"] = menuMethod.addAction("Delete Method")
-        #self.menuObjects["Rename Method"] = menuMethod.addAction("Rename Method")
-       # menuMethod.addSeparator()
-
-        # Submenu: Edit Elements -- Parameter
-        #self.menuObjects["Add Parameter"] = menuMethod.addAction("Add Parameter")
-        #self.menuObjects["Delete Parameter"] = menuMethod.addAction("Delete Parameter")
-        #self.menuObjects["Change Parameter"] = menuMethod.addAction("Change Parameter")
-
-        # Submenu: Edit Elements -- Relationship
-        self.menuObjects["Add Relationship"] = menuRelationship.addAction("Add Relationship")
-        self.menuObjects["Delete Relationship"] = menuRelationship.addAction("Delete Relationship")
-        self.menuObjects["Change Relationship"] = menuRelationship.addAction("Change Relationship")
-
-    def paintEvent(self, event):
-        paint = QPainter()
-        paint.begin(self)
-        paint.fillRect(0, 0, 2000, 2000, QBrush(Qt.white))
-        self.drawLines(paint)
-        paint.end()
-
-
-    def drawLines(self, paint):
-        penSolid = QPen(Qt.black, 2)
-        paint.setPen(penSolid)
-        #paint.drawLine(400, 100, 200, 100)
-        for key, x in self.RelationshipCoordiantes.items():
-            paint.drawLine(x[0], x[1], x[2], x[3])
-
-
-    def addRelationshipLine(self, firstClassName, secondClassName, x1, y1, x2, y2):
-        self.RelationshipCoordiantes[(firstClassName, secondClassName)] = [x1, y1, x2, y2]
-
-    def deleteRelationshipLine(self, firstClassName, secondClassName):
-        del self.RelationshipCoordiantes[(firstClassName, secondClassName)]
-
-    def addClassWidget(self, row, column, name, field, method):
-        self.classWidgetDict[name] = ClassWidget(self, name, field, method)
-        self.classLayoutDict[name] = [row, column]
-        self.layout.addWidget(self.classWidgetDict[name], row, column)
-        
-# ----------- Anything below this line can be ignored until sprint 3 ----------- #
-
-    # TODO
-    def createRClickMenu(self):
-        pass
-        # Causes widgets that have actions to show them in a context menu
-        # https://www.youtube.com/watch?v=75yvkmXE0wM
-        #classLabel.setContextMenuPolicy(Qt.ActionsContextMenu)
-        #classLabel.addAction("Delete Relationship")
-
-    # TODO: QMessageBox for popups like "Are you sure you'd like to save?"
-    # TODO - Make sure window size is saved when user saves the state of the program

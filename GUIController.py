@@ -1,10 +1,9 @@
 import sys
 from ClassCollection import ClassCollection
-from PyQt5.QtWidgets import QLabel
-
-import GUIController, GUIClassMenu, GUIRelationshipMenu, GUIFieldMenu, GUIParameterMenu, GUIMethodMenu, GUIBrowseFiles, GUIAlertWindow, Interface
-from GUIClassWidget import ClassWidget
-
+import Interface
+from PopupBoxes import *
+import GUIMenuBar
+import traceback
 
 # A default collection
 collection = ClassCollection()
@@ -13,64 +12,23 @@ class GUIController:
     def __init__(self, model, view):
         self.model = model
         self.view = view
+        self.root = self.view.master
 
-        # TODO: For sprint 3, one of the biggest flaws in this is it doesn't scale for the class widget size. Fix this and
-        # create something that dynamically scales
-        # With the way this is set up now, this supports 9 classes being in the diagram at once. In future versions, remove this restriction
-        # TODO: Move these to the controller
-        #self.coordinateList = [[50, 100], [50, 400], [400, 100], [400, 400], [750, 100], [750, 400], [50, 750], [400, 750], [750, 750]]
-        self.unusedGridList = [[0, 0], [0, 1], [1, 0], [1, 1], [2, 0], [2, 1], [0, 2], [1, 2], [2, 2]]
-        self.usedGridDict = {}
-        #self.classWidgetDict = {}
-        # Update this when classes are added/removed to get the correct coordinates
-        # TODO: throw an error if user tries to add more than 9 classes. Say only 9 can be displayed
+        # Creates the view's menu bar
+        self.createMenuBar()
+
+        # TODO: Delete this and related code once classes can move
+        self.coordinateList = [[50, 100], [50, 400], [400, 100], [400, 400], [750, 100], [750, 400], [50, 750], [400, 750], [750, 750]]
+        self.usedCoordinateDict = {}
         self.classWidgetCount = 0
 
-        #self.setSignal("Open", self.openMenu)
-        #self.setSignal("Save", self.saveMenu)
 
-        self.setSignal("Help", self.helpMenu)
-        self.setSignal("Exit", self.exit)
+    def load(self, name):
+        print(name)
+        Interface.loadFile(self.model, name, "GUI", self.view)
 
-        self.setSignal("Add Class", self.addClassMenu)
-        self.setSignal("Delete Class", self.delClassMenu)
-        self.setSignal("Rename Class", self.renClassMenu)
-
-        self.setSignal("Add Field", self.addFieldMenu)
-        self.setSignal("Delete Field", self.delFieldMenu)
-        self.setSignal("Rename Field", self.renFieldMenu)
-
-        self.setSignal("Add Method", self.addMethodMenu)
-        #self.setSignal("Delete Method", self.delMethodMenu)
-        #self.setSignal("Rename Method", self.renMethodMenu)
-
-        #self.setSignal("Add Parameter", self.addParamMenu)
-        #self.setSignal("Delete Parameter", self.delParamMenu)
-        #self.setSignal("Change Parameter", self.chgParamMenu)
-
-        self.setSignal("Add Relationship", self.addRelationshipMenu)
-        self.setSignal("Delete Relationship", self.delRelationshipMenu)
-        self.setSignal("Change Relationship", self.renRelationshipMenu)
-
-        # TODO: Delete these when done testing
-        # classWidget = ClassWidget(view, self.coordinateList[0][0], self.coordinateList[0][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
-        #classWidget = ClassWidget(view, self.coordinateList[1][0], self.coordinateList[1][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
-        #classWidget = ClassWidget(view, self.coordinateList[2][0], self.coordinateList[2][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
-        #classWidget = ClassWidget(view, self.coordinateList[3][0], self.coordinateList[3][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
-        #classWidget = ClassWidget(view, self.coordinateList[4][0], self.coordinateList[4][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
-        #classWidget = ClassWidget(view, self.coordinateList[5][0], self.coordinateList[5][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
-        #classWidget = ClassWidget(view, self.coordinateList[6][0], self.coordinateList[6][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
-        #classWidget = ClassWidget(view, self.coordinateList[7][0], self.coordinateList[7][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
-        #classWidget = ClassWidget(view, self.coordinateList[8][0], self.coordinateList[8][1], "Book", "title: String\nauthors : String[]", "getTitle(): String[]\ngetAuthors() : String[]\naddAuthor(name)")
-
-    def setSignal(self, name, function):
-        self.view.menuObjects[name].triggered.connect(function)
-
-    def open(self):
-        pass
-
-    def save(name):
-        pass
+    def save(self, name):
+        Interface.saveFile(self.model, name, "GUI", self.view)
 
     def help(self):
         pass
@@ -79,239 +37,413 @@ class GUIController:
         sys.exit()
 
     def addClass(self, name):
+        if name == '':
+            alertBox = self.windowFactory("alertBox", "Please provide a class name")
+            return
+
+        # TODO: Once classes are able to be moved, remove this
+        if self.classWidgetCount == 9:
+                alertBox = self.windowFactory("alertBox", "Only 9 classes are able to be added to the GUI verison of this program.")
+                return
+
         try:
             self.model.addClass(name)
-            # If the coordinate list isn't empty
-            if self.unusedGridList:
-                # Set row and column
-                row = self.unusedGridList[0][0]
-                column = self.unusedGridList[0][1]
-
-                # Add to the view
-                self.view.addClassWidget(row, column, name, "", "")
-
-                # Add coordinate to the used grid dictionary by the class name
-                self.usedGridDict[name] = self.unusedGridList[0]
-
-                # Delete from the unused list, because it's now being used
-                del self.unusedGridList[0]
-
-
+            # Update number of widgets on screen
+            self.classWidgetCount = self.classWidgetCount + 1
+            # Get the coordinates from the coordinateList at index 0
+            coordinates = self.coordinateList[0]
+            # Add class based on thoes coordinates
+            self.view.addClass(name, coordinates[0], coordinates[1])
+            # Move those coordinates to the used coordinate dict, remove them from the normal coordinate list
+            self.usedCoordinateDict[name] = coordinates
+            self.coordinateList.remove(coordinates)
+            
         except Exception as e:
-            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
-            print(e)
+            print(traceback.format_exc())
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
      
-
     def deleteClass(self, name):
+        if name == '':
+            alertBox = self.windowFactory("alertBox", "Please provide a class name")
+            return
+
         try:
             self.model.deleteClass(name)
+            # Remove the class from the view
+            self.view.deleteClass(name)
+            # Update number of classes on screen
+            self.classWidgetCount = self.classWidgetCount - 1
+            # Remove coords from used coord dict, add back to coordinate list
+            coords = self.usedCoordinateDict.pop(name)
+            self.coordinateList.append(coords)
 
-            self.view.classWidgetDict[name].deleteLater()
-            # Free the coordinates
-            self.unusedGridList.append(self.usedGridDict[name])
-            del self.usedGridDict[name]
-            #TODO: Figure out how to "free" spot on grid for new widgets
-            # TODO: Do relationships break?
         except Exception as e:
-            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
-            print(e)
-        
+            print(traceback.format_exc())
+            errorBox = self.windowFactory("alertBox", e)       
 
         print(self.model.classDict)
-        # Take the name of the class from the menu, update the classcollection, and delete the class from the main window
         
     def renameClass(self, oldName, newName):
+        errorFlag = False
+        errorString = ''
+
+        if oldName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a class name'
+        
+        if newName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a new class name'
+        
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
+
         try:
             self.model.renameClass(oldName, newName)
-            self.view.classWidgetDict[oldName].setName(newName)
+
+            # Update view
+            self.view.classDict[oldName].setNameText(newName)
+            self.view.classDict[oldName].updateWidget()
+            self.view.classDict[newName] = self.view.classDict.pop(oldName)
+
+            # Change coordinate dict name to match new class name
+            coords = self.usedCoordinateDict.pop(oldName)
+            self.usedCoordinateDict[newName] = coords
+
         except Exception as e:
-            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
-            print(e)
+            print(traceback.format_exc())
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
 
     def addRelationship(self, firstClassName, secondClassName, typ):
+        errorFlag = False
+        errorString = ''
+       
+        if firstClassName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a first class name'
+        
+        if secondClassName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a second class name'
+
+        if typ == -1:
+            errorFlag = True
+            errorString += '\nPlease provide a type name'
+
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
+        
         try:
             self.model.addRelationship(firstClassName, secondClassName, typ)
-
-            firstClassCoords = self.view.menuObjects[firstClassName].getWidgetMiddle()
-            #firstClassCoords = self.usedGridDict[firstClassName]
-            print(firstClassCoords)
-            secondClassCoords = self.view.menuObjects[secondClassName].getWidgetMiddle()
-            #secondClassCoords = self.usedGridDict[secondClassName]
-            print(secondClassCoords)
-            
-            self.view.update()
-            self.view.addRelationshipLine(firstClassName, secondClassName, firstClassCoords[0], firstClassCoords[1], secondClassCoords[0], secondClassCoords[1])
+            self.view.addLine(firstClassName, secondClassName, typ)
         except Exception as e:
-            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
-            print(e)
+            print(traceback.format_exc())
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.relationshipDict)
 
     def deleteRelationship(self, firstClassName, secondClassName):
+        errorFlag = False
+        errorString = ''
+    
+        if firstClassName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a first class name'
+        
+        if secondClassName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a second class name'
+
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
+
         try:
             self.model.deleteRelationship(firstClassName, secondClassName)
+            self.view.deleteLine(firstClassName, secondClassName)
         except Exception as e:
-            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
-            print(e)
+            print(traceback.format_exc())
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.relationshipDict)
 
+
     def renameRelationship(self, firstClassName, secondClassName, typ):
+        errorFlag = False
+        errorString = ''
+    
+        if firstClassName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a first class name'
+        
+        if secondClassName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a second class name'
+
+        if typ == -1:
+            errorFlag = True
+            errorString += '\nPlease provide a type name'
+
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
         try:
             self.model.renameRelationship(firstClassName, secondClassName, typ)
+            self.view.renameLine(firstClassName, secondClassName, typ)
         except Exception as e:
-            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
-            print(e)
+            print(traceback.format_exc())
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.relationshipDict)
 
     def addMethod(self, className, methodName, returnType, parameters):
-        paramList = []
         try:
-            for x in range(parameters.rowCount()):
-                paramList.append((parameters.item(x,0).text(), parameters.item(x,1).text()))
+            self.model.addMethod(className, methodName, returnType, parameters)
+            
+            # Update the class widget
+            # TODO: Stopped here. This isn't working
+            # methodStr = ""
+            # for m in self.model.classDict[className].methodDict:
+            #     methodStr += m[0] 
+            #     if len(m) > 1:
+            #         for param in m[1]:
+            #             methodStr += param + " "
+            #     methodStr += "\n"
+            # self.view.classDict[className].setMethodText(methodStr)
+            # self.view.classDict[className].updateWidget()
 
-            self.model.addMethod(className, methodName, returnType, paramList)
+            self.updateWidgetMethod(className)
+
         except Exception as e:
-            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
-            print(e)
+            print(traceback.format_exc())
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict[className].methodDict)
 
-    def deleteMethod(self, className, methodName):
+    def deleteMethod(self, className, methodName, methodNum):
         try:
-            self.model.deleteMethod(className, methodName)
+            idx = int(methodNum) - 1
+            params = self.model.getMethod(className, methodName, idx).parameters
+            self.model.deleteMethod(className, methodName, params)
+            self.updateWidgetMethod(className)
         except Exception as e:
-            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
-            print(e)
+            print(traceback.format_exc())
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)    
 
-    def renameMethod(self, className, methodName, newName):
+    def renameMethod(self, className, methodName, methodNum, newName):
         try:
-            self.model.renameMethod(className, methodName, newName)
+            idx = int(methodNum) - 1
+            params = self.model.getMethod(className, methodName, idx).parameters
+            self.model.renameMethod(className, methodName, params, newName)
+            self.updateWidgetMethod(className)
         except Exception as e:
-            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
-            print(e)
+            print(traceback.format_exc())
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
 
-    def addParameter(self, className, methodName, typ, name):
+    def addParameter(self, className, methodName, methodNum, typ, name):
         try:
-            self.model.addParameter(className, methodName, typ, name)
+            idx = int(methodNum) - 1
+            params = self.model.getMethod(className, methodName, idx).parameters
+            self.model.addParameter(className, methodName, params, typ, name)
+            self.updateWidgetMethod(className)
         except Exception as e:
-            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
-            print(e)
+            print(traceback.format_exc())
+            errorBox = self.windowFactory("alertBox", e)
         
+        print(self.model.classDict[className].methodDict)
+
+    def removeParameter(self, className, methodName, methodNum, name):
+        try:
+            idx = int(methodNum) - 1
+            params = self.model.getMethod(className, methodName, idx).parameters
+            self.model.removeParameter(className, methodName, params, name)
+            self.updateWidgetMethod(className)
+        except Exception as e:
+            print(traceback.format_exc())
+            errorBox = self.windowFactory("alertBox", e)
+
         print(self.model.classDict)
 
-    def removeParameter(self, className, methodName, name):
+    def changeParameter(self, className, methodName, methodNum, name, newType, newName):
         try:
-            self.model.removeParameter(className, methodName, name)
+            idx = int(methodNum) - 1
+            params = self.model.getMethod(className, methodName, idx).parameters
+            self.model.changeParameter(className, methodName, params, name, newType, newName)
+            self.updateWidgetMethod(className)
         except Exception as e:
-            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
-            print(e)
-
-        print(self.model.classDict)
-
-    def changeParameter(self, className, methodName, name, newType, newName):
-        try:
-            self.model.changeParameter(className, methodName, name, newType, newName)
-        except Exception as e:
-            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
-            print(e)
+            print(traceback.format_exc())
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
 
     def addField(self, className, name, dataType):
+        errorFlag = False
+        errorString = ''
+
+        if className == '':
+            errorFlag = True
+            errorString += '\nPlease provide a class name'
+
+        if name == '':
+            errorFlag = True
+            errorString += '\nPlease provide a field name'
+        
+        if dataType == '':
+            errorFlag = True
+            errorString += '\nPlease provide a datatype'
+        
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
+
         try:
             self.model.addField(className, name, dataType)
-
-            self.view.classWidgetDict[className].setField(newName)
+            # This has to be called twice for it to work
+            self.updateWidgetField(className)
+            self.updateWidgetField(className)
             
         except Exception as e:
-            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
-            print(e)
+            print(traceback.format_exc())
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
 
     def deleteField(self, className, name):
+        errorFlag = False
+        errorString = ''
+
+        if className == '':
+            errorFlag = True
+            errorString += '\nPlease provide a class name'
+
+        if name == '':
+            errorFlag = True
+            errorString += '\nPlease provide a field name'
+        
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
+
         try:
             self.model.deleteField(className, name)
+            # This has to be called twice for it to work
+            self.updateWidgetField(className)
+            self.updateWidgetField(className)
         except Exception as e:
-            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
-            print(e)
+            print(traceback.format_exc())
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
 
     def renameField(self, className, oldName, newName):
+        errorFlag = False
+        errorString = ''
+
+        if className == '':
+            errorFlag = True
+            errorString += '\nPlease provide a class name'
+
+        if oldName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a field name'
+
+        if newName == '':
+            errorFlag = True
+            errorString += '\nPlease provide a new field name'
+        
+        if errorFlag:
+            alertBox = self.windowFactory("alertBox", errorString)
+            return
+
         try:
             self.model.renameField(className, oldName, newName)
+            # This has to be called twice for it to work
+            self.updateWidgetField(className)
         except Exception as e:
-            self.cMenu = GUIAlertWindow.AlertWindow().addAlert(self, e)
-            print(e)
+            print(traceback.format_exc())
+            errorBox = self.windowFactory("alertBox", e)
 
         print(self.model.classDict)
-
-    # Creates instance of popup windows
-    def addClassMenu(self, checked):
-        self.cMenu = GUIClassMenu.ClassMenu().addClass(self)
- 
-    def addRelationshipMenu(self, checked):
-        self.rMenu = GUIRelationshipMenu.RelationshipMenu().addRelationship(self)
-
-    def addFieldMenu(self, checked):
-        self.fMenu = GUIFieldMenu.FieldMenu().addField(self)
     
-    def addMethodMenu(self, checked):
-        self.mMenu = GUIMethodMenu.MethodMenu().addMethod(self)
-
-    def addParamMenu(self, checked):
-        self.pMenu = GUIParameterMenu.ParameterMenu().addParameter(self)
-
-    def openMenu(self, checked):
-        self.oMenu = GUIBrowseFiles.BrowseFiles().openFile(self)
-
-    def saveMenu(self, checked):
-        self.sMenu = GUIBrowseFiles.BrowseFiles().saveFile(self)
-
-    def delClassMenu(self, checked):
-        self.delCMenu = GUIClassMenu.ClassMenu().deleteClass(self)
-
-    def renClassMenu(self, checked):
-        self.renCMenu = GUIClassMenu.ClassMenu().renameClass(self)
-
-    def delFieldMenu(self, checked):
-        self.delFMenu = GUIFieldMenu.FieldMenu().deleteField(self)
-
-    def renFieldMenu(self, checked):
-        self.renFMenu = GUIFieldMenu.FieldMenu().renameField(self)
-
-    def delMethodMenu(self, checked):
-        self.delMethodMenu = GUIMethodMenu.MethodMenu().deleteMethod(self)
-
-    def renMethodMenu(self, checked):
-        self.renMethodMenu = GUIMethodMenu.MethodMenu().renameMethod(self)
-
-    def delParamMenu(self, checked):
-        self.delPMenu = GUIParameterMenu.ParameterMenu().deleteParameter(self)
-
-    def chgParamMenu(self, checked):
-        self.renPMenu = GUIParameterMenu.ParameterMenu().changeParameter(self)
-
-    def delRelationshipMenu(self, checked):
-        self.delRMenu = GUIRelationshipMenu.RelationshipMenu().deleteRelationship(self)
-
-    def renRelationshipMenu(self, checked):
-        self.renRMenu = GUIRelationshipMenu.RelationshipMenu().renameRelationship(self)
+    def listMethods(self, className, methodName, numbered=True):
+        if className in self.model.classDict and methodName in self.model.getAllMethods(className):
+            methods = self.model.getMethodsByName(className, methodName)
+            if not numbered:
+                return '\n'.join(map(str, methods))
+            else:
+                lstStr = ''
+                for i in range(len(methods)):
+                    lstStr += f'{i+1}. {methods[i]}\n'
+                return lstStr.rstrip()
+        return ''
     
-    def helpMenu(self, checked):
-        print('help was clicked yay')
+    def getClasses(self):
+        return list(self.model.classDict.keys())
 
+    # --------------------------------
+    # Menu Methods
+    # --------------------------------
 
-# Create a method to pull info about classes from a class collection instance. Maybe that should be made here?
-# This may end up being similar to interface.py and REPL.py
+    def createMenuBar(self):
+        GUIMenuBar.menu(self, self.view, self.root)
+
+    # Create a window using the factory method
+    def windowFactory(self, windowType = "alertBox", errorMsg = ""):
+    
+        windows = {
+            "alertBox": AlertBox,
+            "Add Class": AddClassBox,
+            "Delete Class": DeleteClassBox,
+            "Rename Class": RenameClassBox,
+            "Add Field": AddFieldBox,
+            "Delete Field": DeleteFieldBox,
+            "Rename Field": RenameFieldBox,
+            "Add Method": AddMethodBox,
+            "Delete Method": DeleteMethodBox,
+            "Rename Method": RenameMethodBox,
+            "Add Parameter": AddParameterBox,
+            "Delete Parameter": DeleteParameterBox,
+            "Change Parameter": ChangeParameterBox,
+            "Add Relationship": AddRelationshipBox,
+            "Delete Relationship": DeleteRelationshipBox,
+            "Change Relationship": ChangeRelationshipBox,
+            "Save": SaveBox,
+            "Open": LoadBox,
+            "Help": HelpBox
+        }
+        
+        # Show window
+
+        box = windows[windowType](windowType, errorMsg, self)
+
+    # --------------------------------
+    # Update Methods
+    # --------------------------------
+
+    def updateWidgetField(self, className):
+        fieldStr = ""
+        for field in self.model.getFields(className).values():
+            fieldStr += f'{field}\n'
+        fieldStr = fieldStr.rstrip()
+        size = len(fieldStr)
+        self.view.classDict[className].setFieldText(fieldStr)
+
+    def updateWidgetMethod(self, className):
+        methodStr = ""
+        for methodList in self.model.getAllMethods(className).values():
+            for method in methodList:
+                methodStr += f'{method}\n'
+        size = len(methodStr)
+        methodStr = methodStr.rstrip()
+        self.view.classDict[className].setMethodText(methodStr)  
+

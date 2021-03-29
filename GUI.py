@@ -1,16 +1,22 @@
-from PyQt5.QtWidgets import QApplication
 import sys
-import GUIMainWindow
 import GUIController
 import ClassCollection
+import tkinter as tk
+from GUIMainWindow import MainWindow
 
-# QApplication instance, pass in sys.argv because it deals with common command line args
 model = ClassCollection.ClassCollection()
-qApp = QApplication(sys.argv)
-window = GUIMainWindow.MainWindow()
+
+# App instance
+root = tk.Tk()
+# Size
+root.geometry("1000x900")
+# Instance of main window
+window = MainWindow(root)
+
 controller = GUIController.GUIController(model, window)
 
-window.show()
+# Main loop for window
+root.mainloop()
 
-# Run the event loop
-sys.exit(qApp.exec_())
+
+

@@ -130,28 +130,10 @@ class ClassCollection():
                 raise ValueError(f"Invalid Type: {typ}. Valid types are: aggregation, composition, inheritance, realization")
 
             self.relationshipDict[(firstClassName, secondClassName)].typ = typ
-            
-        # -------------------------- ( Attribute ) -------------------------- #
-        ## Wrapper functions for dealing with attributes of a specific class.
-
-        def addAttribute(self, className, attributeName):
-            if className not in self.classDict:
-                raise KeyError(f"{className} does not exist")
-            self.classDict[className].addAttribute(attributeName)
-
-        def deleteAttribute(self, className, attributeName):
-            if className not in self.classDict:
-                raise KeyError(f"{className} does not exist")
-            self.classDict[className].deleteAttribute(attributeName)
-
-        def renameAttribute(self, className, oldAttributeName, newAttributeName):
-            if className not in self.classDict:
-                raise KeyError(f"{className} does not exist")
-            self.classDict[className].renameAttribute(oldAttributeName, newAttributeName)
         
         # --------------------------- ( Method ) ----------------------------- #
 
-        def addMethod(self, className, methodName, returnType, parameters):
+        def addMethod(self, className, methodName, returnType, parameters = []):
             if className not in self.classDict:
                 raise KeyError(f"{className} does not exist")
             self.classDict[className].addMethod(methodName, returnType, parameters)
@@ -196,52 +178,83 @@ class ClassCollection():
          # --------------------------- ( Field ) ----------------------------- #
          #error checking is done in Class.py
         def addField(self, className, name, dataType):
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+
             self.classDict[className].addField(name,dataType)
 
         def deleteField(self, className, name):
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+
             self.classDict[className].deleteField(name)
         
         def renameField(self, className, oldName, newName):
+            if className not in self.classDict:
+                raise KeyError(f"{className} does not exist")
+                
             self.classDict[className].renameField(oldName,newName)
 
         def getField(self, className, name):
             if name not in self.classDict[className].fieldDict:
-                print(f"Error: {name} does not exist in {className}")
-                return None
+                raise KeyError(f'Error: Field {name} does not exist in {className}')
             return self.classDict[className].getField(name)
 
+        # ---------------------- ( Coorodiantes ) ----------------------- #
+        
+        def getClassCoordinates(self, name):
+            if name not in self.classDict:
+                raise KeyError(f'Error: Class {name} does not exist')
+            return (self.classDict[name].getX, self.classDict[name].getY)
 
+        def setClassCoordinates(self, name, X, Y):
+            if name not in self.classDict:
+                raise KeyError(f'Error: Class {name} does not exist')
+            self.classDict[name].setX(X)
+            self.classDict[name].setY(Y)
+        
         # ---------------------- ( Helper Functions ) ----------------------- #
 
         # Used in unit tests
         # Returns if the provided name exists within classDict
         def getClass(self, name):
             if name not in self.classDict:
-                print(f"Error: {name} does not exist")
-                return None
+                raise KeyError(f'Error: Class {name} does not exist')
 
             return self.classDict[name]
-        
-        def getAttribute(self, className, attributeName):
-            return self.classDict[className].getAttribute(attributeName)
-
-        # Used in unit tests
-        # Returns all attributes that exist within the provided class
-        def getAttributes(self, className):
-            return self.classDict[className].getAttributes()
 
         def getRelationship(self, firstClassName, secondClassName):
             if (firstClassName, secondClassName) not in self.relationshipDict:
-                print(f"Error: relationship, {firstClassName}, {secondClassName} does not exist")
-                return None
+                raise KeyError(f'Error: relationship, {firstClassName}, {secondClassName} does not exist')
             
             return self.relationshipDict[(firstClassName, secondClassName)]
 
         # Used in REPL to direct user to a specific method of a given name
         # Returns a list of all methods under said given name
         def getMethodsByName(self, className, methodName):
+            if className not in self.classDict:
+                raise KeyError(f'Error: Class {className} does not exist')
             if methodName not in self.classDict[className].methodDict:
-                print(f"Error: no method {methodName} in {className} exists")
-                return None
+                raise KeyError(f'Error: No method {methodName} in {className} exists')
 
             return self.classDict[className].methodDict[methodName]
+
+        def getMethod(self, className, methodName, overloadIndex):
+            if className not in self.classDict:
+                raise KeyError(f'Error: Class {className} does not exist')
+            if methodName not in self.classDict[className].methodDict:
+                raise KeyError(f'Error: No method {methodName} in {className} exists')
+
+            return self.classDict[className].methodDict[methodName][overloadIndex]
+        
+        def getAllMethods(self, className):
+            if className not in self.classDict:
+                raise KeyError(f'Error: Class {className} does not exist')
+
+            return self.classDict[className].methodDict
+        
+        def getFields(self, className):
+            if className not in self.classDict:
+                raise KeyError(f'Error: Class {className} does not exist')
+            return self.classDict[className].fieldDict
+        
