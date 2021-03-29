@@ -1,25 +1,26 @@
 from tkinter import *
 from ClassWidget import ClassWidget
+import math
 
 # Inherits from frame class in tkinter
 class MainWindow(Frame):
-
+    
     def __init__(self, master=None):
         Frame.__init__(self, master)   
-
+        
         # Master is root   
         self.master = master
 
-        self.lineDict = []
+        self.lineDict = {}
+        #(firstname, secondname): (x1, y1, x2, y2, type )
+        #Types: 0 - aggregation 1 - Composition 2 - inheritance 3- realization
         self.lineObjList = []
+        #list of Canvas object Identifiers
+
         self.classDict = {}
 
         # Sets up window layout
         self.setup()      
-
-                       
-        #(firstname, secondname): (x1, y1, x2, y2, type )
-        #Types: 0 - aggregation 1 - Composition 2 - inheritance 3- realization
 
     def setup(self):
         # Note: Menu bar is created within the controller
@@ -68,23 +69,63 @@ class MainWindow(Frame):
             #clear the list of canvas objects
             for i in self.lineObjList:
                 self.canvas.delete(i)
-            
         # If it's not empty
         if self.lineDict:
             #update the list of canvas objects using the lineDictionary
-            for line in self.lineDict:
-                if(x[4] == 0): #0 - aggregation 
-                    self.lineObjList.append(self.canvas.create_line(x[0], x[1], x[2], x[3], arrow=LAST))
-                if (x[4] == 1): #1 - Composition
-                    self.lineObjList.append(self.canvas.create_line(x[0], x[1], x[2], x[3], arrow=LAST))
-                if (x[4] == 2): #2 - inheritance
-                    self.lineObjList.append(self.canvas.create_line(x[0], x[1], x[2], x[3], arrow=LAST))
-                if(x[4] == 3): #3 - realization
-                    self.lineObjList.append(self.canvas.create_line(x[0], x[1], x[2], x[3], dash=(5, 1), arrow=LAST))
+            #for key, value in d.items():
+            for key, line in self.lineDict.items():
+                print(line)
+                if(line[4] == 0): #0 - aggregation 
+                    self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2], line[3]))
+                if (line[4] == 1): #1 - Composition
+                    self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2], line[3]))
+                if (line[4] == 2): #2 - inheritance
+                    self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2], line[3], arrow=LAST))
+                if(line[4] == 3): #3 - realization
+                    self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2], line[3], dash=(5, 1), arrow=LAST))
     
-    def addLine(self, firstClassName, secondClassName, x1, y1, x2, y2):
-         self.lineDict[(firstClassName, secondClassName)] = [x1, y1, x2, y2]
+    def addLine(self, firstClassName, secondClassName, typ):
+        #Find coordinates for shortest distance
+        bothCoords = self.findShortestDistance(firstClassName, secondClassName)
+        cord1 = bothCoords[0]
+        cord2 = bothCoords[1]
+
+        typeList = ['aggregation', 'composition', 'inheritance', 'realization']
+        self.lineDict[(firstClassName, secondClassName)] = [cord1[0], cord1[1], cord2[0], cord2[1], typeList.index(typ)]
+        self.drawLines()
+        self.canvas.update_idletasks
 
     def deleteLine(self, firstClassName, secondClassName):
-         del self.lineDict[(firstClassName, secondClassName)]
+        del self.lineDict[(firstClassName, secondClassName)]
+        self.drawLines()
+
+    def renameLine(self, firstClassName, secondClassName, typ):
+        del self.lineDict[(firstClassName, secondClassName)]
+        self.drawLines()
+        self.addLine(firstClassName, secondClassName, typ)
+        self.drawLines()
+
+    def findShortestDistance(self, firstClassName, secondClassName):
+        # Attain list of Snaps from the classes
+        firstClassSnaps = self.classDict[firstClassName].widgetCoordinates
+        secondClassSnaps = self.classDict[secondClassName].widgetCoordinates
+        self.shortestDistance = 1000000
+        firstClassCoord = 0
+        secondClassCoord = 0
+
+        #iterate through all pairs of coordinates 
+        for coord1 in firstClassSnaps:
+            for coord2 in secondClassSnaps:  
+                #calculate distance between points              
+                XDis = coord1[0] - coord2[0]
+                YDis = coord1[1] - coord2[1]
+                self.currentDistance = abs(YDis) + abs(XDis)
+                #check if any previous points were closer, it not. Replace it with the current distance
+                if (round(self.currentDistance) < self.shortestDistance):
+                    self.shortestDistance = self.currentDistance
+                    firstClassCoord = coord1
+                    secondClassCoord = coord2
+        #return the closet points between the two classes
+        return (firstClassCoord, secondClassCoord)
+
 
