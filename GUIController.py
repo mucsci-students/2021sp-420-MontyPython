@@ -261,7 +261,7 @@ class GUIController:
             print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
         
-        print(self.model.classDict)
+        print(self.model.classDict[className].methodDict)
 
     def removeParameter(self, className, methodName, methodNum, name):
         try:

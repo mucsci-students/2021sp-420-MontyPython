@@ -158,7 +158,7 @@ class MontyREPL(cmd.Cmd):
         for method, idx in zip(methods, range(1, len(methods) + 1)):
             print(f'{idx}. {method}')
         num = int(input(Fore.CYAN + 'Method number: ')) - 1
-        self.execute(self.classes.deleteParameter, [args[0], args[1], methods[num].parameters, args[2], args[3]])
+        self.execute(self.classes.removeParameter, [args[0], args[1], methods[num].parameters, args[2], args[3]])
         
     def do_change_parameters(self, args):
         args = args.split()
