@@ -112,8 +112,6 @@ class GUIController:
             coords = self.usedCoordinateDict.pop(oldName)
             self.usedCoordinateDict[newName] = coords
 
-
-
         except Exception as e:
             print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)

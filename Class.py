@@ -181,6 +181,7 @@ class Class():
                 self.addParameter(methodName, c, newType, newName)
       
             except Exception as e:
+                print(self.methodDict)
                 raise KeyError(f'Error changing parameter')
 
         def changeAllParameters(self, methodName, parameters, newParameters):
