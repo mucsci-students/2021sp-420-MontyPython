@@ -245,7 +245,7 @@ class AddMethodBox(GenericBox):
                 return
 
             for t,n in zip(self.paramTypes, self.paramNames):
-                params.append([t.get(), n.get()])
+                params.append((t.get(), n.get()))
             
             controller.addMethod(className.get(), methodName.get(), returnType.get(), params)
             keyEvent(None)
@@ -386,10 +386,9 @@ class AddParameterBox(GenericBox):
         self.overloadLabel = self.addLabel('', 4, 1)
 
         className = self.addDropdown(0, 1, controller.getClasses())
-        methodName = self.addEntry(1, 1)
-        paramType = self.addEntry(2, 1)
-        paramName = self.addEntry(3, 1)
-
+        methodName = self.addEntry(1, 1)    
+        paramName = self.addEntry(2, 1)
+        paramType = self.addEntry(3, 1)
         # Yes I am defining a function within a function otherwise the lambda in
         # the self.top.bind call is horrendous
         # 
@@ -573,7 +572,7 @@ class ChangeParameterBox(GenericBox):
                 return
 
             controller.changeParameter(className.get(), methodName.get(), methodNum.get(), 
-                                       oldParamName.get(), newParamName.get(), newParamName.get())
+                                       oldParamName.get(), newParamType.get(), newParamName.get())
             keyEvent(None)
 
         self.addButton('Rename', 7, 0, W, buttonEvent)
