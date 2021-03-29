@@ -159,6 +159,7 @@ def saveFile(collection, fileName=None, GUI="CLI", mainWindow=None):
         #If relationship was removed, pops coords from linesDictionary
         #If relationship was added, default coords are (-1, -1, -1, -1)
         #Type is pulled from relationship dictionary
+        #Default line side is "top"
         linesDictionaryReplica = linesDictionary.copy()
         for key in linesDictionary.keys():
             if key not in relationshipsDictionary.keys():
@@ -183,6 +184,9 @@ def saveFile(collection, fileName=None, GUI="CLI", mainWindow=None):
 
     #If file does not exist and save is invoked in the CLI,
     #all class coords are set to the default of (-1, -1)
+    #Additionally, all line coords are set to (-1, -1, -1, -1)
+    #Type is pulled from relationship dictionary
+    #Default line side is "top".
     elif not priorExistence and GUI.lower() != "gui":
         for key in classesDictionary.keys():
             coordsDictionary[key] = (-1, -1)
