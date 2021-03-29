@@ -163,10 +163,23 @@ class Class():
                 raise KeyError(f'Parameter {newName} already exists')
             # Append the new parameter (errors will be handled in addParameter)
             try: 
-                # Remove the old parameter (errors will be handled in removeParameter)
-                self.removeParameter(methodName, self.methodDict[methodName][methodIndex].parameters, name)
-                self.addParameter(methodName, parameters, newType, newName)              
-               
+                # Yeah this isn't pretty. This fixed some wacky errors.
+                typ = ""
+                found = False
+                for tup in self.methodDict[methodName][methodIndex].parameters:
+                    if tup[1] == name:
+                        typ = tup[0]
+                        found = True
+                if not found:
+                    raise KeyError(f'Parameter {name} does not belong to {methodName}')
+                print(f'Before {parameters}')
+                c = parameters.copy()
+                self.removeParameter(methodName, c, name)
+                print(f'Before {parameters}')
+                c.remove((typ, name))
+                print(f'{parameters} After')
+                self.addParameter(methodName, c, newType, newName)
+      
             except Exception as e:
                 raise KeyError(f'Error changing parameter')
 
