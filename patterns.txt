@@ -1,0 +1,6 @@
+Command
+Momento
+Factory Method
+Model/View/Controller
+Iterator
+Chain of responsibility
