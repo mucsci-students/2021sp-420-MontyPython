@@ -204,7 +204,7 @@ class GUIController:
             self.model.renameRelationship(firstClassName, secondClassName, typ)
             self.view.renameLine(firstClassName, secondClassName, typ)
         except Exception as e:
-            if(self.debug):
+            if self.debug:
                 print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
         if self.debug:
@@ -242,7 +242,7 @@ class GUIController:
             self.model.deleteMethod(className, methodName, params)
             self.updateWidgetMethod(className)
         except Exception as e:
-            if(self.debug):
+            if self.debug:
                 print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
         if self.debug:
