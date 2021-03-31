@@ -172,12 +172,9 @@ class Class():
                         found = True
                 if not found:
                     raise KeyError(f'Parameter {name} does not belong to {methodName}')
-                print(f'Before {parameters}')
                 c = parameters.copy()
                 self.removeParameter(methodName, c, name)
-                print(f'Before {parameters}')
                 c.remove((typ, name))
-                print(f'{parameters} After')
                 self.addParameter(methodName, c, newType, newName)
       
             except Exception as e:
