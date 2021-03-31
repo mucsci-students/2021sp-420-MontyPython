@@ -47,7 +47,7 @@ class ClassWidget(Frame):
     def createText(self, x, y, identifier, txt):
         # create_text(x, y, options ...)
         # Anchor info: https://www.tutorialspoint.com/python/tk_anchors.htm
-        self.objectDict[identifier + "Text"] = self.canvas.create_text(x, y, text=txt, fill="black", anchor = 'nw')
+        self.objectDict[identifier + "Text"] = self.canvas.create_text(x, y, text=txt, fill="black", anchor = 'nw', tag=self.nameTxt)
 
 
     # --------------------------------------------------- #
@@ -98,7 +98,7 @@ class ClassWidget(Frame):
         boundingBox = self.canvas.bbox(txtBox)
 
         # Create the actual box. create_rectangle: x1, y1, x2, y2, options.. (x1, y1) top left corner, (x2, y2) bottom right corner
-        self.objectDict[identifier + "Box"] = self.canvas.create_rectangle(boundingBox[0], boundingBox[1], (boundingBox[0] + self.width), boundingBox[3], outline="black", fill="white")
+        self.objectDict[identifier + "Box"] = self.canvas.create_rectangle(boundingBox[0], boundingBox[1], (boundingBox[0] + self.width), boundingBox[3], outline="black", fill="white", tag=self.nameTxt)
        
         # Moves items up to be in front of other objects
         self.canvas.tag_raise(self.objectDict[identifier + "Box"])

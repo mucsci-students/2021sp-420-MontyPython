@@ -58,10 +58,36 @@ class MainWindow(Frame):
     
     def addClass(self, className, x, y):
         self.classDict[className] = ClassWidget(self, self.canvas, className, x, y)
+        # Upon reload after state is saved, this WILL cause problems. Probably. I think.
+        # Binds will probably have to be set again once widgets are loaded in.
+        self.canvas.tag_bind(className, '<ButtonPress-1>', self.startDrag)
+        self.canvas.tag_bind(className, '<B1-Motion>', self.dragMotion)
+        # self.classDict[className].bind('<ButtonPress-1>', self.startDrag)
+        # self.classDict[className].bind('<B1-Motion>', self.dragMotion)
 
     def deleteClass(self, className):
         self.classDict[className].deleteWidgetFromCanvas()
         del self.classDict[className]
+
+    def updateClasses(self):
+        for c in self.classDict:
+            self.classDict[c].updateWidget()
+
+    def startDrag(self, event):
+        widget = event.widget
+        widget.startX = event.x
+        widget.startY = event.y
+
+    def dragMotion(self, event):
+        widget = event.widget
+        #currentTag = widget.find_withtag("current")
+        x = widget.winfo_x() - widget.startX + event.x
+        y = widget.winfo_y() - widget.startY + event.y
+        #widget.moveBox(x, y)
+        widget.place(x=x, y=y)
+        #self.updateClasses()
+
+        #self.canvas.move(widget, x, y)
 
     # Test popup box. Triggered in GUIMenuBar
     def boxTest(self):
