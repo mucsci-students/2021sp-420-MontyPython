@@ -223,13 +223,13 @@ class ClassWidget(Frame):
         self.widgetCoordinates.append([((self.methodBoundingBox[0] + self.methodBoundingBox[2]) / 2), self.methodBoundingBox[3]])
 
         # Top left [4]
-        self.widgetCoordinates.append([self.nameBoundingBox[0], self.nameBoundingBox[1]])
+        self.widgetCoordinates.append([self.nameBoundingBox[0], self.nameBoundingBox[1] + 5])
         # Top right [5]
-        self.widgetCoordinates.append([self.nameBoundingBox[2], self.nameBoundingBox[1]])
+        self.widgetCoordinates.append([self.nameBoundingBox[2], self.nameBoundingBox[1] + 5])
         # Bottom left [6]
-        self.widgetCoordinates.append([self.methodBoundingBox[0], self.methodBoundingBox[3]])
+        self.widgetCoordinates.append([self.methodBoundingBox[0], self.methodBoundingBox[3] - 5])
         # Bottom right [7]
-        self.widgetCoordinates.append([self.methodBoundingBox[2], self.methodBoundingBox[3]])
+        self.widgetCoordinates.append([self.methodBoundingBox[2], self.methodBoundingBox[3] - 5])
 
     # --------------------------------------------------- #
     # Setters for text

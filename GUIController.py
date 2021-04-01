@@ -26,6 +26,7 @@ class GUIController:
     def load(self, name):
         print(name)
         Interface.loadFile(self.model, name, "GUI", self.view)
+         #self.view.drawLines()
 
     def save(self, name):
         Interface.saveFile(self.model, name, "GUI", self.view)
@@ -112,12 +113,13 @@ class GUIController:
             # Change coordinate dict name to match new class name
             coords = self.usedCoordinateDict.pop(oldName)
             self.usedCoordinateDict[newName] = coords
+            self.view.renameClass(oldName, newName)
 
         except Exception as e:
             print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
 
-        print(self.model.classDict)
+        #print(self.model.classDict)
 
     def addRelationship(self, firstClassName, secondClassName, typ):
         errorFlag = False

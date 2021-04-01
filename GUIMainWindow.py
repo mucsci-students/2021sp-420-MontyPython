@@ -72,10 +72,35 @@ class MainWindow(Frame):
             del self.lineDict[temp]
         self.drawLines()
 
+    def renameClass(self, oldName, newName):
+        print("LIne Dictionary")
+        print(self.lineDict)
+        print(self.classDict)
+        toChange = []
+        typeList = []
+        for theTuple, lineInfo in self.lineDict.items():
+            if oldName in theTuple:
+                toChange.append(theTuple)       
+                typeList.append(lineInfo)     
+                            
+        for theTuple, theType in zip(toChange, typeList):
+            (name1, name2) = theTuple
+            if name1 == oldName:
+                self.deleteLine(oldName, name2)
+                self.addLine(newName, name2, theType[4])
+                
+            else:
+                self.deleteLine(name1, oldName)
+                self.addLine(name1, newName, theType[4])
+                
+        #self.drawLines()
+        #print("LIne Dictionary")
+        #print(self.lineDict)
+        #self.drawLines()
+
     # Test popup box. Triggered in GUIMenuBar
     def boxTest(self):
         box = PopupBox("test")
-
 
     def drawLines(self):
 
@@ -92,28 +117,28 @@ class MainWindow(Frame):
                 basepoint = (line[2], line[3])
                 rootPoint = (line[0], line[1])              
                 if(line[5] == 'bottom'):
-                    side1 = (basepoint[0] + 5, basepoint[1] + 5 )
-                    side2 = (basepoint[0] - 5, basepoint[1] + 5 )
-                    furthestpoint = (basepoint[0] , basepoint[1] + 10)
-                    localLineEnd = (basepoint[0] , basepoint[1] + 30)
+                    side1 = (basepoint[0] + 5, basepoint[1] + 7 )
+                    side2 = (basepoint[0] - 5, basepoint[1] + 7 )
+                    furthestpoint = (basepoint[0] , basepoint[1] + 14)
+                    localLineEnd = (basepoint[0] , basepoint[1] + 34)
                     backTrackPoint =  (rootPoint[0], localLineEnd[1])
                 if(line[5] == 'top'):
-                    side1 = (basepoint[0] + 5, basepoint[1] - 5 )
-                    side2 = (basepoint[0] - 5, basepoint[1] - 5 )
-                    furthestpoint = (basepoint[0] , basepoint[1] - 10)
-                    localLineEnd = (basepoint[0] , basepoint[1] - 30)
+                    side1 = (basepoint[0] + 5, basepoint[1] - 7 )
+                    side2 = (basepoint[0] - 5, basepoint[1] - 7 )
+                    furthestpoint = (basepoint[0] , basepoint[1] - 14)
+                    localLineEnd = (basepoint[0] , basepoint[1] - 34)
                     backTrackPoint =  (rootPoint[0], localLineEnd[1])
                 if(line[5] == 'left'):
-                    side1 = (basepoint[0] - 5, basepoint[1] - 5 )
-                    side2 = (basepoint[0] - 5, basepoint[1] + 5 )
-                    furthestpoint = (basepoint[0] - 10, basepoint[1])
-                    localLineEnd = (basepoint[0] - 30, basepoint[1])
+                    side1 = (basepoint[0] - 7, basepoint[1] - 5 )
+                    side2 = (basepoint[0] - 7, basepoint[1] + 5 )
+                    furthestpoint = (basepoint[0] - 14, basepoint[1])
+                    localLineEnd = (basepoint[0] - 34, basepoint[1])
                     backTrackPoint =  (localLineEnd[0], rootPoint[1])
                 if(line[5] == 'right'):
-                    side1 = (basepoint[0] + 5, basepoint[1] - 5 )
-                    side2 = (basepoint[0] + 5, basepoint[1] + 5 )
-                    furthestpoint = (basepoint[0] + 10, basepoint[1])
-                    localLineEnd = (basepoint[0] + 30, basepoint[1])
+                    side1 = (basepoint[0] + 7, basepoint[1] - 5 )
+                    side2 = (basepoint[0] + 7, basepoint[1] + 5 )
+                    furthestpoint = (basepoint[0] + 14, basepoint[1])
+                    localLineEnd = (basepoint[0] + 34, basepoint[1])
                     backTrackPoint =  (localLineEnd[0], rootPoint[1])
                 if(line[4] == 0 or line[4] == 1 ): #0 - aggregation & 1 - composition
                     if (line[4] == 0 ):
@@ -143,7 +168,12 @@ class MainWindow(Frame):
         cord2 = bothCoords[1]
         side = retVal[1]
         typeList = ['aggregation', 'composition', 'inheritance', 'realization']
-        self.lineDict[(firstClassName, secondClassName)] = [cord1[0], cord1[1], cord2[0], cord2[1], typeList.index(typ), side]
+        if(type(typ) == int):
+            numericTyp = typ
+        else:
+            numericTyp = typeList.index(typ)
+        
+        self.lineDict[(firstClassName, secondClassName)] = [cord1[0], cord1[1], cord2[0], cord2[1], numericTyp, side]
         self.drawLines()
         self.canvas.update_idletasks
 
