@@ -63,10 +63,44 @@ class MainWindow(Frame):
         self.classDict[className].deleteWidgetFromCanvas()
         del self.classDict[className]
 
+        toDelete = []
+        for theTuple in self.lineDict.keys():
+            if className in theTuple:
+                toDelete.append(theTuple)
+                            
+        for temp in toDelete:
+            del self.lineDict[temp]
+        self.drawLines()
+
+    def renameClass(self, oldName, newName):
+        print("LIne Dictionary")
+        print(self.lineDict)
+        print(self.classDict)
+        toChange = []
+        typeList = []
+        for theTuple, lineInfo in self.lineDict.items():
+            if oldName in theTuple:
+                toChange.append(theTuple)       
+                typeList.append(lineInfo)     
+                            
+        for theTuple, theType in zip(toChange, typeList):
+            (name1, name2) = theTuple
+            if name1 == oldName:
+                self.deleteLine(oldName, name2)
+                self.addLine(newName, name2, theType[4])
+                
+            else:
+                self.deleteLine(name1, oldName)
+                self.addLine(name1, newName, theType[4])
+                
+        #self.drawLines()
+        #print("LIne Dictionary")
+        #print(self.lineDict)
+        #self.drawLines()
+
     # Test popup box. Triggered in GUIMenuBar
     def boxTest(self):
         box = PopupBox("test")
-
 
     def drawLines(self):
 
@@ -80,36 +114,51 @@ class MainWindow(Frame):
             #update the list of canvas objects using the lineDictionary
             #for key, value in d.items():
             for key, line in self.lineDict.items():
-                if(line[4] == 0): #0 - aggregation               
-                    if(line[5] == 'top'):
-                        self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2], line[3] - 10 ))
-                        self.lineObjList.append(self.canvas.create_polygon(line[2], line[3], line[2] + 5 , line[3] - 5 ,line[2], line[3] - 10 ,line[2] - 5, line[3] - 5,fill="white", outline = "black"))
-                    if(line[5] == 'bottom'):
-                        self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2], line[3] + 10 ))
-                        self.lineObjList.append(self.canvas.create_polygon(line[2], line[3], line[2] + 5 , line[3] + 5 ,line[2], line[3] + 10 ,line[2] - 5, line[3] + 5,fill="white", outline = "black"))
-                    if(line[5] == 'left'):
-                        self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2] - 10, line[3]))
-                        self.lineObjList.append(self.canvas.create_polygon(line[2], line[3], line[2] - 5 , line[3] - 5 ,line[2] - 10, line[3] ,line[2] - 5, line[3] + 5,fill="white", outline = "black"))
-                    if(line[5] == 'right'):
-                        self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2] + 10, line[3] ))
-                        self.lineObjList.append(self.canvas.create_polygon(line[2], line[3], line[2] + 5 , line[3] - 5 ,line[2] + 10, line[3] ,line[2] + 5, line[3] + 5,fill="white", outline = "black"))
-                if (line[4] == 1): #1 - Composition
-                    if(line[5] == 'top'):
-                        self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2], line[3] - 10 ))
-                        self.lineObjList.append(self.canvas.create_polygon(line[2], line[3], line[2] + 5 , line[3] - 5 ,line[2], line[3] - 10 ,line[2] - 5, line[3] - 5, fill="black", outline = "black"))
-                    if(line[5] == 'bottom'):
-                        self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2], line[3] + 10 ))
-                        self.lineObjList.append(self.canvas.create_polygon(line[2], line[3], line[2] + 5 , line[3] + 5 ,line[2], line[3] + 10 ,line[2] - 5, line[3] + 5, fill="black", outline = "black"))
-                    if(line[5] == 'left'):
-                        self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2] - 10, line[3]))
-                        self.lineObjList.append(self.canvas.create_polygon(line[2], line[3], line[2] - 5 , line[3] - 5 ,line[2] - 10, line[3] ,line[2] - 5, line[3] + 5, fill="black", outline = "black"))
-                    if(line[5] == 'right'):
-                        self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2] + 10, line[3] ))
-                        self.lineObjList.append(self.canvas.create_polygon(line[2], line[3], line[2] + 5 , line[3] - 5 ,line[2] + 10, line[3] ,line[2] + 5, line[3] + 5, fill="black"))
-                if (line[4] == 2): #2 - inheritance
-                    self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2], line[3], arrow=LAST))
-                if(line[4] == 3): #3 - realization
-                    self.lineObjList.append(self.canvas.create_line(line[0], line[1], line[2], line[3], dash=(5, 1), arrow=LAST))
+                basepoint = (line[2], line[3])
+                rootPoint = (line[0], line[1])              
+                if(line[5] == 'bottom'):
+                    side1 = (basepoint[0] + 5, basepoint[1] + 7 )
+                    side2 = (basepoint[0] - 5, basepoint[1] + 7 )
+                    furthestpoint = (basepoint[0] , basepoint[1] + 14)
+                    localLineEnd = (basepoint[0] , basepoint[1] + 34)
+                    backTrackPoint =  (rootPoint[0], localLineEnd[1])
+                if(line[5] == 'top'):
+                    side1 = (basepoint[0] + 5, basepoint[1] - 7 )
+                    side2 = (basepoint[0] - 5, basepoint[1] - 7 )
+                    furthestpoint = (basepoint[0] , basepoint[1] - 14)
+                    localLineEnd = (basepoint[0] , basepoint[1] - 34)
+                    backTrackPoint =  (rootPoint[0], localLineEnd[1])
+                if(line[5] == 'left'):
+                    side1 = (basepoint[0] - 7, basepoint[1] - 5 )
+                    side2 = (basepoint[0] - 7, basepoint[1] + 5 )
+                    furthestpoint = (basepoint[0] - 14, basepoint[1])
+                    localLineEnd = (basepoint[0] - 34, basepoint[1])
+                    backTrackPoint =  (localLineEnd[0], rootPoint[1])
+                if(line[5] == 'right'):
+                    side1 = (basepoint[0] + 7, basepoint[1] - 5 )
+                    side2 = (basepoint[0] + 7, basepoint[1] + 5 )
+                    furthestpoint = (basepoint[0] + 14, basepoint[1])
+                    localLineEnd = (basepoint[0] + 34, basepoint[1])
+                    backTrackPoint =  (localLineEnd[0], rootPoint[1])
+                if(line[4] == 0 or line[4] == 1 ): #0 - aggregation & 1 - composition
+                    if (line[4] == 0 ):
+                        curfill = "white"
+                    else:
+                        curfill = "black"
+                    self.lineObjList.append(self.canvas.create_line(line[0], line[1], backTrackPoint[0], backTrackPoint[1]))
+                    self.lineObjList.append(self.canvas.create_line(backTrackPoint[0], backTrackPoint[1], localLineEnd[0], localLineEnd[1]))
+                    self.lineObjList.append(self.canvas.create_line(furthestpoint[0] , furthestpoint[1], localLineEnd[0], localLineEnd[1]))
+                    self.lineObjList.append(self.canvas.create_polygon(basepoint[0], basepoint[1], side1[0], side1[1] , furthestpoint[0] , furthestpoint[1],side2[0], side2[1],fill=curfill, outline = "black"))
+    
+                if (line[4] == 2  or line[4] == 3): #2 - inheritance & 3 - realization
+                    if (line[4] == 2 ):
+                        self.lineObjList.append(self.canvas.create_line(line[0], line[1], backTrackPoint[0], backTrackPoint[1]))
+                        self.lineObjList.append(self.canvas.create_line(backTrackPoint[0], backTrackPoint[1], localLineEnd[0], localLineEnd[1]))
+                        self.lineObjList.append(self.canvas.create_line(localLineEnd[0], localLineEnd[1], basepoint[0], basepoint[1], arrow=LAST))               
+                    else:
+                        self.lineObjList.append(self.canvas.create_line(line[0], line[1], backTrackPoint[0], backTrackPoint[1], dash=(5,1)))
+                        self.lineObjList.append(self.canvas.create_line(backTrackPoint[0], backTrackPoint[1], localLineEnd[0], localLineEnd[1], dash=(5,1)))
+                        self.lineObjList.append(self.canvas.create_line(localLineEnd[0], localLineEnd[1], basepoint[0], basepoint[1], dash=(5,1), arrow=LAST))
     
     def addLine(self, firstClassName, secondClassName, typ):
         #Find coordinates for shortest distance
@@ -119,7 +168,12 @@ class MainWindow(Frame):
         cord2 = bothCoords[1]
         side = retVal[1]
         typeList = ['aggregation', 'composition', 'inheritance', 'realization']
-        self.lineDict[(firstClassName, secondClassName)] = [cord1[0], cord1[1], cord2[0], cord2[1], typeList.index(typ), side]
+        if(type(typ) == int):
+            numericTyp = typ
+        else:
+            numericTyp = typeList.index(typ)
+        
+        self.lineDict[(firstClassName, secondClassName)] = [cord1[0], cord1[1], cord2[0], cord2[1], numericTyp, side]
         self.drawLines()
         self.canvas.update_idletasks
 
@@ -140,32 +194,36 @@ class MainWindow(Frame):
         self.shortestDistance = 1000000
         firstClassCoord = 0
         secondClassCoord = 0
+        secondIteration = 0
 
         #iterate through all pairs of coordinates 
         for coord1 in firstClassSnaps:
-            for coord2 in secondClassSnaps:  
+            secondIteration = 0
+            for coord2 in secondClassSnaps: 
+                 
                 #calculate distance between points              
                 XDis = coord1[0] - coord2[0]
                 YDis = coord1[1] - coord2[1]
                 self.currentDistance = abs(YDis) + abs(XDis)
                 #check if any previous points were closer, it not. Replace it with the current distance
-                if (round(self.currentDistance) < self.shortestDistance):
+                if (round(self.currentDistance) + 7 < self.shortestDistance):
+                    iterationSide = secondIteration
                     self.shortestDistance = self.currentDistance
                     firstClassCoord = coord1
                     secondClassCoord = coord2
+                secondIteration = secondIteration + 1
 
-
-        if(secondClassCoord[0] == self.classDict[secondClassName].x):
+        print(iterationSide)
+        if(iterationSide == 1 or iterationSide == 4 or iterationSide == 6):
             return [(firstClassCoord, secondClassCoord), 'left']
         
-        if(secondClassCoord[0] == self.classDict[secondClassName].methodBoundingBox[2]):
+        if(iterationSide == 2 or iterationSide == 5 or iterationSide == 7):
             return [(firstClassCoord, secondClassCoord), 'right']
 
-        if(secondClassCoord[1] == self.classDict[secondClassName].y):
+        if(iterationSide == 0):
+            
             return [(firstClassCoord, secondClassCoord), 'top']
-    
         
         #return the closet points between the two classes
         return [(firstClassCoord, secondClassCoord), 'bottom']
-
 
