@@ -67,6 +67,8 @@ class MontyREPL(cmd.Cmd):
     def do_list_classes(self, args):
         for c in self.model.classDict:
             self.do_list_class(c)
+    # TODO: Edit the seperation lines to match the length of the longest
+    #       line of text, with some pre-defined minimum length.
     def do_list_class(self, args):
         c = args.split()[0]
         print(c)
