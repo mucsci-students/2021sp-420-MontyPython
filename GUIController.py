@@ -9,11 +9,11 @@ import traceback
 collection = ClassCollection()
 
 class GUIController:
-    def __init__(self, model, view):
+    def __init__(self, model, view, debug):
         self.model = model
         self.view = view
         self.root = self.view.master
-
+        self.debug = debug
         # Creates the view's menu bar
         self.createMenuBar()
 
@@ -24,7 +24,8 @@ class GUIController:
 
 
     def load(self, name):
-        print(name)
+        if self.debug:
+            print(name)
         Interface.loadFile(self.model, name, "GUI", self.view)
          #self.view.drawLines()
 
@@ -60,10 +61,12 @@ class GUIController:
             self.coordinateList.remove(coordinates)
             
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
 
-        print(self.model.classDict)
+        if self.debug:
+            print(self.model.classDict)
      
     def deleteClass(self, name):
         if name == '':
@@ -81,10 +84,11 @@ class GUIController:
             self.coordinateList.append(coords)
 
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)       
-
-        print(self.model.classDict)
+        if self.debug:
+            print(self.model.classDict)
         
     def renameClass(self, oldName, newName):
         errorFlag = False
@@ -116,10 +120,12 @@ class GUIController:
             self.view.renameClass(oldName, newName)
 
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
 
-        #print(self.model.classDict)
+        if self.debug:
+            print(self.model.classDict)
 
     def addRelationship(self, firstClassName, secondClassName, typ):
         errorFlag = False
@@ -145,10 +151,11 @@ class GUIController:
             self.model.addRelationship(firstClassName, secondClassName, typ)
             self.view.addLine(firstClassName, secondClassName, typ)
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
-
-        print(self.model.relationshipDict)
+        if self.debug:
+            print(self.model.relationshipDict)
 
     def deleteRelationship(self, firstClassName, secondClassName):
         errorFlag = False
@@ -170,10 +177,11 @@ class GUIController:
             self.model.deleteRelationship(firstClassName, secondClassName)
             self.view.deleteLine(firstClassName, secondClassName)
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
-
-        print(self.model.relationshipDict)
+        if self.debug:
+            print(self.model.relationshipDict)
 
 
     def renameRelationship(self, firstClassName, secondClassName, typ):
@@ -199,10 +207,11 @@ class GUIController:
             self.model.renameRelationship(firstClassName, secondClassName, typ)
             self.view.renameLine(firstClassName, secondClassName, typ)
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
-
-        print(self.model.relationshipDict)
+        if self.debug:
+            print(self.model.relationshipDict)
 
     def addMethod(self, className, methodName, returnType, parameters):
         try:
@@ -223,10 +232,11 @@ class GUIController:
             self.updateWidgetMethod(className)
 
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
-
-        print(self.model.classDict[className].methodDict)
+        if self.debug:
+            print(self.model.classDict[className].methodDict)
 
     def deleteMethod(self, className, methodName, methodNum):
         try:
@@ -235,10 +245,11 @@ class GUIController:
             self.model.deleteMethod(className, methodName, params)
             self.updateWidgetMethod(className)
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
-
-        print(self.model.classDict)    
+        if self.debug:
+            print(self.model.classDict)    
 
     def renameMethod(self, className, methodName, methodNum, newName):
         try:
@@ -247,10 +258,11 @@ class GUIController:
             self.model.renameMethod(className, methodName, params, newName)
             self.updateWidgetMethod(className)
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
-
-        print(self.model.classDict)
+        if self.debug:
+            print(self.model.classDict)
 
     def addParameter(self, className, methodName, methodNum, typ, name):
         try:
@@ -259,10 +271,11 @@ class GUIController:
             self.model.addParameter(className, methodName, params, typ, name)
             self.updateWidgetMethod(className)
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
-        
-        print(self.model.classDict[className].methodDict)
+        if self.debug:
+            print(self.model.classDict[className].methodDict)
 
     def removeParameter(self, className, methodName, methodNum, name):
         try:
@@ -271,10 +284,11 @@ class GUIController:
             self.model.removeParameter(className, methodName, params, name)
             self.updateWidgetMethod(className)
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
-
-        print(self.model.classDict)
+        if self.debug:
+            print(self.model.classDict)
 
     def changeParameter(self, className, methodName, methodNum, name, newType, newName):
         try:
@@ -283,10 +297,11 @@ class GUIController:
             self.model.changeParameter(className, methodName, params, name, newType, newName)
             self.updateWidgetMethod(className)
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
-
-        print(self.model.classDict)
+        if self.debug:
+            print(self.model.classDict)
 
     def addField(self, className, name, dataType):
         errorFlag = False
@@ -315,10 +330,11 @@ class GUIController:
             self.updateWidgetField(className)
             
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
-
-        print(self.model.classDict)
+        if self.debug:
+            print(self.model.classDict)
 
     def deleteField(self, className, name):
         errorFlag = False
@@ -342,10 +358,11 @@ class GUIController:
             self.updateWidgetField(className)
             self.updateWidgetField(className)
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
-
-        print(self.model.classDict)
+        if self.debug:
+            print(self.model.classDict)
 
     def renameField(self, className, oldName, newName):
         errorFlag = False
@@ -372,10 +389,11 @@ class GUIController:
             # This has to be called twice for it to work
             self.updateWidgetField(className)
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
-
-        print(self.model.classDict)
+        if self.debug:
+            print(self.model.classDict)
     
     def listMethods(self, className, methodName, numbered=True):
         if className in self.model.classDict and methodName in self.model.getAllMethods(className):
