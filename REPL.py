@@ -179,7 +179,6 @@ class MontyREPL(cmd.Cmd):
     def do_delete_parameter(self, args):
         args = args.split()
         params = self.handle_overloaded_methods(args[0], args[1])
-        print(args[2])
         self.execute(self.model.removeParameter, [args[0], args[1], params, args[2]])
     
     def do_change_parameters(self, args):
@@ -373,10 +372,9 @@ class MontyREPL(cmd.Cmd):
             and curr_args[2] in self.model.getAllMethods(curr_args[1])):
             for m in self.model.getMethodsByName(curr_args[1], curr_args[2]):
                 param_names = [p[1] for p in m.parameters]
-                method_params += param_names
-
-        # Remove duplicate parameter names
-        method_params = list(set(method_params))
+                for p in param_names:
+                    if p not in method_params:
+                        method_params.append(p)
 
         arg_completions = {
             1: list(self.model.classDict.keys()),
