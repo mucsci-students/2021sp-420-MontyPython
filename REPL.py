@@ -1,6 +1,7 @@
 import cmd
 import os
 import sys
+from functools import reduce
 from colorama import init, Fore
 
 from ClassCollection import ClassCollection
@@ -53,20 +54,25 @@ class MontyREPL(cmd.Cmd):
     # therefore there is no Command object created for any of these.
     def do_exit(self, args):
         Interface.exit()
+   
     def do_help(self, args):
         if args == 'verbose':
             Interface.help()
         else:
             cmd.Cmd.do_help(self, args)
+   
     def do_clear(self, args):
         os.system('cls' if os.name == 'nt' else 'clear')
+    
     def do_list_relationships(self, args):
         for rel in self.model.relationshipDict:
             r = self.model.relationshipDict[rel]
             print(f'{r.src} --> {r.dst} ({r.typ})')
+    
     def do_list_classes(self, args):
         for c in self.model.classDict:
             self.do_list_class(c)
+   
     # TODO: Edit the seperation lines to match the length of the longest
     #       line of text, with some pre-defined minimum length.
     def do_list_class(self, args):
@@ -83,11 +89,13 @@ class MontyREPL(cmd.Cmd):
                 print(f'  {m}')
         print('-'*24)
         print()
+   
     def do_save(self, args):
         if len(args) > 0:
             Interface.saveFile(self.model, args)
         else:
             self.help_save()
+    
     def do_load(self, args):
         if len(args) > 0:
             Interface.loadFile(self.model, args)
@@ -97,16 +105,20 @@ class MontyREPL(cmd.Cmd):
     # Classes
     def do_add_class(self, args):
         self.execute(self.model.addClass, args)
+   
     def do_delete_class(self, args):
         self.execute(self.model.deleteClass, args)
+   
     def do_rename_class(self, args):
         self.execute(self.model.renameClass, args)
 
     # Relationships
     def do_add_relationship(self, args):
         self.execute(self.model.addRelationship, args)
+   
     def do_delete_relationship(self, args):
         self.execute(self.model.deleteRelationship, args)
+    
     def do_rename_relationship(self, args):
         self.execute(self.model.renameRelationship, args)
 
@@ -124,10 +136,12 @@ class MontyREPL(cmd.Cmd):
                 'Method not added')
         args = args[:3] + [params]
         self.execute(self.model.addMethod, args)
+   
     def do_delete_method(self, args):
         args = args.split()
         params = self.handle_overloaded_methods(args[0], args[1])
         self.execute(self.model.deleteMethod, [args[0], args[1], params])
+    
     def do_rename_method(self, args):
         args = args.split()
         params = self.handle_overloaded_methods(args[0], args[1])
@@ -136,8 +150,10 @@ class MontyREPL(cmd.Cmd):
     # Fields
     def do_add_field(self, args):
         self.execute(self.model.addField, args)
+    
     def do_delete_field(self, args):
         self.execute(self.model.deleteField, args)
+    
     def do_rename_field(self, args):
         self.execute(self.model.renameField, args)
 
@@ -146,10 +162,13 @@ class MontyREPL(cmd.Cmd):
         args = args.split()
         params = self.handle_overloaded_methods(args[0], args[1])
         self.execute(self.model.addParameter, [args[0], args[1], params, args[2], args[3]])
+    
     def do_delete_parameter(self, args):
         args = args.split()
         params = self.handle_overloaded_methods(args[0], args[1])
-        self.execute(self.model.removeParameter, [args[0], args[1], params, args[2], args[3]])
+        print(args[2])
+        self.execute(self.model.removeParameter, [args[0], args[1], params, args[2]])
+    
     def do_change_parameters(self, args):
         args = args.split()
         old_params = self.handle_overloaded_methods(args[0], args[1])
@@ -226,33 +245,168 @@ class MontyREPL(cmd.Cmd):
     # arg_completions is a dictionary of lists based on the index of the
     # current argument (including the command name, so starting at 1, 
     # similar to how sys.stdin works)
+    def complete_list_class(self, text, line, begidx, endidx):
+        arg_completions = {
+            1: list(self.model.classDict.keys())
+        }
+        return self.arg_complete(text, line, arg_completions)
+
+    def complete_list_relationships(self, text, line, begidx, endidx):
+        arg_completions = {
+            1: list(self.model.classDict.keys()),
+            2: list(self.model.classDict.keys())
+        }
+        return self.arg_complete(text, line, arg_completions)
+
     def complete_delete_class(self, text, line, begidx, endidx):
         arg_completions = {
             1: list(self.model.classDict.keys())
         }
-
         return self.arg_complete(text, line, arg_completions)
     
     def complete_rename_class(self, text, line, begidx, endidx):
         arg_completions = {
+            1: list(self.model.classDict.keys()),
+            2: list(self.model.classDict.keys())
+        }
+        return self.arg_complete(text, line, arg_completions)
+
+    def complete_add_relationship(self, text, line, begidx, endidx):
+        arg_completions = {
+            1: list(self.model.classDict.keys()),
+            2: list(self.model.classDict.keys()),
+            3: ['aggregation', 'composition', 'inheritance', 'realization']
+        }
+        return self.arg_complete(text, line, arg_completions)
+
+    def complete_delete_relationship(self, text, line, begidx, endidx):
+        arg_completions = {
+            1: list(self.model.classDict.keys()),
+            2: list(self.model.classDict.keys())
+        }
+        return self.arg_complete(text, line, arg_completions)
+
+    def complete_rename_relationship(self, text, line, begidx, endidx):
+        arg_completions = {
+            1: list(self.model.classDict.keys()),
+            2: list(self.model.classDict.keys()),
+            3: ['aggregation', 'composition', 'inheritance', 'realization']
+        }
+        return self.arg_complete(text, line, arg_completions)
+
+    def complete_add_method(self, text, line, begidx, endidx):
+        arg_completions = {
             1: list(self.model.classDict.keys())
         }
-
         return self.arg_complete(text, line, arg_completions)
+
+    def complete_delete_method(self, text, line, begidx, endidx):
+        curr_args = line.split()
+        arg_completions = {
+            1: list(self.model.classDict.keys()),
+            2: ([] if len(curr_args) < 2 or curr_args[1] not in self.model.classDict
+                    else self.model.getAllMethods(curr_args[1]))
+        }
+        return self.arg_complete(text, line, arg_completions)
+
+    def complete_rename_method(self, text, line, begidx, endidx):
+        curr_args = line.split()
+        arg_completions = {
+            1: list(self.model.classDict.keys()),
+            2: ([] if len(curr_args) < 2 or curr_args[1] not in self.model.classDict
+                    else self.model.getAllMethods(curr_args[1]))
+        }
+        return self.arg_complete(text, line, arg_completions)
+
+    def complete_add_field(self, text, line, begidx, endidx):
+        arg_completions = {
+            1: list(self.model.classDict.keys())
+        }
+        return self.arg_complete(text, line, arg_completions)
+
+    def complete_delete_field(self, text, line, begidx, endidx):
+        curr_args = line.split()
+        arg_completions = {
+            1: list(self.model.classDict.keys()),
+            2: ([] if len(curr_args) < 2 or curr_args[1] not in self.model.classDict
+                    else self.model.getFields(curr_args[1]))
+        }
+        return self.arg_complete(text, line, arg_completions)
+
+    def complete_rename_field(self, text, line, begidx, endidx):
+        curr_args = line.split()
+        arg_completions = {
+            1: list(self.model.classDict.keys()),
+            2: ([] if len(curr_args) < 2 or curr_args[1] not in self.model.classDict
+                    else self.model.getFields(curr_args[1]))
+        }
+        return self.arg_complete(text, line, arg_completions)
+
+    def complete_add_parameter(self, text, line, begidx, endidx):
+        curr_args = line.split()
+        arg_completions = {
+            1: list(self.model.classDict.keys()),
+            2: ([] if len(curr_args) < 2 or curr_args[1] not in self.model.classDict
+                    else self.model.getFields(curr_args[1]))
+        }
+        return self.arg_complete(text, line, arg_completions)
+
+    def complete_delete_parameter(self, text, line, begidx, endidx):
+        curr_args = line.split()
+
+        # Only get method parameters if both the method and class exist.
+        method_params = []
+        if (len(curr_args) >= 3 and curr_args[1] in self.model.classDict
+            and curr_args[2] in self.model.getAllMethods(curr_args[1])):
+            for m in self.model.getMethodsByName(curr_args[1], curr_args[2]):
+                param_names = [p[1] for p in m.parameters]
+                method_params += param_names
+
+        # Remove duplicate parameter names
+        method_params = list(set(method_params))
+
+        arg_completions = {
+            1: list(self.model.classDict.keys()),
+            2: ([] if len(curr_args) < 2 or curr_args[1] not in self.model.classDict
+                    else self.model.getAllMethods(curr_args[1])),
+            3: method_params
+        }
+        return self.arg_complete(text, line, arg_completions)
+
+    def complete_change_parameters(self, text, line, begidx, endidx):
+        curr_args = line.split()
+        arg_completions = {
+            1: list(self.model.classDict.keys()),
+            2: ([] if len(curr_args) < 2 or curr_args[1] not in self.model.classDict
+                    else self.model.getFields(curr_args[1]))
+        }
+        return self.arg_complete(text, line, arg_completions)
+    
+    # TODO: Use os.walk, and some fancy way of autocompleting directory paths
+    # based on the user's OS...
+    def complete_save(self, text, line, begidx, endidx):
+        pass
+
+    def complete_load(self, text, line, begidx, endidx):
+        pass
 
     # Helpers
     def print_cmd_help(self, command):
         print(self.cmd_desc[command])
+    
     def postcmd(self, stop, line):
         pass
+    
     def emptyline(self):
         pass
+    
     def execute(self, function, args):
         if isinstance(args, str):
             args = args.split()
         command = Command(function, *args)
         command.execute()
         self.saveStates.append(Momento(command, self.model))
+    
     def onecmd(self, line):
         try:
             return super().onecmd(line)
@@ -263,11 +417,13 @@ class MontyREPL(cmd.Cmd):
                 print('Wrong number of arguments')
             self.print_cmd_help(line.split()[0])
             return False
+    
     def handle_overloaded_methods(self, className, methodName):
         methods = self.model.getMethodsByName(className, methodName)
         for method, idx in zip(methods, range(1, len(methods) + 1)):
             print(f'{idx}. {method}')
         num = int(input(Fore.CYAN + 'Method number: ')) - 1
+        print(num)
         return methods[num].parameters
 
     # arg_complete -> list(str)
