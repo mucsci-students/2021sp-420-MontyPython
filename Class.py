@@ -90,7 +90,7 @@ class Class():
                 if self.methodDict[methodName][i].parameters == testList:   
                     raise KeyError(f'Adding \'{name}\' will cause a duplicate method signature.')
             # Finally, add the parameter
-            self.methodDict[methodName][methodIndex].parameters.append([typ, name])
+            self.methodDict[methodName][methodIndex].parameters.append((typ, name))
 
         def removeParameter(self, methodName, parameters, name):
             if name == "":
@@ -117,12 +117,12 @@ class Class():
             
             # Check if removing the parameter causes identical method signatures (illegal)
             testList = self.methodDict[methodName][methodIndex].parameters.copy()
-            testList.remove([typ, name])
+            testList.remove((typ, name))
             for i in range(len(self.methodDict[methodName])):
                 if self.methodDict[methodName][i].parameters == testList:   
                     raise KeyError(f'Removing \'{name}\' will cause a duplicate method signature.')
             # Finally, remove the parameter
-            self.methodDict[methodName][methodIndex].parameters.remove([typ, name])
+            self.methodDict[methodName][methodIndex].parameters.remove((typ, name))
 
         def removeAllParameters(self, methodName, parameters):
             # Check if method with given parameters exists (and get index)
@@ -178,7 +178,6 @@ class Class():
                 self.addParameter(methodName, c, newType, newName)
       
             except Exception as e:
-                print(self.methodDict)
                 raise KeyError(f'Error changing parameter')
 
         def changeAllParameters(self, methodName, parameters, newParameters):
