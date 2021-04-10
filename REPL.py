@@ -423,7 +423,6 @@ class MontyREPL(cmd.Cmd):
         for method, idx in zip(methods, range(1, len(methods) + 1)):
             print(f'{idx}. {method}')
         num = int(input(Fore.CYAN + 'Method number: ')) - 1
-        print(num)
         return methods[num].parameters
 
     # arg_complete -> list(str)
