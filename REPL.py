@@ -77,19 +77,32 @@ class MontyREPL(cmd.Cmd):
     #       line of text, with some pre-defined minimum length.
     def do_list_class(self, args):
         c = args.split()[0]
-        print(c)
-        if len(self.model.classDict[c].fieldDict) > 0:
-            print('-'*24)
+        name = f' {c}'
+        fields = []
+        methods = []
         for field in self.model.classDict[c].fieldDict:
-            print(f'  {self.model.classDict[c].fieldDict[field]}')
-        if len(self.model.classDict[c].methodDict) > 0:
-            print('-'*24)
+            fields.append(f' {self.model.classDict[c].fieldDict[field]}')
         for method in self.model.classDict[c].methodDict:
             for m in self.model.classDict[c].methodDict[method]:
-                print(f'  {m}')
-        print('-'*24)
-        print()
-   
+                methods.append(f' {m}')
+
+        longest = max(15, len(max([name] + fields + methods, key=lambda s:len(s))))+1
+        print_line = lambda l: print(f'|{l}{" "*max(1, longest-len(l))}|')
+        print_sep = lambda: print(f'+{"-"*longest}+')
+
+        print_sep()
+        print_line(name)
+        print_sep()
+
+        if len(fields) > 0:
+            for f in fields:
+                print_line(f)
+            print_sep()
+        if len(methods) > 0:
+            for m in methods:
+                print_line(m)
+            print_sep()
+
     def do_save(self, args):
         if len(args) > 0:
             Interface.saveFile(self.model, args)
