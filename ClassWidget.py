@@ -20,11 +20,6 @@ class ClassWidget(Frame):
         # Create the three text boxes
         self.initText()
 
-        # Gets default coordiantes of the name, field, and method text box to use in other methods [x1, y1, x2, y2]
-        self.nameBoundingBox = self.canvas.bbox(self.getNameObject())
-        self.fieldBoundingBox = self.canvas.bbox(self.getFieldObject())
-        self.methodBoundingBox = self.canvas.bbox(self.getMethodObject())
-
         # Update where text boxes show up on the GUI based on text contents
         self.updateWidget()
 
@@ -72,20 +67,12 @@ class ClassWidget(Frame):
         self.updateTextLocations()
         # Draws the actual boxes around the text
         self.delAndRedrawBoxes()
-        # Update bounding boxes incase they've changed
-        self.updateBoundingBoxes()
         # Update the coordiante list for relationships
         self.updateCoordinateList()
 
     def delAndRedrawBoxes(self):
         self.deleteBoxesFromCanvas()
         self.drawBoxes()
-
-    # Bounding boxes are changed to the actual box around the text after creation
-    def updateBoundingBoxes(self):
-        self.nameBoundingBox = self.canvas.coords(self.getNameBoxObject())
-        self.fieldBoundingBox = self.canvas.coords(self.getFieldBoxObject())
-        self.methodBoundingBox = self.canvas.coords(self.getMethodBoxObject())
     
     # Finds the box with the longest width so they can all be set to that width
     def updateWidth(self):
@@ -130,17 +117,20 @@ class ClassWidget(Frame):
         if self.widgetCoordinates:
             self.widgetCoordinates.clear()
 
+        nameCoords = self.getNameBoxCoords()
+        methodCoords = self.getMethodBoxCoords()
+
         # Mid points (in order): Top middle [0], Left middle [1], Right middle [2], Bottom middle [3]
-        self.widgetCoordinates.append([((self.nameBoundingBox[0] + self.nameBoundingBox[2]) / 2), self.nameBoundingBox[1]])
-        self.widgetCoordinates.append([self.nameBoundingBox[0], ((self.nameBoundingBox[1] + self.methodBoundingBox[3]) / 2)])
-        self.widgetCoordinates.append([self.methodBoundingBox[2], ((self.nameBoundingBox[1] + self.methodBoundingBox[3]) / 2)])
-        self.widgetCoordinates.append([((self.methodBoundingBox[0] + self.methodBoundingBox[2]) / 2), self.methodBoundingBox[3]])
+        self.widgetCoordinates.append([((nameCoords[0] + nameCoords[2]) / 2), nameCoords[1]])
+        self.widgetCoordinates.append([nameCoords[0], ((nameCoords[1] + methodCoords[3]) / 2)])
+        self.widgetCoordinates.append([methodCoords[2], ((nameCoords[1] + methodCoords[3]) / 2)])
+        self.widgetCoordinates.append([((methodCoords[0] + methodCoords[2]) / 2), methodCoords[3]])
 
         # Corners (in order): Top left [4], Top right [5], Bottom left [6], Bottom right [7]
-        self.widgetCoordinates.append([self.nameBoundingBox[0], self.nameBoundingBox[1] + 5])
-        self.widgetCoordinates.append([self.nameBoundingBox[2], self.nameBoundingBox[1] + 5])
-        self.widgetCoordinates.append([self.methodBoundingBox[0], self.methodBoundingBox[3] - 5])
-        self.widgetCoordinates.append([self.methodBoundingBox[2], self.methodBoundingBox[3] - 5])
+        self.widgetCoordinates.append([nameCoords[0], nameCoords[1] + 5])
+        self.widgetCoordinates.append([nameCoords[2], nameCoords[1] + 5])
+        self.widgetCoordinates.append([methodCoords[0], methodCoords[3] - 5])
+        self.widgetCoordinates.append([methodCoords[2], methodCoords[3] - 5])
 
     # ------------------------------------------------------------- #
     #          Methods that delete objects from dict/canvas
@@ -230,9 +220,18 @@ class ClassWidget(Frame):
     def getMethodCoords(self):
         return self.canvas.coords(self.getMethodObject())
 
+    def getNameBoxCoords(self):
+        return self.canvas.coords(self.getNameBoxObject())
+    
+    def getFieldBoxCoords(self):
+        return self.canvas.coords(self.getFieldBoxObject())
+
+    def getMethodBoxCoords(self):
+        return self.canvas.coords(self.getMethodBoxObject())
+
     # Returns a list of two coordinates for the top left corner of the widget. [x, y]
     def getWidgetCoords(self):
-        return getNameCoords()
+        return self.getNameCoords()
 
     # ------------------------------------------------------------- #
     #                    Get widths and heights
@@ -251,13 +250,16 @@ class ClassWidget(Frame):
         return methodBoundingBox[2] - methodBoundingBox[0]
 
     def getNameHeight(self):
-        return self.nameBoundingBox[3] - self.nameBoundingBox[1]
+        nameCoords = self.canvas.bbox(self.getNameObject())
+        return nameCoords[3] - nameCoords[1]
 
     def getFieldHeight(self):
-        return self.fieldBoundingBox[3] - self.fieldBoundingBox[1]
+        fieldCoords = self.canvas.bbox(self.getFieldObject())
+        return fieldCoords[3] - fieldCoords[1]
 
     def getMethodHeight(self):
-        return self.methodBoundingBox[3] - self.methodBoundingBox[1]
+        methodCoords = self.canvas.bbox(self.getMethodObject())
+        return methodCoords[3] - methodCoords[1]
 
     # ------------------------------------------------------------- #
     #                       Helper methods
