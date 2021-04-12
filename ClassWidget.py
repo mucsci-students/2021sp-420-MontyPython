@@ -4,126 +4,83 @@ class ClassWidget(Frame):
     def __init__(self, parent, canvas, txt, x, y):
         Frame.__init__(self, parent)
 
-        # The canvas in the main window
+        # Canvas in GUIMainWindow
         self.canvas = canvas
-
+        # Class widget width
+        self.width = 0
         self.nameTxt = txt
         self.x = x
         self.y = y
 
-        # List that contains lists of coordinate pairs that relationshpis can be drawn to
-        # Ex: [[x1, y1], [x2, y2], [x3, y3]]
+        # List containing Lists of coordinate pairs for drawing relationships. Ex: [[x1, y1], [x2, y2], [x3, y3]]
         self.widgetCoordinates = []
-
-        # Text width, all will be set to the same number
-        self.width = 0
-
         # Contains objects NameText, NameBox, FieldText, FieldBox, MethodText, MethodBox
         self.objectDict = {}
 
-        # Creates the text boxes. Everything is based around these
+        # Create the three text boxes
         self.initText()
-
-        # Gets default coordiantes of the name, field, and method text box to use in other methods [x1, y1, x2, y2]
-        self.nameBoundingBox = self.canvas.bbox(self.getNameObject())
-        self.fieldBoundingBox = self.canvas.bbox(self.getFieldObject())
-        self.methodBoundingBox = self.canvas.bbox(self.getMethodObject())
 
         # Update where text boxes show up on the GUI based on text contents
         self.updateWidget()
 
-    # --------------------------------------------------- #
-    # Methods that only run when a new widget is made
-    # --------------------------------------------------- #
+    # ------------------------------------------------------------- #
+    #                Initial text and box creation
+    # ------------------------------------------------------------- #
 
-    # Create three text items
+    # Create name, field, and method text
     def initText(self):
         self.createText(self.x, self.y, "Name", self.nameTxt)
         self.createText(0, 0, "Field", "")
         self.createText(0, 0, "Method", "")
 
-    # Creates the text for the text box. 
-    # x, y = coordinates; Identifier = Name, Field, or Method; Txt = the text to go inside the box
+    # Identifier = Name, Field, or Method
     def createText(self, x, y, identifier, txt):
-        # create_text(x, y, options ...)
-        # Anchor info: https://www.tutorialspoint.com/python/tk_anchors.htm
         self.objectDict[identifier + "Text"] = self.canvas.create_text(x, y, text=txt, fill="black", anchor = 'nw', tag=self.nameTxt)
 
-
-    # --------------------------------------------------- #
-    # Methods that update the text and box locations
-    # --------------------------------------------------- #
-
-    # Runs methods that update the location/sizes of the boxes based on the contents
-    def updateWidget(self):
-        # Set widths of all boxes to match the largest one
-        self.setTextWidths()
-        # Move the boxes to appear on top of eachother
-        self.updateTextLocations()
-        # Draws the actual boxes around the text
-        self.updateBoxes()
-        # Update bounding boxes incase they've changed
-        self.updateBoundingBoxes()
-        # Update the coordiante list for relationships
-        self.updateCoordinateList()
-
-        #self.circleTest()
-
-    def circleTest(self):
-        for c in self.widgetCoordinates:
-            self.createCircle(c[0], c[1])
-            print(c[0], c[1])
-
-    def createCircle(self, x, y):
-        x1 = x - 5
-        y1 = y - 5
-        x2 = x + 5
-        y2 = y + 5
-        self.canvas.tag_raise(self.canvas.create_oval(x1, y1, x2, y2, fill="blue"))
-
-    # Delete & Redraw
-    def updateBoxes(self):
-        self.deleteBoxesFromCanvas()
-        self.drawBoxes()
-
+    # Creates boxes that go around text
     def drawBoxes(self):
         self.drawBox("Name", self.getNameObject())
         self.drawBox("Field", self.getFieldObject())
         self.drawBox("Method", self.getMethodObject())
 
-    # Creates box that goes around text.
-    # Identifier = Name, Field, or Method; txtBox = objectDict entry
-    def drawBox(self, identifier, txtBox):
+    # Identifier = Name, Field, or Method; txtBoxObj = objectDict entry
+    def drawBox(self, identifier, txtBoxObj):
         # bbox returns a list [x1, y1, x2, y2]
-        boundingBox = self.canvas.bbox(txtBox)
+        boundingBox = self.canvas.bbox(txtBoxObj)
 
-        # Create the actual box. create_rectangle: x1, y1, x2, y2, options.. (x1, y1) top left corner, (x2, y2) bottom right corner
+        # Create the actual box. (x1, y1) top left corner, (x2, y2) bottom right corner
         self.objectDict[identifier + "Box"] = self.canvas.create_rectangle(boundingBox[0], boundingBox[1], (boundingBox[0] + self.width), boundingBox[3], outline="black", fill="white", tag=self.nameTxt)
        
         # Moves items up to be in front of other objects
         self.canvas.tag_raise(self.objectDict[identifier + "Box"])
         self.canvas.tag_raise(self.objectDict[identifier + "Text"])
 
+    # ------------------------------------------------------------- #
+    #                Methods for updating widget
+    # ------------------------------------------------------------- #
 
-    # Needed for drawing boxes and moving the text
-    # Bounding boxes changed to the actual box around the text after creation
-    def updateBoundingBoxes(self):
-        # self.nameBoundingBox = self.canvas.bbox(self.getNameObject())
-        # self.fieldBoundingBox = self.canvas.bbox(self.getFieldObject())
-        # self.methodBoundingBox = self.canvas.bbox(self.getMethodObject())
-        self.nameBoundingBox = self.canvas.coords(self.getNameBoxObject())
-        self.fieldBoundingBox = self.canvas.coords(self.getFieldBoxObject())
-        self.methodBoundingBox = self.canvas.coords(self.getMethodBoxObject())
+    # Runs methods that update the location/sizes of the boxes based on the contents
+    def updateWidget(self):
+        # Find the longest text box so all widths can match it
+        self.updateWidth()
+        # Move the boxes to appear on top of eachother
+        self.updateTextLocations()
+        # Draws the actual boxes around the text
+        self.delAndRedrawBoxes()
+        # Update the coordiante list for relationships
+        self.updateCoordinateList()
+
+    def delAndRedrawBoxes(self):
+        self.deleteBoxesFromCanvas()
+        self.drawBoxes()
     
-    # Finds the box with the largest width and sets all boxes to that width
-    def setTextWidths(self):
-        # The width never changes from the original one that the name is set through.
+    # Finds the box with the longest width so they can all be set to that width
+    def updateWidth(self):
         # Get widths
         nameWidth = self.getNameWidth()
         fieldWidth = self.getFieldWidth()
         methodWidth = self.getMethodWidth()
 
-        # --- Find largest ---
         # Method is largest
         if methodWidth > fieldWidth and methodWidth > nameWidth:
             w = methodWidth
@@ -136,38 +93,48 @@ class ClassWidget(Frame):
         # They're all the same
         else:
             w = nameWidth
-
-        # Update text with the new widths
-        # TODO This part doesn't work.
-        #self.canvas.itemconfig(self.getNameObject(), width=w)
-        #self.canvas.itemconfig(self.getFieldObject(), width=w)
-        #self.canvas.itemconfig(self.getMethodObject(), width=w)
-        self.canvas.update()
         
         self.width = w
         
-
     # Shifts the three individual boxes together to look like one box
-    # TODO: Name's bounding box x1 and y1 is off here. 199 vs 200. Had to switch to using coords instead
     def updateTextLocations(self):
-        # Heights
         nameHeight = self.getNameHeight()
         fieldHeight = self.getFieldHeight()
 
         # Coords for the top left corner of the boxes
         nameCoords = [self.getNameCoords()[0], self.getNameCoords()[1]]
 
-        # Update the locations of the text boxes based on the heights
+        # Coordinates are based around the top left corner of the name box
         newFieldY = self.getNameCoords()[1] + nameHeight
         newMethodY = self.getNameCoords()[1] + nameHeight + fieldHeight
 
-        # Coordinates are based around the top left corner of the name box
         self.canvas.coords(self.getFieldObject(), self.getNameCoords()[0], newFieldY)
         self.canvas.coords(self.getMethodObject(), self.getNameCoords()[0], newMethodY)
 
-    # --------------------------------------------------- #
-    # Methods that delete objects from dict and canvas
-    # --------------------------------------------------- #
+    # Updates/adds coordinates in widgetCoordinates
+    def updateCoordinateList(self):
+        # If the list has elements, delete all elements
+        if self.widgetCoordinates:
+            self.widgetCoordinates.clear()
+
+        nameCoords = self.getNameBoxCoords()
+        methodCoords = self.getMethodBoxCoords()
+
+        # Mid points (in order): Top middle [0], Left middle [1], Right middle [2], Bottom middle [3]
+        self.widgetCoordinates.append([((nameCoords[0] + nameCoords[2]) / 2), nameCoords[1]])
+        self.widgetCoordinates.append([nameCoords[0], ((nameCoords[1] + methodCoords[3]) / 2)])
+        self.widgetCoordinates.append([methodCoords[2], ((nameCoords[1] + methodCoords[3]) / 2)])
+        self.widgetCoordinates.append([((methodCoords[0] + methodCoords[2]) / 2), methodCoords[3]])
+
+        # Corners (in order): Top left [4], Top right [5], Bottom left [6], Bottom right [7]
+        self.widgetCoordinates.append([nameCoords[0], nameCoords[1] + 5])
+        self.widgetCoordinates.append([nameCoords[2], nameCoords[1] + 5])
+        self.widgetCoordinates.append([methodCoords[0], methodCoords[3] - 5])
+        self.widgetCoordinates.append([methodCoords[2], methodCoords[3] - 5])
+
+    # ------------------------------------------------------------- #
+    #          Methods that delete objects from dict/canvas
+    # ------------------------------------------------------------- #
     def deleteBoxesFromCanvas(self):
         if "NameBox" in self.objectDict:
             nameBox = self.getNameBoxObject()
@@ -201,43 +168,12 @@ class ClassWidget(Frame):
         self.deleteBoxesFromCanvas()
         self.deleteTextFromCanvas()
 
-    # --------------------------------------------------- #
-    # Update coordinate list that can be called for relationship
-    # --------------------------------------------------- #
-
-    # This method populates widgetCoordinates list with lists of coordinate pairs
-    # These are the coordinates for each of the four corners of the class widget,
-    # Along with the center edge points between the corners
-    def updateCoordinateList(self):
-        # If the list has elements, delete all elements
-        if self.widgetCoordinates:
-            self.widgetCoordinates.clear()
-
-        # Top middle [0]
-        self.widgetCoordinates.append([((self.nameBoundingBox[0] + self.nameBoundingBox[2]) / 2), self.nameBoundingBox[1]])
-        # Left middle [1]
-        self.widgetCoordinates.append([self.nameBoundingBox[0], ((self.nameBoundingBox[1] + self.methodBoundingBox[3]) / 2)])
-         # Right middle [2]
-        self.widgetCoordinates.append([self.methodBoundingBox[2], ((self.nameBoundingBox[1] + self.methodBoundingBox[3]) / 2)])
-        # Bottom middle [3]
-        self.widgetCoordinates.append([((self.methodBoundingBox[0] + self.methodBoundingBox[2]) / 2), self.methodBoundingBox[3]])
-
-        # Top left [4]
-        self.widgetCoordinates.append([self.nameBoundingBox[0], self.nameBoundingBox[1] + 5])
-        # Top right [5]
-        self.widgetCoordinates.append([self.nameBoundingBox[2], self.nameBoundingBox[1] + 5])
-        # Bottom left [6]
-        self.widgetCoordinates.append([self.methodBoundingBox[0], self.methodBoundingBox[3] - 5])
-        # Bottom right [7]
-        self.widgetCoordinates.append([self.methodBoundingBox[2], self.methodBoundingBox[3] - 5])
-
-    # --------------------------------------------------- #
-    # Setters for text
-    # --------------------------------------------------- #
+    # ------------------------------------------------------------- #
+    #                         Set text
+    # ------------------------------------------------------------- #
     
     def setNameText(self, txt):
         self.canvas.itemconfig(self.getNameObject(), text=txt)
-        self.nameTxt = txt
         self.updateWidget()
 
     def setFieldText(self, txt):
@@ -248,15 +184,10 @@ class ClassWidget(Frame):
         self.canvas.itemconfig(self.getMethodObject(), text=txt)
         self.updateWidget()
 
-    def moveBox(self, x, y):
-        self.canvas.coords(self.getNameObject(), x, y)
-        self.updateWidget()
+    # ------------------------------------------------------------- #
+    #                  Get objects in objectDict
+    # ------------------------------------------------------------- #
 
-    # --------------------------------------------------- #
-    # Getters for each individual text box
-    # --------------------------------------------------- #
-
-    # Objects in dict
     def getNameObject(self):  
         return self.objectDict["NameText"]
     
@@ -274,8 +205,12 @@ class ClassWidget(Frame):
     
     def getMethodBoxObject(self):
         return self.objectDict["MethodBox"]
+
+    # ------------------------------------------------------------- #
+    #                       Get Coordinates
+    # ------------------------------------------------------------- #
     
-    # Coordinates of text (top left)
+    # getNameCoords, getFieldCoords, and getMethodCoords return the coordinates for the top left corner of the box
     def getNameCoords(self):
         return self.canvas.coords(self.getNameObject())
 
@@ -285,11 +220,23 @@ class ClassWidget(Frame):
     def getMethodCoords(self):
         return self.canvas.coords(self.getMethodObject())
 
-    # Returns a list of two coordinateds for the top left corner of the widget. [x, y]
-    def getWidgetCoords(self):
-        return self.canvas.coords(self.getNameObject())
+    def getNameBoxCoords(self):
+        return self.canvas.coords(self.getNameBoxObject())
+    
+    def getFieldBoxCoords(self):
+        return self.canvas.coords(self.getFieldBoxObject())
 
-    # Width of each text
+    def getMethodBoxCoords(self):
+        return self.canvas.coords(self.getMethodBoxObject())
+
+    # Returns a list of two coordinates for the top left corner of the widget. [x, y]
+    def getWidgetCoords(self):
+        return self.getNameCoords()
+
+    # ------------------------------------------------------------- #
+    #                    Get widths and heights
+    # ------------------------------------------------------------- #
+
     def getNameWidth(self):
         nameBoundingBox = self.canvas.bbox(self.getNameObject())
         return nameBoundingBox[2] - nameBoundingBox[0]
@@ -302,34 +249,31 @@ class ClassWidget(Frame):
         methodBoundingBox = self.canvas.bbox(self.getMethodObject())
         return methodBoundingBox[2] - methodBoundingBox[0]
 
-    # Height of each text
     def getNameHeight(self):
-        return self.nameBoundingBox[3] - self.nameBoundingBox[1]
+        nameCoords = self.canvas.bbox(self.getNameObject())
+        return nameCoords[3] - nameCoords[1]
 
     def getFieldHeight(self):
-        return self.fieldBoundingBox[3] - self.fieldBoundingBox[1]
+        fieldCoords = self.canvas.bbox(self.getFieldObject())
+        return fieldCoords[3] - fieldCoords[1]
 
     def getMethodHeight(self):
-        return self.methodBoundingBox[3] - self.methodBoundingBox[1]
+        methodCoords = self.canvas.bbox(self.getMethodObject())
+        return methodCoords[3] - methodCoords[1]
 
+    # ------------------------------------------------------------- #
+    #                       Helper methods
+    # ------------------------------------------------------------- #
 
-        # # TODO: Unfinished
-        # for obj in self.objectDict:
-        #     canvas.tag_bind(obj, '<Button1-Motion>', self.move)
-        #     canvas.tag_bind(obj, '<ButtonRelease-1>', self.release)
-        # self.clicked = False
+    # Draws a circle at each widget coordinate location for debugging purposes
+    def circleTest(self):
+        for c in self.widgetCoordinates:
+            self.createCircle(c[0], c[1])
+            print(c[0], c[1])
 
-    # # TODO: unfinished, still figuring this out
-    # def move(self, event):
-    #     if self.clicked:       
-    #         self.canvas.move(obj, event.x - self.mouseX, event.y - self.mouseY)
-    #         self.mouseX = event.x
-    #         self.mouseY = event.y
-    #     else:
-    #         self.clicked = True
-    #         self.canvas.tag_raise(obj)
-    #         self.mouseX = event.x
-    #         self.mouseY = event.y
- 
-    # def release(self, event):
-    #     self.clicked = False
+    def createCircle(self, x, y):
+        x1 = x - 5
+        y1 = y - 5
+        x2 = x + 5
+        y2 = y + 5
+        self.canvas.tag_raise(self.canvas.create_oval(x1, y1, x2, y2, fill="blue"))
