@@ -2,7 +2,7 @@
 Filename: Method.py
 Description: Stores information about a Class method including parameters and return types.
 '''
-
+from copy import copy
 class Method:
     def __init__(self, name, returnType, parameters):
         self.name = name
@@ -10,7 +10,9 @@ class Method:
 
         # parameter structure
         # [(retType1, name1), (retType2, name2), ...]
-        self.parameters = parameters.copy()
+        self.parameters = []
+        for i in range(len(parameters)):
+            self.parameters.append(tuple(copy(parameters[i])))
     def __repr__(self):
         if len(self.parameters) > 0:
             paramStr = ''
