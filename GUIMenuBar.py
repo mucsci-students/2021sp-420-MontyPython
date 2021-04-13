@@ -20,6 +20,11 @@ def menu(controller, view, root):
     menu.add_cascade(label="File", menu=file) 
 
     # Do the same for the rest of the menus
+    edit = Menu(menu, tearoff = False)
+    edit.add_command(label="Undo", command= lambda: controller.undo())
+    edit.add_command(label="Redo", command= lambda: controller.redo())
+    menu.add_cascade(label="Edit", menu=edit)
+
     classes = Menu(menu, tearoff = False)
     classes.add_command(label="Add Class", command= lambda: controller.windowFactory("Add Class"))
     classes.add_command(label="Delete Class", command= lambda: controller.windowFactory("Delete Class"))

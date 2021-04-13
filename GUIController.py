@@ -216,19 +216,6 @@ class GUIController:
     def addMethod(self, className, methodName, returnType, parameters):
         try:
             self.model.addMethod(className, methodName, returnType, parameters)
-            
-            # Update the class widget
-            # TODO: Stopped here. This isn't working
-            # methodStr = ""
-            # for m in self.model.classDict[className].methodDict:
-            #     methodStr += m[0] 
-            #     if len(m) > 1:
-            #         for param in m[1]:
-            #             methodStr += param + " "
-            #     methodStr += "\n"
-            # self.view.classDict[className].setMethodText(methodStr)
-            # self.view.classDict[className].updateWidget()
-
             self.updateWidgetMethod(className)
 
         except Exception as e:
@@ -389,6 +376,12 @@ class GUIController:
             errorBox = self.windowFactory("alertBox", e)
         if self.debug:
             print(self.model.classDict)
+
+    def undo(self):
+        pass
+
+    def redo(self):
+        pass
     
     def listMethods(self, className, methodName, numbered=True):
         if className in self.model.classDict and methodName in self.model.getAllMethods(className):
