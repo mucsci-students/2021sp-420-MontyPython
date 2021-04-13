@@ -27,6 +27,19 @@ list_classes
 list_class <class>
     List contents of a single class
 
+undo
+    Undoes the last applicable action. Actions that cannot be undone include
+    exit, help, clear, list_relationships, list_classes, list_class, save,
+    load. Undo will search for the most recent command not in this list and
+    will revert the changes made by it.
+
+redo
+    Redoes the last applicable action. Actions that cannot be undone include
+    exit, help, clear, list_relationships, list_classes, list_class, save,
+    load. Redo will search for the most recently undone command not in this
+    list and will execute it again. The list of redo actions is reset when
+    a command that is not redo and not in the mentioned list is called.
+    
 --------------- Save/Load ---------------
 
 save <filename>
