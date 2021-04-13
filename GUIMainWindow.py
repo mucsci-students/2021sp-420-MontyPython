@@ -54,10 +54,28 @@ class MainWindow(Frame):
         #self.canvas.create_line( point2[0], point2[1], nd[0], nd[1], )
         #self.canvas.create_line(300, 40, 300, 300, arrow=FIRST)
 
-
     
     def addClass(self, className, x, y):
         self.classDict[className] = ClassWidget(self, self.canvas, className, x, y)
+        # Binds are for move class
+        self.canvas.tag_bind(className, '<ButtonPress-1>', lambda e, tag=className: self.startDrag(e, tag))
+        self.canvas.tag_bind(className, '<B1-Motion>', lambda e, tag=className: self.dragMotion(e, tag))
+
+    # Starts move class drag
+    def startDrag(self, event, tag):
+        widget = event.widget
+        widget.startX = event.x
+        widget.startY = event.y
+
+    # Moves class with left click
+    def dragMotion(self, event, tag):
+        widget = event.widget
+        x = event.x - widget.startX
+        y = event.y - widget.startY
+
+        self.canvas.move(tag, x, y)
+        widget.startX = event.x
+        widget.startY = event.y
 
     def deleteClass(self, className):
         self.classDict[className].deleteWidgetFromCanvas()

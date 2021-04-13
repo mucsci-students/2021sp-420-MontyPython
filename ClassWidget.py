@@ -277,5 +277,3 @@ class ClassWidget(Frame):
         x2 = x + 5
         y2 = y + 5
         self.canvas.tag_raise(self.canvas.create_oval(x1, y1, x2, y2, fill="blue"))
-
-
