@@ -70,6 +70,11 @@ class ClassWidget(Frame):
         # Update the coordiante list for relationships
         self.updateCoordinateList()
 
+    def updateAllCoordinates(self, newX, newY):
+        self.updateCoordinateList()
+        self.x = newX
+        self.y = newY
+
     def delAndRedrawBoxes(self):
         self.deleteBoxesFromCanvas()
         self.drawBoxes()

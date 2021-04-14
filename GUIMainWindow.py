@@ -88,6 +88,23 @@ class MainWindow(Frame):
         #print(self.lineDict)
         #self.drawLines()
 
+    def updateLineDict(self, className):
+        # for theTuple in self.lineDict.keys():
+        #     if className in theTuple:
+        #         (name1, name2) = theTuple
+        #         self.deleteLine(name1, name2)
+        toUpdate = []
+        typeList = []
+        for theTuple, lineInfo in self.lineDict.items():
+            if className in theTuple:
+                toUpdate.append(theTuple)       
+                typeList.append(lineInfo)     
+                            
+        for theTuple, theType in zip(toUpdate, typeList):
+            (name1, name2) = theTuple
+            self.deleteLine(name1, name2)
+            self.addLine(name1, name2, theType[4])
+
     def drawLines(self):
 
         # If it's not empty

@@ -22,7 +22,7 @@ class GUIController:
         self.usedCoordinateDict = {}
         self.classWidgetCount = 0
 
-        self.moveClass = MoveClass.MoveClass(self, self.view.canvas)
+        self.moveClass = MoveClass.MoveClass(self, self.view, self.view.canvas)
 
 
     def load(self, name):
