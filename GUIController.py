@@ -45,8 +45,8 @@ class GUIController:
 
         # TODO: Once classes are able to be moved, remove this
         if self.classWidgetCount == 9:
-                alertBox = self.windowFactory("alertBox", "Only 9 classes are able to be added to the GUI verison of this program.")
-                return
+            alertBox = self.windowFactory("alertBox", "Only 9 classes are able to be added to the GUI verison of this program.")
+            return
 
         try:
             self.model.addClass(name)
@@ -216,19 +216,6 @@ class GUIController:
     def addMethod(self, className, methodName, returnType, parameters):
         try:
             self.model.addMethod(className, methodName, returnType, parameters)
-            
-            # Update the class widget
-            # TODO: Stopped here. This isn't working
-            # methodStr = ""
-            # for m in self.model.classDict[className].methodDict:
-            #     methodStr += m[0] 
-            #     if len(m) > 1:
-            #         for param in m[1]:
-            #             methodStr += param + " "
-            #     methodStr += "\n"
-            # self.view.classDict[className].setMethodText(methodStr)
-            # self.view.classDict[className].updateWidget()
-
             self.updateWidgetMethod(className)
 
         except Exception as e:
@@ -238,10 +225,8 @@ class GUIController:
         if self.debug:
             print(self.model.classDict[className].methodDict)
 
-    def deleteMethod(self, className, methodName, methodNum):
+    def deleteMethod(self, className, methodName, params):
         try:
-            idx = int(methodNum) - 1
-            params = self.model.getMethod(className, methodName, idx).parameters
             self.model.deleteMethod(className, methodName, params)
             self.updateWidgetMethod(className)
         except Exception as e:
@@ -251,10 +236,8 @@ class GUIController:
         if self.debug:
             print(self.model.classDict)    
 
-    def renameMethod(self, className, methodName, methodNum, newName):
+    def renameMethod(self, className, methodName, params, newName):
         try:
-            idx = int(methodNum) - 1
-            params = self.model.getMethod(className, methodName, idx).parameters
             self.model.renameMethod(className, methodName, params, newName)
             self.updateWidgetMethod(className)
         except Exception as e:
@@ -264,10 +247,8 @@ class GUIController:
         if self.debug:
             print(self.model.classDict)
 
-    def addParameter(self, className, methodName, methodNum, typ, name):
+    def addParameter(self, className, methodName, params, typ, name):
         try:
-            idx = int(methodNum) - 1
-            params = self.model.getMethod(className, methodName, idx).parameters
             self.model.addParameter(className, methodName, params, typ, name)
             self.updateWidgetMethod(className)
         except Exception as e:
@@ -277,10 +258,8 @@ class GUIController:
         if self.debug:
             print(self.model.classDict[className].methodDict)
 
-    def removeParameter(self, className, methodName, methodNum, name):
+    def removeParameter(self, className, methodName, params, name):
         try:
-            idx = int(methodNum) - 1
-            params = self.model.getMethod(className, methodName, idx).parameters
             self.model.removeParameter(className, methodName, params, name)
             self.updateWidgetMethod(className)
         except Exception as e:
@@ -290,10 +269,8 @@ class GUIController:
         if self.debug:
             print(self.model.classDict)
 
-    def changeParameter(self, className, methodName, methodNum, name, newType, newName):
+    def changeParameter(self, className, methodName, params, name, newType, newName):
         try:
-            idx = int(methodNum) - 1
-            params = self.model.getMethod(className, methodName, idx).parameters
             self.model.changeParameter(className, methodName, params, name, newType, newName)
             self.updateWidgetMethod(className)
         except Exception as e:
@@ -404,6 +381,21 @@ class GUIController:
     
     def getClasses(self):
         return list(self.model.classDict.keys())
+    
+    def getFields(self, className):
+        return list(self.model.getFields(className))
+    
+    def getMethodsByName(self, className, methodName):
+        return list(self.model.getMethodsByName(className, methodName))
+    
+    def getAllMethodsString(self, className):
+        names = self.model.getAllMethods(className)
+        lst = []
+        for name in names:
+            for method in self.model.getMethodsByName(className, name):
+                lst.append(method)
+        return lst
+
 
     # --------------------------------
     # Menu Methods
