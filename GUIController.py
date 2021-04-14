@@ -366,6 +366,12 @@ class GUIController:
             errorBox = self.windowFactory("alertBox", e)
         if self.debug:
             print(self.model.classDict)
+
+    def undo(self):
+        pass
+
+    def redo(self):
+        pass
     
     def listMethods(self, className, methodName, numbered=True):
         if className in self.model.classDict and methodName in self.model.getAllMethods(className):
