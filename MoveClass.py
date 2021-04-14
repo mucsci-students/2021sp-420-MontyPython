@@ -30,8 +30,9 @@ class MoveClass:
 
     def stopDrag(self, event, tag, className):
         widget = event.widget
-        x = widget.startX
-        y = widget.startY
+        coordinates = self.canvas.coords(tag)
+        x = coordinates[0]
+        y = coordinates[1]
         self.view.classDict[className].updateAllCoordinates(x, y)
         self.view.drawLines()
         self.controller.updateClassCoordinates(className, x, y)

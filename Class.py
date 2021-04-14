@@ -5,7 +5,7 @@ from Method import Method
 
 class Class():
 
-        def __init__(self, name, xCor = -1, yCor = -1):
+        def __init__(self, name, xCor, yCor):
             self.name = name
             self.attributeDict = {}
             self.xCor = xCor

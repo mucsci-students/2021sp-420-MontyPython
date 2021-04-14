@@ -52,17 +52,18 @@ class GUIController:
 
         try:
             self.model.addClass(name)
-            # Update number of widgets on screen
-            self.classWidgetCount = self.classWidgetCount + 1
-            # Get the coordinates from the coordinateList at index 0
-            coordinates = self.coordinateList[0]
-            # Add class based on thoes coordinates
+            # # Update number of widgets on screen
+            # self.classWidgetCount = self.classWidgetCount + 1
+            # # Get the coordinates from the coordinateList at index 0
+            # coordinates = self.coordinateList[0]
+            # # Add class based on thoes coordinates
+            coordinates = self.model.getClassCoordinates(name)
             self.view.addClass(name, coordinates[0], coordinates[1])
             # Set the class binds
             self.moveClass.setBinds(name)
-            # Move those coordinates to the used coordinate dict, remove them from the normal coordinate list
-            self.usedCoordinateDict[name] = coordinates
-            self.coordinateList.remove(coordinates)
+            # # Move those coordinates to the used coordinate dict, remove them from the normal coordinate list
+            # self.usedCoordinateDict[name] = coordinates
+            # self.coordinateList.remove(coordinates)
             
         except Exception as e:
             if self.debug:
@@ -83,9 +84,9 @@ class GUIController:
             self.view.deleteClass(name)
             # Update number of classes on screen
             self.classWidgetCount = self.classWidgetCount - 1
-            # Remove coords from used coord dict, add back to coordinate list
-            coords = self.usedCoordinateDict.pop(name)
-            self.coordinateList.append(coords)
+            # # Remove coords from used coord dict, add back to coordinate list
+            # coords = self.usedCoordinateDict.pop(name)
+            # self.coordinateList.append(coords)
 
         except Exception as e:
             if self.debug:
@@ -118,9 +119,9 @@ class GUIController:
             self.view.classDict[oldName].updateWidget()
             self.view.classDict[newName] = self.view.classDict.pop(oldName)
 
-            # Change coordinate dict name to match new class name
-            coords = self.usedCoordinateDict.pop(oldName)
-            self.usedCoordinateDict[newName] = coords
+            # # Change coordinate dict name to match new class name
+            # coords = self.usedCoordinateDict.pop(oldName)
+            # self.usedCoordinateDict[newName] = coords
             self.view.renameClass(oldName, newName)
 
         except Exception as e:
@@ -461,3 +462,20 @@ class GUIController:
 
     def updateClassCoordinates(self, className, x, y):
         self.model.setClassCoordinates(className, x, y)
+
+    # Current issues:
+    # class locations don't save correctly after drag
+
+    def updateCanvas(self):
+        for className in list(self.view.classDict):
+            self.view.deleteClass(className)
+
+        for className in self.model.classDict:
+            coords = self.model.getClassCoordinates(className)
+            self.view.addClass(className, coords[0], coords[1])
+
+            # for theTuple in self.model.relationshipDict:
+            #     if className in theTuple:
+            #         self.view.updateLineDict(className)
+
+        self.view.drawLines()
