@@ -25,16 +25,7 @@ class MainWindow(Frame):
         self.setup()      
 
     def setup(self):
-        # Note: Menu bar is created within the controller
-        # Set root's title
         self.master.title("UML Editor")
-
-        # This widget will take up the full space of root
-
-        #self.pack(fill=BOTH, expand=1)
-
-        # Menu is set up in a different file to increase readability
-        #self.menu = GUIMenuBar.menu(self, self.master) 
 
         # Create canvas for objects to be drawn on
         self.canvas = Canvas(self.master)
@@ -57,25 +48,6 @@ class MainWindow(Frame):
     
     def addClass(self, className, x, y):
         self.classDict[className] = ClassWidget(self, self.canvas, className, x, y)
-        # Binds are for move class
-        self.canvas.tag_bind(className, '<ButtonPress-1>', lambda e, tag=className: self.startDrag(e, tag))
-        self.canvas.tag_bind(className, '<B1-Motion>', lambda e, tag=className: self.dragMotion(e, tag))
-
-    # Starts move class drag
-    def startDrag(self, event, tag):
-        widget = event.widget
-        widget.startX = event.x
-        widget.startY = event.y
-
-    # Moves class with left click
-    def dragMotion(self, event, tag):
-        widget = event.widget
-        x = event.x - widget.startX
-        y = event.y - widget.startY
-
-        self.canvas.move(tag, x, y)
-        widget.startX = event.x
-        widget.startY = event.y
 
     def deleteClass(self, className):
         self.classDict[className].deleteWidgetFromCanvas()
@@ -115,10 +87,6 @@ class MainWindow(Frame):
         #print("LIne Dictionary")
         #print(self.lineDict)
         #self.drawLines()
-
-    # Test popup box. Triggered in GUIMenuBar
-    def boxTest(self):
-        box = PopupBox("test")
 
     def drawLines(self):
 

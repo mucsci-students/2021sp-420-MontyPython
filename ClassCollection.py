@@ -205,7 +205,7 @@ class ClassCollection():
         def getClassCoordinates(self, name):
             if name not in self.classDict:
                 raise KeyError(f'Error: Class {name} does not exist')
-            return (self.classDict[name].getX, self.classDict[name].getY)
+            return (self.classDict[name].getX(), self.classDict[name].getY())
 
         def setClassCoordinates(self, name, X, Y):
             if name not in self.classDict:

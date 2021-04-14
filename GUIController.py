@@ -2,7 +2,7 @@ import sys
 from ClassCollection import ClassCollection
 import Interface
 from PopupBoxes import *
-import GUIMenuBar
+import GUIMenuBar, MoveClass
 import traceback
 
 # A default collection
@@ -21,6 +21,8 @@ class GUIController:
         self.coordinateList = [[50, 100], [50, 400], [400, 100], [400, 400], [750, 100], [750, 400], [50, 750], [400, 750], [750, 750]]
         self.usedCoordinateDict = {}
         self.classWidgetCount = 0
+
+        self.moveClass = MoveClass.MoveClass(self, self.view.canvas)
 
 
     def load(self, name):
@@ -56,6 +58,8 @@ class GUIController:
             coordinates = self.coordinateList[0]
             # Add class based on thoes coordinates
             self.view.addClass(name, coordinates[0], coordinates[1])
+            # Set the class binds
+            self.moveClass.setBinds(name)
             # Move those coordinates to the used coordinate dict, remove them from the normal coordinate list
             self.usedCoordinateDict[name] = coordinates
             self.coordinateList.remove(coordinates)
@@ -455,3 +459,5 @@ class GUIController:
         methodStr = methodStr.rstrip()
         self.view.classDict[className].setMethodText(methodStr)  
 
+    def updateClassCoordinates(self, className, x, y):
+        self.model.setClassCoordinates(className, x, y)
