@@ -47,7 +47,7 @@ class GenericBox:
         return entry
     
     def addDropdown(self, r, c, entries, stick=W, px=4, py=4, ipx=40):
-        cb = Combobox(self.frame, values=entries)
+        cb = Combobox(self.frame, values=entries, state='readonly')
         cb.grid(row=r, column=c, sticky=stick, padx=px, pady=py, ipadx=ipx)
         cb.configure(font=self.font)
         return cb
