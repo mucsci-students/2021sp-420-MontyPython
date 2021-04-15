@@ -17,10 +17,7 @@ class GUIController:
         # Creates the view's menu bar
         self.createMenuBar()
 
-        # TODO: Delete this and related code once classes can move
-        self.coordinateList = [[50, 100], [50, 400], [400, 100], [400, 400], [750, 100], [750, 400], [50, 750], [400, 750], [750, 750]]
-        self.usedCoordinateDict = {}
-        self.classWidgetCount = 0
+        self.classOffset = 0
 
         self.moveClass = MoveClass.MoveClass(self, self.view, self.view.canvas)
 
@@ -45,25 +42,20 @@ class GUIController:
             alertBox = self.windowFactory("alertBox", "Please provide a class name")
             return
 
-        # TODO: Once classes are able to be moved, remove this
-        if self.classWidgetCount == 9:
-                alertBox = self.windowFactory("alertBox", "Only 9 classes are able to be added to the GUI verison of this program.")
-                return
-
         try:
             self.model.addClass(name)
-            # # Update number of widgets on screen
-            # self.classWidgetCount = self.classWidgetCount + 1
-            # # Get the coordinates from the coordinateList at index 0
-            # coordinates = self.coordinateList[0]
-            # # Add class based on thoes coordinates
-            coordinates = self.model.getClassCoordinates(name)
-            self.view.addClass(name, coordinates[0], coordinates[1])
-            # Set the class binds
+
+            if (self.classOffset == 20):
+                self.classOffset = 1
+            else:
+                self.classOffset = self.classOffset + 1
+
+            defaultCoord = self.classOffset * 40
+
+            self.view.addClass(name, defaultCoord, defaultCoord)
+            self.model.setClassCoordinates(name, defaultCoord, defaultCoord)
+
             self.moveClass.setBinds(name)
-            # # Move those coordinates to the used coordinate dict, remove them from the normal coordinate list
-            # self.usedCoordinateDict[name] = coordinates
-            # self.coordinateList.remove(coordinates)
             
         except Exception as e:
             if self.debug:
@@ -80,13 +72,7 @@ class GUIController:
 
         try:
             self.model.deleteClass(name)
-            # Remove the class from the view
             self.view.deleteClass(name)
-            # Update number of classes on screen
-            self.classWidgetCount = self.classWidgetCount - 1
-            # # Remove coords from used coord dict, add back to coordinate list
-            # coords = self.usedCoordinateDict.pop(name)
-            # self.coordinateList.append(coords)
 
         except Exception as e:
             if self.debug:
@@ -119,9 +105,6 @@ class GUIController:
             self.view.classDict[oldName].updateWidget()
             self.view.classDict[newName] = self.view.classDict.pop(oldName)
 
-            # # Change coordinate dict name to match new class name
-            # coords = self.usedCoordinateDict.pop(oldName)
-            # self.usedCoordinateDict[newName] = coords
             self.view.renameClass(oldName, newName)
 
         except Exception as e:

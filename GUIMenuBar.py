@@ -16,7 +16,8 @@ def menu(controller, view, root):
     file.add_command(label="Help", command=lambda: controller.windowFactory("Help"))
     file.add_separator()
     file.add_command(label="Exit", command=exit)
-    file.add_command(label="DELETE LATER", command=lambda: controller.updateCanvas())
+    # Jen needs this for testing while creating update canvas, I'll delete it once I'm done
+    # file.add_command(label="DELETE LATER", command=lambda: controller.updateCanvas())
     # Adds file to menu bar
     menu.add_cascade(label="File", menu=file) 
 
