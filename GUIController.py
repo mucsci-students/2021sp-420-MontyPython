@@ -457,8 +457,9 @@ class GUIController:
             coords = self.model.getClassCoordinates(className)
             self.view.addClass(className, coords[0], coords[1])
 
-            # for theTuple in self.model.relationshipDict:
-            #     if className in theTuple:
-            #         self.view.updateLineDict(className)
+        for theTuple in self.model.relationshipDict:
+            (class1, class2) = theTuple
+            self.view.deleteLine(class1, class2)
+            self.view.addLine(class1, class2, self.model.relationshipDict[theTuple])
 
-        self.view.drawLines()
+        #self.view.drawLines()
