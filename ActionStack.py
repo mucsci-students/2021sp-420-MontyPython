@@ -21,6 +21,7 @@ class ActionStack():
             self.currentObj = self.undoStack.pop()
         else:
             self.currentObj = self.originalObj
+            print("No actions to undo")
 
     #Called when redo is called. Appends to undo stack
     def redoPop(self):
@@ -28,6 +29,8 @@ class ActionStack():
             self.undoStack.append(self.currentObj)
             self.currentObj = self.redoStack.pop()
             self.undoStack.append(self.currentObj)
+        else:
+            print("No actions to redo")
         
     def reset(self, Momento):
         self.undoStack = []

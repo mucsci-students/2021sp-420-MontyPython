@@ -38,7 +38,7 @@ redo
     exit, help, clear, list_relationships, list_classes, list_class, save,
     load. Redo will search for the most recently undone command not in this
     list and will execute it again. The list of redo actions is reset when
-    a command that is not redo and not in the mentioned list is called.
+    a command that is not undo, redo or in the mentioned list is called.
     
 --------------- Save/Load ---------------
 
