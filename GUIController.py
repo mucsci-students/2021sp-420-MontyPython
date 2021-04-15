@@ -1,9 +1,12 @@
 import sys
 from ClassCollection import ClassCollection
+from tkinter import filedialog
 import Interface
 from PopupBoxes import *
 import GUIMenuBar
 import traceback
+from PIL import Image
+import math
 
 # A default collection
 collection = ClassCollection()
@@ -455,3 +458,23 @@ class GUIController:
         methodStr = methodStr.rstrip()
         self.view.classDict[className].setMethodText(methodStr)  
 
+    # Export the canvas as an image using the postscript file.
+    def exportImage(self):
+        # update the postscript file.
+        self.view.updatePsFile()
+
+        try:
+            filename = filedialog.asksaveasfilename(defaultextension=".jpg", filetypes=[("jpg", "*.jpg"), ("png", "*.png"), ("PDF", "*.pdf")])
+        except Exception as e:
+            print("Error saving file")
+
+        if filename == '':
+             return
+             
+        try:
+            image = Image.open("postscript.ps")
+            image.save(filename, quality=99)
+        except Exception as e:
+            errorBox = self.windowFactory("alertBox", "Error saving file")
+            return
+        

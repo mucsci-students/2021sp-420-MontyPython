@@ -1,6 +1,8 @@
 from tkinter import *
 from ClassWidget import ClassWidget
 import math
+from PIL import Image
+import time
 
 # Inherits from frame class in tkinter
 class MainWindow(Frame):
@@ -54,7 +56,29 @@ class MainWindow(Frame):
         #self.canvas.create_line( point2[0], point2[1], nd[0], nd[1], )
         #self.canvas.create_line(300, 40, 300, 300, arrow=FIRST)
 
-    
+    # grab all the changes made to the canvas and update the postscript file. used for
+    # export as image.
+    def updatePsFile(self):
+        self.canvas.update()
+        # Store the width and height of the frame
+        height_0 = self.master.winfo_screenheight()
+        width_0 = self.master.winfo_screenwidth()
+        print(height_0)
+        print(width_0)
+        # Expand the frame for the postscript file
+        self.master.geometry("2000x1800")
+        self.canvas.config(width=2000,height=1800)
+        self.master.update()
+        # Grab the postscript file
+        ps = self.canvas.postscript(file="postscript.ps", colormode="color", pagewidth=5000, pageheight=4000, pagex=0, pagey=0)
+        # Convert previous dimensions to a string
+        dimensions = str(height_0)+"x"+str(width_0)
+        # Restore the previous dimensions
+        self.master.geometry(dimensions)
+        self.canvas.config(width=width_0,height=height_0)
+        self.canvas.update_idletasks
+        self.master.update()
+
     def addClass(self, className, x, y):
         self.classDict[className] = ClassWidget(self, self.canvas, className, x, y)
         # Binds are for move class
@@ -177,9 +201,9 @@ class MainWindow(Frame):
                         self.lineObjList.append(self.canvas.create_line(line[0], line[1], backTrackPoint[0], backTrackPoint[1], dash=(5,1)))
                         self.lineObjList.append(self.canvas.create_line(backTrackPoint[0], backTrackPoint[1], localLineEnd[0], localLineEnd[1], dash=(5,1)))
                         self.lineObjList.append(self.canvas.create_line(localLineEnd[0], localLineEnd[1], basepoint[0], basepoint[1], dash=(5,1), arrow=LAST))
-    
+                
     def addLine(self, firstClassName, secondClassName, typ):
-        #Find coordinates for shortest distance
+        #Find coordinates for shortest distancec
         retVal = self.findShortestDistance(firstClassName, secondClassName)
         bothCoords = retVal[0]
         cord1 = bothCoords[0]
