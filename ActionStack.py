@@ -20,7 +20,7 @@ class ActionStack():
             self.redoStack.append(self.currentObj)
             self.currentObj = self.undoStack.pop()
         else:
-            self.currentState = self.originalState
+            self.currentObj = self.originalObj
 
     #Called when redo is called. Appends to undo stack
     def redoPop(self):
@@ -29,3 +29,8 @@ class ActionStack():
             self.currentObj = self.redoStack.pop()
             self.undoStack.append(self.currentObj)
         
+    def reset(self, Momento):
+        self.undoStack = []
+        self.redoStack = []
+        self.currentObj = Momento
+        self.originalObj = Momento

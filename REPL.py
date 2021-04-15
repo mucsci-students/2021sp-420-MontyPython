@@ -113,6 +113,7 @@ class MontyREPL(cmd.Cmd):
     def do_load(self, args):
         if len(args) > 0:
             Interface.loadFile(self.model, args)
+            self.saveStates.reset(Momento(Command("",""), self.model))
         else:
             self.help_load()
 
@@ -430,11 +431,10 @@ class MontyREPL(cmd.Cmd):
         command = Command(function, *args)
         command.execute()
 
-        #List of commands which cannot be undone or redone, as well as undo and redo
-        #Undo and redo are handled specially within their do functions
-        unusuals = ["help", "clear", "save", "load", "undo", "redo", "list_class", "list_classes", "list_relationships"]
-        if command.function not in unusuals:
-            self.saveStates.add(Momento(command, self.model))
+        #Prior version had a list of commands to check against
+        #Which A) didn't work as intended and B) would be redundant
+        #as excluded functions already weren't added.
+        self.saveStates.add(Momento(command, self.model))
 
 
     
