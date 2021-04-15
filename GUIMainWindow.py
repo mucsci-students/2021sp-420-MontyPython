@@ -65,13 +65,13 @@ class MainWindow(Frame):
         for theTuple, theType in zip(toChange, typeList):
             (name1, name2) = theTuple
             if name1 == oldName:
-                self.deleteLine(oldName, name2)
-                self.addLine(newName, name2, theType[4])
+                self.deleteLine(oldName, name2, False)
+                self.addLine(newName, name2, theType[4], False)
                 
             else:
-                self.deleteLine(name1, oldName)
-                self.addLine(name1, newName, theType[4])
-                
+                self.deleteLine(name1, oldName, False)
+                self.addLine(name1, newName, theType[4], False)
+        self.drawLines()       
 
     def updateLineDict(self, className):
         # for theTuple in self.lineDict.keys():
@@ -87,11 +87,13 @@ class MainWindow(Frame):
                             
         for theTuple, theType in zip(toUpdate, typeList):
             (name1, name2) = theTuple
-            self.deleteLine(name1, name2)
-            self.addLine(name1, name2, theType[4])
+            self.deleteLine(name1, name2, False)
+            self.addLine(name1, name2, theType[4], False)
+        self.drawLines() 
 
     #erases all lines on the canvas (lines are stored in LineOBJlist), then redraws all lines from LineDict
     def drawLines(self):
+        print()
         #usedSpaces = self.ClassSpaces()
         # If it's not empty
         if self.lineObjList:
@@ -174,7 +176,7 @@ class MainWindow(Frame):
                         self.lineObjList.append(self.canvas.create_line(localLineEnd[0], localLineEnd[1], basepoint[0], basepoint[1], dash=(5,1), arrow=LAST))
     
     #adds a new line to the canvas
-    def addLine(self, firstClassName, secondClassName, typ):
+    def addLine(self, firstClassName, secondClassName, typ, drawline):
         #Find coordinates for shortest distance
         retVal = self.findShortestDistance(firstClassName, secondClassName)
         bothCoords = retVal[0]
@@ -189,19 +191,21 @@ class MainWindow(Frame):
             numericTyp = typeList.index(typ)
         
         self.lineDict[(firstClassName, secondClassName)] = [cord1[0], cord1[1], cord2[0], cord2[1], numericTyp, destSide, srcSide]
-        self.drawLines()
+        if(drawline):
+            self.drawLines()
         self.canvas.update_idletasks
 
     #removes a line from the canvas
-    def deleteLine(self, firstClassName, secondClassName):
+    def deleteLine(self, firstClassName, secondClassName, drawline):
         del self.lineDict[(firstClassName, secondClassName)]
-        self.drawLines()
+        if(drawline):
+            self.drawLines()
 
     #changes the type of a line on the canvas
     def renameLine(self, firstClassName, secondClassName, typ):
         del self.lineDict[(firstClassName, secondClassName)]
         self.drawLines()
-        self.addLine(firstClassName, secondClassName, typ)
+        self.addLine(firstClassName, secondClassName, typ, True)
         self.drawLines()
 
     #finds the shortest distance between two classes
