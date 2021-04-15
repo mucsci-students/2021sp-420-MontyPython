@@ -17,7 +17,7 @@ def menu(controller, view, root):
     file.add_separator()
     file.add_command(label="Exit", command=exit)
     # Jen needs this for testing while creating update canvas, I'll delete it once I'm done
-    # file.add_command(label="DELETE LATER", command=lambda: controller.updateCanvas())
+    file.add_command(label="DELETE LATER", command=lambda: controller.updateCanvas())
     # Adds file to menu bar
     menu.add_cascade(label="File", menu=file) 
 
