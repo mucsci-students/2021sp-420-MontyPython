@@ -7,6 +7,7 @@ from colorama import init, Fore
 from ClassCollection import ClassCollection
 from Command import Command
 from Momento import Momento
+from ActionStack import ActionStack
 import Interface
 
 if os.name == 'nt':
@@ -18,8 +19,8 @@ class MontyREPL(cmd.Cmd):
     def __init__(self, completekey='tab', stdin=None, stdout=None):
         super().__init__(completekey, stdin, stdout)
         init(autoreset=True)
-        self.saveStates = []
         self.model = ClassCollection()
+        self.saveStates = ActionStack(Momento(Command("",""), self.model))
         self.intro = (Fore.GREEN + '\nMontyPython UML Editor\n' + '='*80 + 
             '\nType help [verbose|<command-name>] or ? for help on commands.\n' + Fore.RESET)
 
@@ -112,8 +113,17 @@ class MontyREPL(cmd.Cmd):
     def do_load(self, args):
         if len(args) > 0:
             Interface.loadFile(self.model, args)
+            self.saveStates.reset(Momento(Command("",""), self.model))
         else:
             self.help_load()
+
+    def do_undo(self, args):
+        self.saveStates.undoPop()
+        self.model = self.saveStates.currentObj.state
+
+    def do_redo(self, args):
+        self.saveStates.redoPop()
+        self.model = self.saveStates.currentObj.state
 
     # Classes
     def do_add_class(self, args):
@@ -209,6 +219,10 @@ class MontyREPL(cmd.Cmd):
         self.print_cmd_help('save')
     def help_load(self):
         self.print_cmd_help('load')
+    def help_undo(self):
+        self.print_cmd_help('undo')
+    def help_redo(self):
+        self.print_cmd_help('redo')
 
     def help_add_class(self):
         self.print_cmd_help('add_class')
@@ -416,7 +430,13 @@ class MontyREPL(cmd.Cmd):
             args = args.split()
         command = Command(function, *args)
         command.execute()
-        self.saveStates.append(Momento(command, self.model))
+
+        #Prior version had a list of commands to check against
+        #Which A) didn't work as intended and B) would be redundant
+        #as excluded functions already weren't added.
+        self.saveStates.add(Momento(command, self.model))
+
+
     
     def onecmd(self, line):
         try:
