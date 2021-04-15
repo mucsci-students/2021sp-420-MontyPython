@@ -449,7 +449,7 @@ class GUIController:
     # Current issues:
     # class locations don't save correctly after drag
 
-    def updateCanvas(self):
+    def refreshCanvas(self):
         for className in list(self.view.classDict):
             self.view.deleteClass(className)
 
