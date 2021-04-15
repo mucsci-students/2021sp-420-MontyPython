@@ -59,12 +59,11 @@ class MainWindow(Frame):
     # grab all the changes made to the canvas and update the postscript file. used for
     # export as image.
     def updatePsFile(self):
-        self.canvas.update()
+        
+        self.master.update()
         # Store the width and height of the frame
-        height_0 = self.master.winfo_screenheight()
-        width_0 = self.master.winfo_screenwidth()
-        print(height_0)
-        print(width_0)
+        height = self.master.winfo_screenheight()
+        width = self.master.winfo_screenwidth()
         # Expand the frame for the postscript file
         self.master.geometry("2000x1800")
         self.canvas.config(width=2000,height=1800)
@@ -72,10 +71,11 @@ class MainWindow(Frame):
         # Grab the postscript file
         ps = self.canvas.postscript(file="postscript.ps", colormode="color", pagewidth=5000, pageheight=4000, pagex=0, pagey=0)
         # Convert previous dimensions to a string
-        dimensions = str(height_0)+"x"+str(width_0)
+        dimensions = str(width)+"x"+str(height)
+        print(dimensions)
         # Restore the previous dimensions
         self.master.geometry(dimensions)
-        self.canvas.config(width=width_0,height=height_0)
+        self.canvas.config(width=width,height=height)
         self.canvas.update_idletasks
         self.master.update()
 
