@@ -13,7 +13,7 @@ class MainWindow(Frame):
 
         self.lineDict = {}
 
-        #(firstname, secondname): (x1, y1, x2, y2, type, side )
+        #(firstname, secondname): (x1, y1, x2, y2, type, destside, sourceside )
         #Types: 0 - aggregation 1 - Composition 2 - inheritance 3- realization
 
         self.lineObjList = []
@@ -43,26 +43,17 @@ class MainWindow(Frame):
         self.canvas.pack(fill=BOTH, expand=1)
 
         self.drawLines()
-        #st = (200, 600)
-        #nd = (100, 400)
-       
-        #point1 = ((nd[0] - st[0]) / 3 + st[0], (nd[1] - st[1]) / 3 + st[1])
-        #point2  = ((((nd[0] - st[0]) / 3) * 1) + st[0] , (((nd[1] - st[1]) / 3) * 1)  + st[1])
-        #point3
-        #point4
-        #self.canvas.create_line(st[0], st[1], point1[0], point1[1], )
-        #self.canvas.create_line( point2[0], point2[1], nd[0], nd[1], )
-        #self.canvas.create_line(300, 40, 300, 300, arrow=FIRST)
-
 
     
     def addClass(self, className, x, y):
         self.classDict[className] = ClassWidget(self, self.canvas, className, x, y)
 
+    
     def deleteClass(self, className):
         self.classDict[className].deleteWidgetFromCanvas()
         del self.classDict[className]
 
+        #updates the GUIs lineDictionary when classes are removed
         toDelete = []
         for theTuple in self.lineDict.keys():
             if className in theTuple:
@@ -72,10 +63,8 @@ class MainWindow(Frame):
             del self.lineDict[temp]
         self.drawLines()
 
+    #updates the GUIs lineDictionary names
     def renameClass(self, oldName, newName):
-        print("LIne Dictionary")
-        print(self.lineDict)
-        print(self.classDict)
         toChange = []
         typeList = []
         for theTuple, lineInfo in self.lineDict.items():
@@ -93,17 +82,14 @@ class MainWindow(Frame):
                 self.deleteLine(name1, oldName)
                 self.addLine(name1, newName, theType[4])
                 
-        #self.drawLines()
-        #print("LIne Dictionary")
-        #print(self.lineDict)
-        #self.drawLines()
 
     # Test popup box. Triggered in GUIMenuBar
     def boxTest(self):
         box = PopupBox("test")
 
+    #erases all lines on the canvas (lines are stored in LineOBJlist), then redraws all lines from LineDict
     def drawLines(self):
-
+        #usedSpaces = self.ClassSpaces()
         # If it's not empty
         if self.lineObjList:
             #clear the list of canvas objects
@@ -115,38 +101,62 @@ class MainWindow(Frame):
             #for key, value in d.items():
             for key, line in self.lineDict.items():
                 basepoint = (line[2], line[3])
-                rootPoint = (line[0], line[1])              
+                rootPoint = (line[0], line[1]) 
+                #randomPlacement  =
+
+                #destSide           
                 if(line[5] == 'bottom'):
                     side1 = (basepoint[0] + 5, basepoint[1] + 7 )
                     side2 = (basepoint[0] - 5, basepoint[1] + 7 )
                     furthestpoint = (basepoint[0] , basepoint[1] + 14)
                     localLineEnd = (basepoint[0] , basepoint[1] + 34)
-                    backTrackPoint =  (rootPoint[0], localLineEnd[1])
+                   # backTrackPoint =  (rootPoint[0], localLineEnd[1])
                 if(line[5] == 'top'):
                     side1 = (basepoint[0] + 5, basepoint[1] - 7 )
                     side2 = (basepoint[0] - 5, basepoint[1] - 7 )
                     furthestpoint = (basepoint[0] , basepoint[1] - 14)
                     localLineEnd = (basepoint[0] , basepoint[1] - 34)
-                    backTrackPoint =  (rootPoint[0], localLineEnd[1])
+                    #backTrackPoint =  (rootPoint[0], localLineEnd[1])
                 if(line[5] == 'left'):
                     side1 = (basepoint[0] - 7, basepoint[1] - 5 )
                     side2 = (basepoint[0] - 7, basepoint[1] + 5 )
                     furthestpoint = (basepoint[0] - 14, basepoint[1])
                     localLineEnd = (basepoint[0] - 34, basepoint[1])
-                    backTrackPoint =  (localLineEnd[0], rootPoint[1])
+                    #backTrackPoint =  (localLineEnd[0], rootPoint[1])
                 if(line[5] == 'right'):
                     side1 = (basepoint[0] + 7, basepoint[1] - 5 )
                     side2 = (basepoint[0] + 7, basepoint[1] + 5 )
                     furthestpoint = (basepoint[0] + 14, basepoint[1])
                     localLineEnd = (basepoint[0] + 34, basepoint[1])
-                    backTrackPoint =  (localLineEnd[0], rootPoint[1])
+                    #backTrackPoint =  (localLineEnd[0], rootPoint[1])
+                #src Side
+                if(line[6] == 'bottom'):
+                    rootEnd = (rootPoint[0], rootPoint[1] + 34)
+                    backTrackPoint =  (rootEnd[0], localLineEnd[1])
+                if(line[6] == 'top'):
+                    rootEnd = (rootPoint[0], rootPoint[1] - 34)
+                    backTrackPoint =  (rootEnd[0], localLineEnd[1])
+                if(line[6] == 'left'):
+                    rootEnd = (rootPoint[0] - 34, rootPoint[1])
+                    backTrackPoint =  (localLineEnd[0], rootEnd[1])
+                if(line[6] == 'right'):
+                    rootEnd = (rootPoint[0] + 34, rootPoint[1])
+                    backTrackPoint =  (localLineEnd[0], rootEnd[1])
+
                 if(line[4] == 0 or line[4] == 1 ): #0 - aggregation & 1 - composition
                     if (line[4] == 0 ):
                         curfill = "white"
                     else:
                         curfill = "black"
-                    self.lineObjList.append(self.canvas.create_line(line[0], line[1], backTrackPoint[0], backTrackPoint[1]))
+
+                    #Source  Node
+                    self.lineObjList.append(self.canvas.create_line(rootPoint[0], rootPoint[1], rootEnd[0], rootEnd[1]))
+                    self.lineObjList.append(self.canvas.create_line(rootEnd[0], rootEnd[1], backTrackPoint[0], backTrackPoint[1]))
+
+                    
                     self.lineObjList.append(self.canvas.create_line(backTrackPoint[0], backTrackPoint[1], localLineEnd[0], localLineEnd[1]))
+                    
+                    #Dest Node
                     self.lineObjList.append(self.canvas.create_line(furthestpoint[0] , furthestpoint[1], localLineEnd[0], localLineEnd[1]))
                     self.lineObjList.append(self.canvas.create_polygon(basepoint[0], basepoint[1], side1[0], side1[1] , furthestpoint[0] , furthestpoint[1],side2[0], side2[1],fill=curfill, outline = "black"))
     
@@ -160,33 +170,38 @@ class MainWindow(Frame):
                         self.lineObjList.append(self.canvas.create_line(backTrackPoint[0], backTrackPoint[1], localLineEnd[0], localLineEnd[1], dash=(5,1)))
                         self.lineObjList.append(self.canvas.create_line(localLineEnd[0], localLineEnd[1], basepoint[0], basepoint[1], dash=(5,1), arrow=LAST))
     
+    #adds a new line to the canvas
     def addLine(self, firstClassName, secondClassName, typ):
         #Find coordinates for shortest distance
         retVal = self.findShortestDistance(firstClassName, secondClassName)
         bothCoords = retVal[0]
         cord1 = bothCoords[0]
         cord2 = bothCoords[1]
-        side = retVal[1]
+        destSide = retVal[1]
+        srcSide = retVal[2]
         typeList = ['aggregation', 'composition', 'inheritance', 'realization']
         if(type(typ) == int):
             numericTyp = typ
         else:
             numericTyp = typeList.index(typ)
         
-        self.lineDict[(firstClassName, secondClassName)] = [cord1[0], cord1[1], cord2[0], cord2[1], numericTyp, side]
+        self.lineDict[(firstClassName, secondClassName)] = [cord1[0], cord1[1], cord2[0], cord2[1], numericTyp, destSide, srcSide]
         self.drawLines()
         self.canvas.update_idletasks
 
+    #removes a line from the canvas
     def deleteLine(self, firstClassName, secondClassName):
         del self.lineDict[(firstClassName, secondClassName)]
         self.drawLines()
 
+    #changes the type of a line on the canvas
     def renameLine(self, firstClassName, secondClassName, typ):
         del self.lineDict[(firstClassName, secondClassName)]
         self.drawLines()
         self.addLine(firstClassName, secondClassName, typ)
         self.drawLines()
 
+    #finds the shortest distance between two classes
     def findShortestDistance(self, firstClassName, secondClassName):
         # Attain list of Snaps from the classes
         firstClassSnaps = self.classDict[firstClassName].widgetCoordinates
@@ -194,11 +209,13 @@ class MainWindow(Frame):
         self.shortestDistance = 1000000
         firstClassCoord = 0
         secondClassCoord = 0
-        secondIteration = 0
+        
+        destIteration = 0
 
         #iterate through all pairs of coordinates 
+        srcIteration = 0
         for coord1 in firstClassSnaps:
-            secondIteration = 0
+            destIteration = 0
             for coord2 in secondClassSnaps: 
                  
                 #calculate distance between points              
@@ -206,24 +223,37 @@ class MainWindow(Frame):
                 YDis = coord1[1] - coord2[1]
                 self.currentDistance = abs(YDis) + abs(XDis)
                 #check if any previous points were closer, it not. Replace it with the current distance
-                if (round(self.currentDistance) + 7 < self.shortestDistance):
-                    iterationSide = secondIteration
+                if (round(self.currentDistance) + 3 < self.shortestDistance):
+                    destSide = destIteration
+                    srcSide = srcIteration
                     self.shortestDistance = self.currentDistance
                     firstClassCoord = coord1
                     secondClassCoord = coord2
-                secondIteration = secondIteration + 1
 
-        print(iterationSide)
-        if(iterationSide == 1 or iterationSide == 4 or iterationSide == 6):
-            return [(firstClassCoord, secondClassCoord), 'left']
-        
-        if(iterationSide == 2 or iterationSide == 5 or iterationSide == 7):
-            return [(firstClassCoord, secondClassCoord), 'right']
-
-        if(iterationSide == 0):
-            
-            return [(firstClassCoord, secondClassCoord), 'top']
-        
+                destIteration = destIteration + 1
+            srcIteration = srcIteration + 1
         #return the closet points between the two classes
-        return [(firstClassCoord, secondClassCoord), 'bottom']
+        return [(firstClassCoord, secondClassCoord), self.sideToString(destSide), self.sideToString(srcSide) ]
 
+    def sideToString(self, sideNumber):
+        leftList = [1, 4, 6]
+        rightList = [2, 5, 7] 
+
+        if(sideNumber in leftList):
+            returnSide = 'left'
+        elif(sideNumber in rightList):
+            returnSide = 'right'
+        elif(sideNumber == 0):
+            returnSide = 'top'
+        else:
+            returnSide = 'bottom'   
+
+        return returnSide
+
+    def ClassSpaces(self):
+        usedSpaces = []
+        for className, classObj in self.lineDict.items():
+            temp = self.classDict[className].widgetCoordinates
+            usedSpaces.append(temp[4])
+            usedSpaces.append(temp[7])
+        return usedSpaces
