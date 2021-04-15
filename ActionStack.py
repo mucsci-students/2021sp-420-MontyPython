@@ -1,17 +1,23 @@
+from copy import deepcopy
+
 class ActionStack():
     def __init__(self, Momento):
         #Entries in the stacks are Momento objects
         self.undoStack = []
         self.redoStack = []
-        self.currentObj = Momento
-        self.originalObj = Momento
+        self.currentObj = deepcopy(Momento)
+        self.originalObj = deepcopy(Momento)
+        print("ORIGINAL OBJ INIT")
+        print(self.originalObj.state.classDict)
 
 
     #Called when an undoable command (excluding undo/redo)
     #is called. Clears the redo stack to avoid illegal calls
     def add(self, Momento):
         self.undoStack.append(self.currentObj)
-        self.currentObj = Momento
+        print(self.currentObj.state.classDict)
+        print(self.originalObj.state.classDict)
+        self.currentObj = deepcopy(Momento)
         self.redoStack = []
 
     #Called when undo is called. Appends to redo stack
@@ -24,20 +30,21 @@ class ActionStack():
 
         if len(self.undoStack) == 0:
             print("No actions to undo")
-            self.currentObj = self.originalObj
+            self.currentObj = deepcopy(self.originalObj)
             print(self.originalObj.state.classDict)
 
     #Called when redo is called. Appends to undo stack
     def redoPop(self):
         if len(self.redoStack) != 0:
             self.undoStack.append(self.currentObj)
+            for each in self.redoStack:
+                print(each.state.classDict)
             self.currentObj = self.redoStack.pop()
-            self.undoStack.append(self.currentObj)
         else:
             print("No actions to redo")
         
     def reset(self, Momento):
         self.undoStack = []
         self.redoStack = []
-        self.currentObj = Momento
-        self.originalObj = Momento
+        self.currentObj = deepcopy(Momento)
+        self.originalObj = deepcopy(Momento)
