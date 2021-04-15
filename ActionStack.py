@@ -4,6 +4,7 @@ class ActionStack():
         self.undoStack = []
         self.redoStack = []
         self.currentObj = Momento
+        self.originalObj = Momento
 
 
     #Called when an undoable command (excluding undo/redo)
@@ -15,11 +16,16 @@ class ActionStack():
 
     #Called when undo is called. Appends to redo stack
     def undoPop(self):
-        if len(self.undoStack) != 0:
-            self.redoStack.append(self.currentObj)
-            self.currentObj = self.undoStack.pop()
-        else:
+        self.redoStack.append(self.currentObj)
+        for each in self.undoStack:
+            print(each.state.classDict)
+        self.currentObj = self.undoStack.pop()
+        print(self.originalObj.state.classDict)
+
+        if len(self.undoStack) == 0:
             print("No actions to undo")
+            self.currentObj = self.originalObj
+            print(self.originalObj.state.classDict)
 
     #Called when redo is called. Appends to undo stack
     def redoPop(self):
@@ -34,3 +40,4 @@ class ActionStack():
         self.undoStack = []
         self.redoStack = []
         self.currentObj = Momento
+        self.originalObj = Momento
