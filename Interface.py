@@ -1,6 +1,7 @@
 import json
 import sys
 import os
+from pathvalidate import sanitize_filepath
 ### Interface.py
 
 ### List classes
@@ -81,6 +82,9 @@ def saveFile(collection, fileName=None, GUI="CLI", mainWindow=None):
     #Adds file extension if not already included
     if not fileName.endswith(".monty"):
         fileName += ".monty"
+
+    fileName = os.path.expanduser(fileName)
+    fileName = sanitize_filepath(fileName, platform="auto")
 
     nameList = []
     methodsList = []
@@ -230,6 +234,9 @@ def loadFile(collection, fileName=None, GUI="CLI", mainWindow=None):
     #Adds file extension if not already included
     if not fileName.endswith(".monty"):
         fileName += ".monty"
+
+    fileName = os.path.expanduser(fileName)
+    fileName = sanitize_filepath(fileName, platform="auto")
 
     #Check for file existence
     #Makes assumption that a file of extension .monty has the same
