@@ -2,7 +2,7 @@ import sys
 from ClassCollection import ClassCollection
 import Interface
 from PopupBoxes import *
-import GUIMenuBar
+import GUIMenuBar, MoveClass
 import traceback
 
 # A default collection
@@ -17,10 +17,9 @@ class GUIController:
         # Creates the view's menu bar
         self.createMenuBar()
 
-        # TODO: Delete this and related code once classes can move
-        self.coordinateList = [[50, 100], [50, 400], [400, 100], [400, 400], [750, 100], [750, 400], [50, 750], [400, 750], [750, 750]]
-        self.usedCoordinateDict = {}
-        self.classWidgetCount = 0
+        self.classOffset = 0
+
+        self.moveClass = MoveClass.MoveClass(self, self.view, self.view.canvas)
 
 
     def load(self, name):
@@ -43,22 +42,20 @@ class GUIController:
             alertBox = self.windowFactory("alertBox", "Please provide a class name")
             return
 
-        # TODO: Once classes are able to be moved, remove this
-        if self.classWidgetCount == 9:
-                alertBox = self.windowFactory("alertBox", "Only 9 classes are able to be added to the GUI verison of this program.")
-                return
-
         try:
             self.model.addClass(name)
-            # Update number of widgets on screen
-            self.classWidgetCount = self.classWidgetCount + 1
-            # Get the coordinates from the coordinateList at index 0
-            coordinates = self.coordinateList[0]
-            # Add class based on thoes coordinates
-            self.view.addClass(name, coordinates[0], coordinates[1])
-            # Move those coordinates to the used coordinate dict, remove them from the normal coordinate list
-            self.usedCoordinateDict[name] = coordinates
-            self.coordinateList.remove(coordinates)
+
+            if (self.classOffset == 20):
+                self.classOffset = 1
+            else:
+                self.classOffset = self.classOffset + 1
+
+            defaultCoord = self.classOffset * 40
+
+            self.view.addClass(name, defaultCoord, defaultCoord)
+            self.model.setClassCoordinates(name, defaultCoord, defaultCoord)
+
+            self.moveClass.setBinds(name)
             
         except Exception as e:
             if self.debug:
@@ -75,13 +72,7 @@ class GUIController:
 
         try:
             self.model.deleteClass(name)
-            # Remove the class from the view
             self.view.deleteClass(name)
-            # Update number of classes on screen
-            self.classWidgetCount = self.classWidgetCount - 1
-            # Remove coords from used coord dict, add back to coordinate list
-            coords = self.usedCoordinateDict.pop(name)
-            self.coordinateList.append(coords)
 
         except Exception as e:
             if self.debug:
@@ -114,9 +105,6 @@ class GUIController:
             self.view.classDict[oldName].updateWidget()
             self.view.classDict[newName] = self.view.classDict.pop(oldName)
 
-            # Change coordinate dict name to match new class name
-            coords = self.usedCoordinateDict.pop(oldName)
-            self.usedCoordinateDict[newName] = coords
             self.view.renameClass(oldName, newName)
 
         except Exception as e:
@@ -225,10 +213,8 @@ class GUIController:
         if self.debug:
             print(self.model.classDict[className].methodDict)
 
-    def deleteMethod(self, className, methodName, methodNum):
+    def deleteMethod(self, className, methodName, params):
         try:
-            idx = int(methodNum) - 1
-            params = self.model.getMethod(className, methodName, idx).parameters
             self.model.deleteMethod(className, methodName, params)
             self.updateWidgetMethod(className)
         except Exception as e:
@@ -238,10 +224,8 @@ class GUIController:
         if self.debug:
             print(self.model.classDict)    
 
-    def renameMethod(self, className, methodName, methodNum, newName):
+    def renameMethod(self, className, methodName, params, newName):
         try:
-            idx = int(methodNum) - 1
-            params = self.model.getMethod(className, methodName, idx).parameters
             self.model.renameMethod(className, methodName, params, newName)
             self.updateWidgetMethod(className)
         except Exception as e:
@@ -251,10 +235,8 @@ class GUIController:
         if self.debug:
             print(self.model.classDict)
 
-    def addParameter(self, className, methodName, methodNum, typ, name):
+    def addParameter(self, className, methodName, params, typ, name):
         try:
-            idx = int(methodNum) - 1
-            params = self.model.getMethod(className, methodName, idx).parameters
             self.model.addParameter(className, methodName, params, typ, name)
             self.updateWidgetMethod(className)
         except Exception as e:
@@ -264,10 +246,8 @@ class GUIController:
         if self.debug:
             print(self.model.classDict[className].methodDict)
 
-    def removeParameter(self, className, methodName, methodNum, name):
+    def removeParameter(self, className, methodName, params, name):
         try:
-            idx = int(methodNum) - 1
-            params = self.model.getMethod(className, methodName, idx).parameters
             self.model.removeParameter(className, methodName, params, name)
             self.updateWidgetMethod(className)
         except Exception as e:
@@ -277,10 +257,8 @@ class GUIController:
         if self.debug:
             print(self.model.classDict)
 
-    def changeParameter(self, className, methodName, methodNum, name, newType, newName):
+    def changeParameter(self, className, methodName, params, name, newType, newName):
         try:
-            idx = int(methodNum) - 1
-            params = self.model.getMethod(className, methodName, idx).parameters
             self.model.changeParameter(className, methodName, params, name, newType, newName)
             self.updateWidgetMethod(className)
         except Exception as e:
@@ -397,6 +375,21 @@ class GUIController:
     
     def getClasses(self):
         return list(self.model.classDict.keys())
+    
+    def getFields(self, className):
+        return list(self.model.getFields(className))
+    
+    def getMethodsByName(self, className, methodName):
+        return list(self.model.getMethodsByName(className, methodName))
+    
+    def getAllMethodsString(self, className):
+        names = self.model.getAllMethods(className)
+        lst = []
+        for name in names:
+            for method in self.model.getMethodsByName(className, name):
+                lst.append(method)
+        return lst
+
 
     # --------------------------------
     # Menu Methods
@@ -455,3 +448,23 @@ class GUIController:
         methodStr = methodStr.rstrip()
         self.view.classDict[className].setMethodText(methodStr)  
 
+    def updateClassCoordinates(self, className, x, y):
+        self.model.setClassCoordinates(className, x, y)
+
+    # Current issues:
+    # class locations don't save correctly after drag
+
+    def refreshCanvas(self):
+        for className in list(self.view.classDict):
+            self.view.deleteClass(className)
+
+        self.view.lineDict = {}
+
+        for className in self.model.classDict:
+            coords = self.model.getClassCoordinates(className)
+            self.view.addClass(className, coords[0], coords[1])
+
+        for theTuple in self.model.relationshipDict:
+            (class1, class2) = theTuple
+            typ = self.model.getRelationship(class1, class2).getRelationshipTyp()
+            self.view.addLine(class1, class2, typ)
