@@ -24,7 +24,7 @@ class ClassCollection():
         def addClass(self, name):
             if name in self.classDict:
                 raise KeyError(f"{name} already exists")
-            self.classDict[name] = Class(name, 200, 200)
+            self.classDict[name] = Class(name)
 
         ## Cast the user's name input to a string, search 
         ## for the dictionary entry with that name, and remove
