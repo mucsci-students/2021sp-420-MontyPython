@@ -4,6 +4,9 @@ import Interface
 from PopupBoxes import *
 import GUIMenuBar, MoveClass
 import traceback
+from Command import Command
+from Momento import Momento
+from ActionStack import ActionStack
 
 # A default collection
 collection = ClassCollection()
@@ -21,12 +24,15 @@ class GUIController:
 
         self.moveClass = MoveClass.MoveClass(self, self.view, self.view.canvas)
 
+        self.saveStates = ActionStack(Momento(Command("",""), self.model))
+
 
     def load(self, name):
         if self.debug:
             print(name)
         Interface.loadFile(self.model, name, "GUI", self.view)
          #self.view.drawLines()
+        self.saveStates.reset(Momento(Command("",""), self.model))
 
     def save(self, name):
         Interface.saveFile(self.model, name, "GUI", self.view)
@@ -64,6 +70,8 @@ class GUIController:
 
         if self.debug:
             print(self.model.classDict)
+
+        self.saveStates.add(Momento(Command("",""), self.model))
      
     def deleteClass(self, name):
         if name == '':
@@ -80,6 +88,8 @@ class GUIController:
             errorBox = self.windowFactory("alertBox", e)       
         if self.debug:
             print(self.model.classDict)
+
+        self.saveStates.add(Momento(Command("",""), self.model))
         
     def renameClass(self, oldName, newName):
         errorFlag = False
@@ -115,6 +125,8 @@ class GUIController:
         if self.debug:
             print(self.model.classDict)
 
+        self.saveStates.add(Momento(Command("",""), self.model))
+
     def addRelationship(self, firstClassName, secondClassName, typ):
         errorFlag = False
         errorString = ''
@@ -145,6 +157,8 @@ class GUIController:
         if self.debug:
             print(self.model.relationshipDict)
 
+        self.saveStates.add(Momento(Command("",""), self.model))
+
     def deleteRelationship(self, firstClassName, secondClassName):
         errorFlag = False
         errorString = ''
@@ -170,6 +184,8 @@ class GUIController:
             errorBox = self.windowFactory("alertBox", e)
         if self.debug:
             print(self.model.relationshipDict)
+
+        self.saveStates.add(Momento(Command("",""), self.model))
 
 
     def renameRelationship(self, firstClassName, secondClassName, typ):
@@ -200,6 +216,8 @@ class GUIController:
             errorBox = self.windowFactory("alertBox", e)
         if self.debug:
             print(self.model.relationshipDict)
+        
+        self.saveStates.add(Momento(Command("",""), self.model))
 
     def addMethod(self, className, methodName, returnType, parameters):
         try:
@@ -224,6 +242,8 @@ class GUIController:
         if self.debug:
             print(self.model.classDict)    
 
+        self.saveStates.add(Momento(Command("",""), self.model))
+
     def renameMethod(self, className, methodName, params, newName):
         try:
             self.model.renameMethod(className, methodName, params, newName)
@@ -234,6 +254,8 @@ class GUIController:
             errorBox = self.windowFactory("alertBox", e)
         if self.debug:
             print(self.model.classDict)
+
+        self.saveStates.add(Momento(Command("",""), self.model))
 
     def addParameter(self, className, methodName, params, typ, name):
         try:
@@ -246,6 +268,8 @@ class GUIController:
         if self.debug:
             print(self.model.classDict[className].methodDict)
 
+        self.saveStates.add(Momento(Command("",""), self.model))
+
     def removeParameter(self, className, methodName, params, name):
         try:
             self.model.removeParameter(className, methodName, params, name)
@@ -257,6 +281,8 @@ class GUIController:
         if self.debug:
             print(self.model.classDict)
 
+        self.saveStates.add(Momento(Command("",""), self.model))
+
     def changeParameter(self, className, methodName, params, name, newType, newName):
         try:
             self.model.changeParameter(className, methodName, params, name, newType, newName)
@@ -267,6 +293,8 @@ class GUIController:
             errorBox = self.windowFactory("alertBox", e)
         if self.debug:
             print(self.model.classDict)
+
+        self.saveStates.add(Momento(Command("",""), self.model))
 
     def addField(self, className, name, dataType):
         errorFlag = False
@@ -299,6 +327,8 @@ class GUIController:
         if self.debug:
             print(self.model.classDict)
 
+        self.saveStates.add(Momento(Command("",""), self.model))
+
     def deleteField(self, className, name):
         errorFlag = False
         errorString = ''
@@ -324,6 +354,8 @@ class GUIController:
             errorBox = self.windowFactory("alertBox", e)
         if self.debug:
             print(self.model.classDict)
+
+        self.saveStates.add(Momento(Command("",""), self.model))
 
     def renameField(self, className, oldName, newName):
         errorFlag = False
@@ -355,11 +387,17 @@ class GUIController:
         if self.debug:
             print(self.model.classDict)
 
+        self.saveStates.add(Momento(Command("",""), self.model))
+
     def undo(self):
-        pass
+        self.saveStates.undoPop()
+        self.model = self.saveStates.currentObj.state
+        self.refreshCanvas()
 
     def redo(self):
-        pass
+        self.saveStates.redoPop()
+        self.model = self.saveStates.currentObj.state
+        self.refreshCanvas()
     
     def listMethods(self, className, methodName, numbered=True):
         if className in self.model.classDict and methodName in self.model.getAllMethods(className):
