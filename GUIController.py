@@ -116,6 +116,7 @@ class GUIController:
             self.view.classDict[newName] = self.view.classDict.pop(oldName)
 
             self.view.renameClass(oldName, newName)
+            self.moveClass.changeBinds(oldName, newName)
 
         except Exception as e:
             if self.debug:
