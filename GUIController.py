@@ -47,6 +47,9 @@ class GUIController:
         if name == '':
             alertBox = self.windowFactory("alertBox", "Please provide a class name")
             return
+        if (' ' in name) == True:
+            alertBox = self.windowFactory("alertBox", "Class names cannot have spaces")
+            return
 
         try:
             self.model.addClass(name)
@@ -102,6 +105,10 @@ class GUIController:
         if newName == '':
             errorFlag = True
             errorString += '\nPlease provide a new class name'
+
+        if (' ' in newName) == True:
+            errorFlag = True
+            errorString += '\nClass names cannot have spaces'
         
         if errorFlag:
             alertBox = self.windowFactory("alertBox", errorString)
