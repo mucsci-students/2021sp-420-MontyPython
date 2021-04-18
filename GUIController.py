@@ -52,9 +52,6 @@ class GUIController:
         self.saveStates.reset(Momento(Command("",""), self.model))
         self.refreshCanvas()
 
-        for each in self.model.classDict.values():
-            print(f'{each.xCor}, {each.yCor}')
-
     def save(self, name):
         Interface.saveFile(self.model, name, "GUI", self.view)
 
