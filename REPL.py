@@ -409,7 +409,7 @@ class MontyREPL(cmd.Cmd):
 
     def complete_save(self, text, line, begidx, endidx):
         try:
-            readline.set_completer_delims('~\\')
+            readline.set_completer_delims('~\\/')
             curr_args = line.split()
 
             if len(curr_args) > 2:
