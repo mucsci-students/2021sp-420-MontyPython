@@ -106,13 +106,13 @@ class MontyREPL(cmd.Cmd):
 
     def do_save(self, args):
         if len(args) > 0:
-            Interface.saveFile(self.model, args)
+            Interface.saveFile(self.model, os.path.expanduser(args))
         else:
             self.help_save()
     
     def do_load(self, args):
         if len(args) > 0:
-            Interface.loadFile(self.model, args)
+            Interface.loadFile(self.model, os.path.expanduser(args))
             self.saveStates.reset(Momento(Command("",""), self.model))
         else:
             self.help_load()
