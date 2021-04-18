@@ -502,6 +502,7 @@ class GUIController:
 
     def refreshCanvas(self):
         for className in list(self.view.classDict):
+            self.moveClass.removeBinds(className)
             self.view.deleteClass(className)
 
         self.view.lineDict = {}
@@ -509,6 +510,7 @@ class GUIController:
         for className in self.model.classDict:
             coords = self.model.getClassCoordinates(className)
             self.view.addClass(className, coords[0], coords[1])
+            self.moveClass.setBinds(className)
 
         for theTuple in self.model.relationshipDict:
             (class1, class2) = theTuple
