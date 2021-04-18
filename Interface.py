@@ -1,7 +1,7 @@
 import json
 import sys
 import os
-from pathvalidate import sanitize_filepath
+from pathvalidate import sanitize_filepath, ValidationError, validate_filepath
 ### Interface.py
 
 ### List classes
@@ -84,141 +84,162 @@ def saveFile(collection, fileName=None, GUI="CLI", mainWindow=None):
         fileName += ".monty"
 
     fileName = os.path.expanduser(fileName)
-    fileName = sanitize_filepath(fileName, platform="auto")
 
-    nameList = []
-    methodsList = []
-    fieldsList = []
+    saveBool = True
+    if GUI == "CLI":
+        try:
+            validate_filepath(fileName, platform="auto")
+        except ValidationError as e:
+            print(f'Error: {e}')
+            fileNameSanit = sanitize_filepath(fileName, platform="auto")
+            replaceFileName = input(f'Would you like to save to {fileNameSanit} instead? (Y/N)\n')
+            if replaceFileName[0].lower() == "y":
+                fileName = fileNameSanit
+            if replaceFileName[0].lower() == "n":
+                    saveBool = False
+            while replaceFileName[0].lower() != "y" and replaceFileName[0].lower() != "n":
+                replaceFileName = input(f'Would you like to save to {fileNameSanit} instead? (Y/N)\n')
+                if replaceFileName[0].lower() == "y":
+                    fileName = fileNameSanit
+                if replaceFileName[0].lower() == "n":
+                    saveBool = False
+            
 
-    for classObj in collection.classDict.values():
-        nameList.append(classObj.name)
-        methodsList.append(classObj.methodDict)
-        fieldsList.append(classObj.fieldDict)
 
-    classesDictionary = {}
+    if saveBool:
+        nameList = []
+        methodsList = []
+        fieldsList = []
 
-    for name, methodDict, fieldDict in zip(nameList, methodsList, fieldsList):
-        methodsDictionary = {}
-        fieldsDictionary = {}
+        for classObj in collection.classDict.values():
+            nameList.append(classObj.name)
+            methodsList.append(classObj.methodDict)
+            fieldsList.append(classObj.fieldDict)
 
-        for methodName, methodVariants in methodDict.items():
-            variantList = []
+        classesDictionary = {}
 
-            for each in methodVariants:
-                variantList.append((each.returnType, each.parameters))
+        for name, methodDict, fieldDict in zip(nameList, methodsList, fieldsList):
+            methodsDictionary = {}
+            fieldsDictionary = {}
 
-            methodsDictionary[methodName] = variantList
+            for methodName, methodVariants in methodDict.items():
+                variantList = []
 
-        for fieldName, fieldType in fieldDict.items():
-            fieldsDictionary[fieldName] = fieldType.dataType
+                for each in methodVariants:
+                    variantList.append((each.returnType, each.parameters))
 
-        classesDictionary[name] = (methodsDictionary, fieldsDictionary)
+                methodsDictionary[methodName] = variantList
 
-    relationshipsDictionary = {}
-    #When saving to JSON, a tuple cannot be used as a key. The tuple
-    #is saved as a string, delimited by ", ".
-    #A dictionary is formed with the string as the key
-    for key, value in collection.relationshipDict.items():
-        stringKey = ', '.join(str(s) for s in key)  
-        relationshipsDictionary[stringKey] = value.typ
-    
-    coordsDictionary = {}
-    linesDictionary = {}
-    #If file already exists, pulls coordinates from loading the file
-    #Easily preserves coordinates when editing in the CLI without
-    #having to have direct access or even have instances of the GUI classes open
-    priorExistence = os.path.exists(fileName)
+            for fieldName, fieldType in fieldDict.items():
+                fieldsDictionary[fieldName] = fieldType.dataType
 
-    #If file already exists and save is invoked in the CLI, loads file to find
-    #already present coordinates. Handles checks for added/deleted classes
-    #since the last save. Any class added in the CLI will have coords set to (-1, -1)
-    #Any line for a relationship added in the CLI will have coords set to (-1, -1, -1, -1)
-    #Any class or relationship line added in the GUI will have its coords maintained
-    #even when editing information about the class or relationship in the CLI
-    if priorExistence and GUI.lower() != "gui":
-        with open(fileName, "r") as f:
-            oldClassesRelationshipsCoordsLinesList = json.load(f)
-            try:
-                coordsDictionary = oldClassesRelationshipsCoordsLinesList[2]
-            except IndexError:
-                coordsDictionary = {}
-            try: 
-                linesDictionary = oldClassesRelationshipsCoordsLinesList[3]
-            except IndexError:
-                linesDictionary = {}
+            classesDictionary[name] = (methodsDictionary, fieldsDictionary)
 
-        #Logic for updating class coordinates from existing file
-        #If class was removed, pops coords from coordsDictionary
-        #If class was added, defaults coords for that class to (-1, -1)
-        coordsDictionaryReplica = coordsDictionary.copy()
-        for key in coordsDictionary.keys():
-            if key not in classesDictionary.keys():
-                coordsDictionaryReplica.pop(key)
-        for key in classesDictionary.keys():
-            if key not in coordsDictionary.keys():
-                coordsDictionaryReplica[key] = (-1, -1)
-        coordsDictionary = coordsDictionaryReplica
-
-        #Logic for updating line coordinates from existing file
-        #If relationship was removed, pops coords from linesDictionary
-        #If relationship was added, default coords are (-1, -1, -1, -1)
-        #Type is pulled from relationship dictionary
-        #Default line side is "top"
-        linesDictionaryReplica = linesDictionary.copy()
-        for key in linesDictionary.keys():
-            if key not in relationshipsDictionary.keys():
-                linesDictionaryReplica.pop(key)
-        for key, relationType in relationshipsDictionary.items():
-            if key not in linesDictionary.keys():
-                #Automatically finds coords for each class in a relationship
-                #Supplies those coordinates to linesDictionary
-                #Exception handling failsafes to (-1, -1, -1, -1)
-                classes = key.split(", ")
-                try:
-                    FirstX, FirstY = coordsDictionary[classes[0]]
-                except ValueError:
-                    FirstX, FirstY = (-1, -1)
-                try:
-                    SecondX, SecondY = coordsDictionary[classes[1]]
-                except ValueError:
-                    SecondX, SecondY = (-1, -1)
-
-                linesDictionaryReplica[key] = (FirstX, FirstY, SecondX, SecondY, relationType, "top")
-        linesDictionary = linesDictionaryReplica
-
-    #If file does not exist and save is invoked in the CLI,
-    #all class coords are set to the default of (-1, -1)
-    #Additionally, all line coords are set to (-1, -1, -1, -1)
-    #Type is pulled from relationship dictionary
-    #Default line side is "top".
-    elif not priorExistence and GUI.lower() != "gui":
-        for key in classesDictionary.keys():
-            coordsDictionary[key] = (-1, -1)
+        relationshipsDictionary = {}
+        #When saving to JSON, a tuple cannot be used as a key. The tuple
+        #is saved as a string, delimited by ", ".
+        #A dictionary is formed with the string as the key
+        for key, value in collection.relationshipDict.items():
+            stringKey = ', '.join(str(s) for s in key)  
+            relationshipsDictionary[stringKey] = value.typ
         
-        for classesString, relationType in relationshipsDictionary.items():
-            linesDictionary[classesString] = (-1, -1, -1, -1, relationType, "top")
+        coordsDictionary = {}
+        linesDictionary = {}
+        #If file already exists, pulls coordinates from loading the file
+        #Easily preserves coordinates when editing in the CLI without
+        #having to have direct access or even have instances of the GUI classes open
+        priorExistence = os.path.exists(fileName)
 
-    #Regardless of file existence, if save is invoked in the GUI,
-    #uses the mainWindow object (which is required if saving in the GUI)
-    #to add/overwrite the coordinate list via the MainWindow object's classDict
-    #Does the same for the line dictionary's coordinates
-    else:
-        #temp defaulting until coord dictionary is decided upon
-        #different default value for testing
-        for key, obj in mainWindow.classDict.items():
-            coordsDictionary[key] = (obj.x, obj.y)
-        #Uncomment, changed to proper formatting once GUI coordinates are ironed out
-        #coordsDictionary = coords
-        for classesTuple, lineCoords in mainWindow.lineDict.items():
-            classesString = ', '.join(str(s) for s in key)  
-            linesDictionary[classesString] = lineCoords
+        #If file already exists and save is invoked in the CLI, loads file to find
+        #already present coordinates. Handles checks for added/deleted classes
+        #since the last save. Any class added in the CLI will have coords set to (-1, -1)
+        #Any line for a relationship added in the CLI will have coords set to (-1, -1, -1, -1)
+        #Any class or relationship line added in the GUI will have its coords maintained
+        #even when editing information about the class or relationship in the CLI
+        if priorExistence and GUI.lower() != "gui":
+            with open(fileName, "r") as f:
+                oldClassesRelationshipsCoordsLinesList = json.load(f)
+                try:
+                    coordsDictionary = oldClassesRelationshipsCoordsLinesList[2]
+                except IndexError:
+                    coordsDictionary = {}
+                try: 
+                    linesDictionary = oldClassesRelationshipsCoordsLinesList[3]
+                except IndexError:
+                    linesDictionary = {}
 
-    #classesDictionary, relationshipsDicttionary, coordsDictionary, and linesDictionary
-    #are formed into a list to be json dumped to the supplied file
-    classesRelationshipsCoordsLinesList = [classesDictionary, relationshipsDictionary, coordsDictionary, linesDictionary]
+            #Logic for updating class coordinates from existing file
+            #If class was removed, pops coords from coordsDictionary
+            #If class was added, defaults coords for that class to (-1, -1)
+            coordsDictionaryReplica = coordsDictionary.copy()
+            for key in coordsDictionary.keys():
+                if key not in classesDictionary.keys():
+                    coordsDictionaryReplica.pop(key)
+            for key in classesDictionary.keys():
+                if key not in coordsDictionary.keys():
+                    coordsDictionaryReplica[key] = (-1, -1)
+            coordsDictionary = coordsDictionaryReplica
 
-    with open(fileName, "w") as f:
-        json.dump(classesRelationshipsCoordsLinesList, f)
+            #Logic for updating line coordinates from existing file
+            #If relationship was removed, pops coords from linesDictionary
+            #If relationship was added, default coords are (-1, -1, -1, -1)
+            #Type is pulled from relationship dictionary
+            #Default line side is "top"
+            linesDictionaryReplica = linesDictionary.copy()
+            for key in linesDictionary.keys():
+                if key not in relationshipsDictionary.keys():
+                    linesDictionaryReplica.pop(key)
+            for key, relationType in relationshipsDictionary.items():
+                if key not in linesDictionary.keys():
+                    #Automatically finds coords for each class in a relationship
+                    #Supplies those coordinates to linesDictionary
+                    #Exception handling failsafes to (-1, -1, -1, -1)
+                    classes = key.split(", ")
+                    try:
+                        FirstX, FirstY = coordsDictionary[classes[0]]
+                    except ValueError:
+                        FirstX, FirstY = (-1, -1)
+                    try:
+                        SecondX, SecondY = coordsDictionary[classes[1]]
+                    except ValueError:
+                        SecondX, SecondY = (-1, -1)
+
+                    linesDictionaryReplica[key] = (FirstX, FirstY, SecondX, SecondY, relationType, "top")
+            linesDictionary = linesDictionaryReplica
+
+        #If file does not exist and save is invoked in the CLI,
+        #all class coords are set to the default of (-1, -1)
+        #Additionally, all line coords are set to (-1, -1, -1, -1)
+        #Type is pulled from relationship dictionary
+        #Default line side is "top".
+        elif not priorExistence and GUI.lower() != "gui":
+            for key in classesDictionary.keys():
+                coordsDictionary[key] = (-1, -1)
+            
+            for classesString, relationType in relationshipsDictionary.items():
+                linesDictionary[classesString] = (-1, -1, -1, -1, relationType, "top")
+
+        #Regardless of file existence, if save is invoked in the GUI,
+        #uses the mainWindow object (which is required if saving in the GUI)
+        #to add/overwrite the coordinate list via the MainWindow object's classDict
+        #Does the same for the line dictionary's coordinates
+        else:
+            #temp defaulting until coord dictionary is decided upon
+            #different default value for testing
+            for key, obj in mainWindow.classDict.items():
+                coordsDictionary[key] = (obj.x, obj.y)
+            #Uncomment, changed to proper formatting once GUI coordinates are ironed out
+            #coordsDictionary = coords
+            for classesTuple, lineCoords in mainWindow.lineDict.items():
+                classesString = ', '.join(str(s) for s in key)  
+                linesDictionary[classesString] = lineCoords
+
+        #classesDictionary, relationshipsDicttionary, coordsDictionary, and linesDictionary
+        #are formed into a list to be json dumped to the supplied file
+        classesRelationshipsCoordsLinesList = [classesDictionary, relationshipsDictionary, coordsDictionary, linesDictionary]
+
+        with open(fileName, "w") as f:
+            json.dump(classesRelationshipsCoordsLinesList, f)
 
 ### Load
 def loadFile(collection, fileName=None, GUI="CLI", mainWindow=None):
@@ -236,79 +257,98 @@ def loadFile(collection, fileName=None, GUI="CLI", mainWindow=None):
         fileName += ".monty"
 
     fileName = os.path.expanduser(fileName)
-    fileName = sanitize_filepath(fileName, platform="auto")
 
-    #Check for file existence
-    #Makes assumption that a file of extension .monty has the same
-    #structure as created by the save function
-    if os.path.isfile(fileName):
-        collection.classDict = {}
-        collection.relationshipDict = {}
-        classesRelationshipsCoordsLinesList = []
-        
-        #File loading
-        with open(fileName, "r") as f:
-            classesRelationshipsCoordsLinesList = json.load(f)
+    loadBool = True
+    if GUI == "CLI":
+        try:
+            validate_filepath(fileName, platform="auto")
+        except ValidationError as e:
+            print(f'Error: {e}')
+            fileNameSanit = sanitize_filepath(fileName, platform="auto")
+            replaceFileName = input(f'Would you like to load from {fileNameSanit} instead? (Y/N)\n')
+            if replaceFileName[0].lower() == "y":
+                fileName = fileNameSanit
+            if replaceFileName[0].lower() == "n":
+                loadBool = False
+            while replaceFileName[0].lower() != "y" and replaceFileName[0].lower() != "n":
+                replaceFileName = input(f'Would you like to save to {fileNameSanit} instead? (Y/N)\n')
+                if replaceFileName[0].lower() == "y":
+                    fileName = fileNameSanit
+                if replaceFileName[0].lower() == "n":
+                    loadBool = False
 
-        #Splits classes, relationships, class coords, and relationship
-        #line coords from the inputed list
-        #Try-except clauses supply an empty dictionary if a given
-        #dictionary is missing 
-        #This allows for backwards compatibility for files missing
-        #coordinate dictionaries
-        try:
-            classesDictionary = classesRelationshipsCoordsLinesList[0]
-        except IndexError:
-            classesDictionary = {}
-        try:
-            relationshipsDictionary = classesRelationshipsCoordsLinesList[1]
-        except IndexError:
-            relationshipsDictionary = {}
-        try:
-            coordsDictionary = classesRelationshipsCoordsLinesList[2]
-        except IndexError:
-            coordsDictionary = {}
-        try:
-            linesDictionary = classesRelationshipsCoordsLinesList[3]
-        except IndexError:
-            linesDictionary = {}
-
-        #Creates a class class for each entry in the classes dictionary
-        #Within each class, creates an attribute class for each attribute
-        #entry in the attributes dictionary
-        for name, methodField in classesDictionary.items():
-            collection.addClass(name)
+    if loadBool:
+        #Check for file existence
+        #Makes assumption that a file of extension .monty has the same
+        #structure as created by the save function
+        if os.path.isfile(fileName):
+            collection.classDict = {}
+            collection.relationshipDict = {}
+            classesRelationshipsCoordsLinesList = []
             
-            methodsDictionary = methodField[0]
-            fieldsDictionary = methodField[1]
+            #File loading
+            with open(fileName, "r") as f:
+                classesRelationshipsCoordsLinesList = json.load(f)
 
-            for field, typ in fieldsDictionary.items():
-                collection.addField(name, field, typ)
+            #Splits classes, relationships, class coords, and relationship
+            #line coords from the inputed list
+            #Try-except clauses supply an empty dictionary if a given
+            #dictionary is missing 
+            #This allows for backwards compatibility for files missing
+            #coordinate dictionaries
+            try:
+                classesDictionary = classesRelationshipsCoordsLinesList[0]
+            except IndexError:
+                classesDictionary = {}
+            try:
+                relationshipsDictionary = classesRelationshipsCoordsLinesList[1]
+            except IndexError:
+                relationshipsDictionary = {}
+            try:
+                coordsDictionary = classesRelationshipsCoordsLinesList[2]
+            except IndexError:
+                coordsDictionary = {}
+            try:
+                linesDictionary = classesRelationshipsCoordsLinesList[3]
+            except IndexError:
+                linesDictionary = {}
 
-            for method, variantList in methodsDictionary.items():
-                for variant in variantList:
-                    collection.addMethod(name, method, variant[0], variant[1])
+            #Creates a class class for each entry in the classes dictionary
+            #Within each class, creates an attribute class for each attribute
+            #entry in the attributes dictionary
+            for name, methodField in classesDictionary.items():
+                collection.addClass(name)
+                
+                methodsDictionary = methodField[0]
+                fieldsDictionary = methodField[1]
 
-        #Reforms relationship dictionary, creating a tuple from
-        #the string delimited by ", "
-        for key, value in relationshipsDictionary.items():
-            classes = key.split(", ")
-            collection.addRelationship(classes[0], classes[1], value)
+                for field, typ in fieldsDictionary.items():
+                    collection.addField(name, field, typ)
 
-        #Pulls coordinates from file
-        #Loads coordinates for classes and relationship lines
-        #into mainWindow.classDict and mainWindow.lineDict respectfully
-        if GUI.lower() == "gui" and mainWindow != None:
-            for name, loc in coordsDictionary.items():
-                mainWindow.classDict[name] = loc
-            for key, value in linesDictionary.items():
+                for method, variantList in methodsDictionary.items():
+                    for variant in variantList:
+                        collection.addMethod(name, method, variant[0], variant[1])
+
+            #Reforms relationship dictionary, creating a tuple from
+            #the string delimited by ", "
+            for key, value in relationshipsDictionary.items():
                 classes = key.split(", ")
-                mainWindow.lineDict[classes] = value
+                collection.addRelationship(classes[0], classes[1], value)
 
-        
-    #Raises an OS Error if the file does not exist
-    else:
-        raise OSError("No file of given name found")
+            #Pulls coordinates from file
+            #Loads coordinates for classes and relationship lines
+            #into mainWindow.classDict and mainWindow.lineDict respectfully
+            if GUI.lower() == "gui" and mainWindow != None:
+                for name, loc in coordsDictionary.items():
+                    mainWindow.classDict[name] = loc
+                for key, value in linesDictionary.items():
+                    classes = key.split(", ")
+                    mainWindow.lineDict[classes] = value
+
+            
+        #Raises an OS Error if the file does not exist
+        else:
+            raise OSError("No file of given name found")
         
 ### Help
 def help():
