@@ -447,7 +447,7 @@ class MontyREPL(cmd.Cmd):
 
     def complete_load(self, text, line, begidx, endidx):
         try:
-            readline.set_completer_delims('~\\')
+            readline.set_completer_delims('~\\/')
             curr_args = line.split()
 
             if len(curr_args) > 2:
@@ -481,7 +481,8 @@ class MontyREPL(cmd.Cmd):
                             files_and_dirs.append(f)
             return files_and_dirs
         except Exception as e:
-            return ['**Error, cannot load here', 'please try another directory**']
+            return ['**Error, cannot save here', 'please try another directory**']
+
     # Helpers
     def print_cmd_help(self, command):
         print(self.cmd_desc[command])
