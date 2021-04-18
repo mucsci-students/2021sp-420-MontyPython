@@ -1,6 +1,7 @@
 import cmd
 import os
 import sys
+from copy import copy
 from functools import reduce
 from colorama import init, Fore
 
@@ -10,13 +11,11 @@ from Momento import Momento
 from ActionStack import ActionStack
 import Interface
 
-if os.name == 'nt':
-    import pyreadline
-else:
-    import readline
+import readline
 
 class MontyREPL(cmd.Cmd):
     def __init__(self, completekey='tab', stdin=None, stdout=None):
+        self.default_delims = readline.get_completer_delims()
         super().__init__(completekey, stdin, stdout)
         init(autoreset=True)
         self.model = ClassCollection()
@@ -48,6 +47,7 @@ class MontyREPL(cmd.Cmd):
                         l += 1
                     self.cmd_desc[command.split()[0]] = desc.rstrip()
                 l += 1
+        self.root_dir = copy(os.curdir)
 
     # Interface
     #
@@ -406,15 +406,82 @@ class MontyREPL(cmd.Cmd):
                     else self.model.getFields(curr_args[1]))
         }
         return self.arg_complete(text, line, arg_completions)
-    
-    # TODO: Use os.walk, and some fancy way of autocompleting directory paths
-    # based on the user's OS...
+
     def complete_save(self, text, line, begidx, endidx):
-        pass
+        try:
+            readline.set_completer_delims('~\\')
+            curr_args = line.split()
+
+            if len(curr_args) > 2:
+                prev = curr_args[1]
+                for rest in curr_args[2:]:
+                    curr_args[1] += f' {rest}'
+                    prev = rest
+
+            path = ''
+            if len(curr_args) > 1:
+                if curr_args[1][0] == '~':
+                    path = os.path.join(os.path.expanduser(curr_args[1]))
+                else:
+                    path = os.path.join('.', curr_args[1])
+            else:
+                path = os.path.join('.', '')
+
+            files_and_dirs = []
+            prediction = ''
+            if len(curr_args) != 1:
+                _, prediction = os.path.split(path)
+            if not os.path.exists(path):
+                path = os.path.dirname(path)
+
+            if os.path.isdir(path):
+                for f in os.listdir(path):
+                    if f.startswith(prediction):
+                        if os.path.isdir(os.path.join(path, f)):
+                            files_and_dirs.append(os.path.join(f, ''))
+                        else:
+                            files_and_dirs.append(f)
+            return files_and_dirs
+        except Exception as e:
+            return ['**Error, cannot save here', 'please try another directory**']
 
     def complete_load(self, text, line, begidx, endidx):
-        pass
+        try:
+            readline.set_completer_delims('~\\')
+            curr_args = line.split()
 
+            if len(curr_args) > 2:
+                prev = curr_args[1]
+                for rest in curr_args[2:]:
+                    curr_args[1] += f' {rest}'
+                    prev = rest
+
+            path = ''
+            if len(curr_args) > 1:
+                if curr_args[1][0] == '~':
+                    path = os.path.join(os.path.expanduser(curr_args[1]))
+                else:
+                    path = os.path.join('.', curr_args[1])
+            else:
+                path = os.path.join('.', '')
+
+            files_and_dirs = []
+            prediction = ''
+            if len(curr_args) != 1:
+                _, prediction = os.path.split(path)
+            if not os.path.exists(path):
+                path = os.path.dirname(path)
+
+            if os.path.isdir(path):
+                for f in os.listdir(path):
+                    if f.startswith(prediction):
+                        if os.path.isdir(os.path.join(path, f)):
+                            files_and_dirs.append(os.path.join(f, ''))
+                        else:
+                            files_and_dirs.append(f)
+            return files_and_dirs
+        except Exception as e:
+            return ['**Error, cannot load here', 'please try another directory**']
     # Helpers
     def print_cmd_help(self, command):
         print(self.cmd_desc[command])
@@ -439,6 +506,7 @@ class MontyREPL(cmd.Cmd):
 
     
     def onecmd(self, line):
+        readline.set_completer_delims(self.default_delims)
         try:
             return super().onecmd(line)
         except Exception as e:
