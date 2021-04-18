@@ -62,11 +62,11 @@ class MainWindow(Frame):
         
         self.master.update()
         # Store the width and height of the frame
-        height = self.master.winfo_screenheight()
-        width = self.master.winfo_screenwidth()
+        height = self.master.winfo_height()
+        width = self.master.winfo_width()
         # Expand the frame for the postscript file
-        self.master.geometry("2000x1800")
-        self.canvas.config(width=2000,height=1800)
+        self.master.geometry("5000x4000")
+        self.canvas.config(width=5000,height=4000)
         self.master.update()
         # Grab the postscript file
         ps = self.canvas.postscript(file="postscript.ps", colormode="color", pagewidth=5000, pageheight=4000, pagex=0, pagey=0)
