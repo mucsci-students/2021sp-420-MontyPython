@@ -312,3 +312,16 @@ class MainWindow(Frame):
             usedSpaces.append(temp[4])
             usedSpaces.append(temp[7])
         return usedSpaces
+    
+    def pointInClassSpace(self, x, y):
+        coList = self.ClassSpaces()
+        index = 0
+        while len(coList) > Index:
+            c1 = colist[index]
+            c2 = colist[index + 1]
+            if c1[0] < x and x < c2[0] and c1[1] < y and y < c2[1]:
+                return true
+                print ("potato")
+            index = index + 2 
+        
+        return false
