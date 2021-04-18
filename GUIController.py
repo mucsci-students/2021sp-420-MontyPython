@@ -157,7 +157,7 @@ class GUIController:
         
         try:
             self.model.addRelationship(firstClassName, secondClassName, typ)
-            self.view.addLine(firstClassName, secondClassName, typ)
+            self.view.addLine(firstClassName, secondClassName, typ, True)
         except Exception as e:
             if self.debug:
                 print(traceback.format_exc())
@@ -185,7 +185,7 @@ class GUIController:
 
         try:
             self.model.deleteRelationship(firstClassName, secondClassName)
-            self.view.deleteLine(firstClassName, secondClassName)
+            self.view.deleteLine(firstClassName, secondClassName, True)
         except Exception as e:
             if self.debug:
                 print(traceback.format_exc())
@@ -515,4 +515,5 @@ class GUIController:
         for theTuple in self.model.relationshipDict:
             (class1, class2) = theTuple
             typ = self.model.getRelationship(class1, class2).getRelationshipTyp()
-            self.view.addLine(class1, class2, typ)
+            self.view.addLine(class1, class2, typ, False)
+        self.view.drawLines()
