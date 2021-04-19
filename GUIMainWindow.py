@@ -56,11 +56,11 @@ class MainWindow(Frame):
         height = self.master.winfo_height()
         width = self.master.winfo_width()
         # Expand the frame for the postscript file
-        self.master.geometry("5000x4000")
-        self.canvas.config(width=5000,height=4000)
+        self.master.geometry("1920x1080")
+        self.canvas.config(width=1920,height=1080)
         self.master.update()
         # Grab the postscript file
-        ps = self.canvas.postscript(file="postscript.ps", colormode="color", pagewidth=5000, pageheight=4000, pagex=0, pagey=0)
+        ps = self.canvas.postscript(file="postscript.ps", colormode="color", pagewidth=1920, pageheight=1080, pagex=0, pagey=0)
         # Convert previous dimensions to a string
         dimensions = str(width)+"x"+str(height)
         # Restore the previous dimensions
