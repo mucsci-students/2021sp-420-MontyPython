@@ -31,8 +31,26 @@ class GUIController:
         if self.debug:
             print(name)
         Interface.loadFile(self.model, name, "GUI", self.view)
-         #self.view.drawLines()
+        #Interface doesn't have access to any GUI class directly.
+        #As such, it returns the class widget dict as a dictionary
+        #with the values as lists.
+        #Copying this dictionary allow editing the original
+        #while iterating through.
+        guiClassDictReplica = self.view.classDict.copy()
+        for key, value in guiClassDictReplica.items():
+            self.view.addClass(key, value[0], value[1])
+
+        #guiLineDictReplica = self.view.lineDict.copy()
+        #self.view.lineDict = {}
+        #for key, value in guiLineDictReplica.items():
+        #    print(key)
+        #    print(value)
+        #    self.deleteRelationship(key[0], key[1])
+        #    self.addRelationship(key[0], key[1], value[4])
+
+
         self.saveStates.reset(Momento(Command("",""), self.model))
+        self.refreshCanvas()
 
     def save(self, name):
         Interface.saveFile(self.model, name, "GUI", self.view)
