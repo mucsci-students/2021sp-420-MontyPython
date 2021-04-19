@@ -88,7 +88,7 @@ class ClassWidget(Frame):
         methodWidth = self.getMethodWidth()
 
         # Method is largest
-        if methodWidth > fieldWidth and methodWidth > nameWidth and fieldWidth > minimumWidth:
+        if methodWidth > fieldWidth and methodWidth > nameWidth and methodWidth > minimumWidth:
             w = methodWidth
         # Field is largest
         elif fieldWidth > methodWidth and fieldWidth > nameWidth and fieldWidth > minimumWidth:
@@ -101,7 +101,7 @@ class ClassWidget(Frame):
             w = minimumWidth
         # They're all the same
         else:
-            w = nameWidth
+            w = minimumWidth
         
         self.width = w
         
