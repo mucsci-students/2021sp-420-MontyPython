@@ -1,7 +1,18 @@
 from tkinter import *
 from ClassWidget import ClassWidget
 import math
+<<<<<<< HEAD
+=======
 
+import numpy as np
+
+from pathfinding.core.diagonal_movement import DiagonalMovement
+from pathfinding.core.grid import Grid
+from pathfinding.finder.a_star import AStarFinder
+>>>>>>> f81511af3421617b8699e37c0015337aee69e0dd
+
+from PIL import Image
+import time
 
 # Inherits from frame class in tkinter
 class MainWindow(Frame):
@@ -35,6 +46,39 @@ class MainWindow(Frame):
         self.canvas.pack(fill=BOTH, expand=1)
 
         self.drawLines()
+        #st = (200, 600)
+        #nd = (100, 400)
+       
+        #point1 = ((nd[0] - st[0]) / 3 + st[0], (nd[1] - st[1]) / 3 + st[1])
+        #point2  = ((((nd[0] - st[0]) / 3) * 1) + st[0] , (((nd[1] - st[1]) / 3) * 1)  + st[1])
+        #point3
+        #point4
+        #self.canvas.create_line(st[0], st[1], point1[0], point1[1], )
+        #self.canvas.create_line( point2[0], point2[1], nd[0], nd[1], )
+        #self.canvas.create_line(300, 40, 300, 300, arrow=FIRST)
+
+    # grab all the changes made to the canvas and update the postscript file. used for
+    # export as image.
+    def updatePsFile(self):
+        
+        self.master.update()
+        # Store the width and height of the frame
+        height = self.master.winfo_height()
+        width = self.master.winfo_width()
+        # Expand the frame for the postscript file
+        self.master.geometry("1920x1080")
+        self.canvas.config(width=1920,height=1080)
+        self.master.update()
+        # Grab the postscript file
+        ps = self.canvas.postscript(file="postscript.ps", colormode="color", pagewidth=1920, pageheight=1080, pagex=0, pagey=0)
+        # Convert previous dimensions to a string
+        dimensions = str(width)+"x"+str(height)
+        # Restore the previous dimensions
+        self.master.geometry(dimensions)
+        self.canvas.config(width=width,height=height)
+        self.canvas.update_idletasks
+        self.master.update()
+
     
     def addClass(self, className, x, y):
         self.classDict[className] = ClassWidget(self, self.canvas, className, x, y)        
