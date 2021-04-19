@@ -82,22 +82,26 @@ class ClassWidget(Frame):
     # Finds the box with the longest width so they can all be set to that width
     def updateWidth(self):
         # Get widths
+        minimumWidth = 50
         nameWidth = self.getNameWidth()
         fieldWidth = self.getFieldWidth()
         methodWidth = self.getMethodWidth()
 
         # Method is largest
-        if methodWidth > fieldWidth and methodWidth > nameWidth:
+        if methodWidth > fieldWidth and methodWidth > nameWidth and methodWidth > minimumWidth:
             w = methodWidth
         # Field is largest
-        elif fieldWidth > methodWidth and fieldWidth > nameWidth:
+        elif fieldWidth > methodWidth and fieldWidth > nameWidth and fieldWidth > minimumWidth:
             w = fieldWidth
         # Name is largest
-        elif nameWidth > fieldWidth and nameWidth > methodWidth:
+        elif nameWidth > fieldWidth and nameWidth > methodWidth and nameWidth > minimumWidth:
             w = nameWidth
+        # None are larger than min width
+        elif minimumWidth > fieldWidth and minimumWidth > nameWidth and minimumWidth > methodWidth:
+            w = minimumWidth
         # They're all the same
         else:
-            w = nameWidth
+            w = minimumWidth
         
         self.width = w
         
@@ -136,6 +140,14 @@ class ClassWidget(Frame):
         self.widgetCoordinates.append([nameCoords[2], nameCoords[1] + 5])
         self.widgetCoordinates.append([methodCoords[0], methodCoords[3] - 5])
         self.widgetCoordinates.append([methodCoords[2], methodCoords[3] - 5])
+
+    def updateTags(self, txt):
+        self.canvas.itemconfig(self.getNameObject(), tag=txt)
+        self.canvas.itemconfig(self.getNameBoxObject(), tag=txt)
+        self.canvas.itemconfig(self.getFieldObject(), tag=txt)
+        self.canvas.itemconfig(self.getFieldBoxObject(), tag=txt)
+        self.canvas.itemconfig(self.getMethodObject(), tag=txt)
+        self.canvas.itemconfig(self.getMethodBoxObject(), tag=txt)
 
     # ------------------------------------------------------------- #
     #          Methods that delete objects from dict/canvas
@@ -179,6 +191,8 @@ class ClassWidget(Frame):
     
     def setNameText(self, txt):
         self.canvas.itemconfig(self.getNameObject(), text=txt)
+        self.nameTxt = txt
+        self.updateTags(txt)
         self.updateWidget()
 
     def setFieldText(self, txt):

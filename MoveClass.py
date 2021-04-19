@@ -9,7 +9,16 @@ class MoveClass:
         self.canvas.tag_bind(className, '<ButtonPress-1>', lambda e, tag=className: self.startDrag(e, tag))
         self.canvas.tag_bind(className, '<B1-Motion>', lambda e, tag=className: self.drag(e, tag, className)) 
         self.canvas.tag_bind(className, '<ButtonRelease-1>', lambda e, tag=className: self.stopDrag(e, tag, className)) 
-    
+
+    def changeBinds(self, oldClassName, newClassName):
+        self.removeBinds(oldClassName)
+        self.setBinds(newClassName)
+
+    def removeBinds(self, className):
+        self.canvas.tag_unbind(className, '<ButtonPress-1>')
+        self.canvas.tag_unbind(className, '<B1-Motion>')
+        self.canvas.tag_unbind(className, '<ButtonRelease-1>')
+
     # Starts move class drag
     def startDrag(self, event, tag):
         widget = event.widget
