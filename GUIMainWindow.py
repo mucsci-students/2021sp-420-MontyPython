@@ -72,7 +72,6 @@ class MainWindow(Frame):
         ps = self.canvas.postscript(file="postscript.ps", colormode="color", pagewidth=5000, pageheight=4000, pagex=0, pagey=0)
         # Convert previous dimensions to a string
         dimensions = str(width)+"x"+str(height)
-        print(dimensions)
         # Restore the previous dimensions
         self.master.geometry(dimensions)
         self.canvas.config(width=width,height=height)
