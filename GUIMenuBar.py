@@ -13,6 +13,8 @@ def menu(controller, view, root):
     file.add_command(label="Open", command= lambda: controller.windowFactory("Open")) 
     file.add_command(label="Save", command= lambda: controller.windowFactory("Save"))
     file.add_separator()
+    file.add_command(label="Export As Image", command= lambda: controller.exportImage())
+    file.add_separator()
     file.add_command(label="Help", command=lambda: controller.windowFactory("Help"))
     file.add_separator()
     file.add_command(label="Exit", command=exit)
