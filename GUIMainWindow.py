@@ -1,6 +1,13 @@
 from tkinter import *
 from ClassWidget import ClassWidget
 import math
+
+import numpy as np
+
+from pathfinding.core.diagonal_movement import DiagonalMovement
+from pathfinding.core.grid import Grid
+from pathfinding.finder.a_star import AStarFinder
+
 from PIL import Image
 import time
 
@@ -71,7 +78,7 @@ class MainWindow(Frame):
 
     
     def addClass(self, className, x, y):
-        self.classDict[className] = ClassWidget(self, self.canvas, className, x, y)
+        self.classDict[className] = ClassWidget(self, self.canvas, className, x, y)        
 
     
     def deleteClass(self, className):
@@ -128,18 +135,20 @@ class MainWindow(Frame):
 
     #erases all lines on the canvas (lines are stored in LineOBJlist), then redraws all lines from LineDict
     def drawLines(self):
-        #print()
-        #usedSpaces = self.ClassSpaces()
+
         # If it's not empty
         if self.lineObjList:
             #clear the list of canvas objects
             for i in self.lineObjList:
                 self.canvas.delete(i)
+        #class coordinate list
+        coList = self.ClassSpaces()
         # If it's not empty
         if self.lineDict:
             #update the list of canvas objects using the lineDictionary
             #for key, value in d.items():
             for key, line in self.lineDict.items():
+                
                 basepoint = (line[2], line[3])
                 rootPoint = (line[0], line[1]) 
                 #randomPlacement  =
@@ -180,17 +189,50 @@ class MainWindow(Frame):
                     rootEnd = (rootPoint[0] + 5, rootPoint[1])
                 
 
-                #Do Recursive Boi stuff here
-                #Check if X or Y distance is greater
+                #X and Y distsances between the two points
                 xd = rootEnd[0] - localLineEnd[0] 
                 yd = rootEnd[1] - localLineEnd[1]  
 
                 if(abs(xd) > abs(yd)):
                     xf = localLineEnd[0] + (xd * .50)
+                    p = .1
+                    #Checking if first center point is in class space
+                    while self.pointInClassSpace(xf, rootEnd[1], coList) or self.pointInClassSpace(xf, localLineEnd[1], coList) : 
+                        #p indicates how far from the center we're moving the connection                 
+                        if p >= .95:
+                            xf = localLineEnd[0] + (xd * .50) 
+                            break
+                        xop1 = xf * (1 - p) * (xd/xd)
+                        xop2 = xf * (1 + p) * (xd/xd)
+
+                        if not self.pointInClassSpace(xop1, rootEnd[1], coList) and not self.pointInClassSpace(xop1, localLineEnd[1], coList):
+                            xf = xop1
+                            break
+                        if not self.pointInClassSpace(xop2, rootEnd[1], coList) and not self.pointInClassSpace(xop2, localLineEnd[1], coList):
+                            xf = xop2
+                            break
+                        p = p + .1
                     backTrackPoint =  (xf, rootEnd[1])
                     backTrackPoint2 =  (xf, localLineEnd[1])
+                    
                 else:
+                    #Checking if second center point is in class space
                     yf = localLineEnd[1] + (yd * .50)
+                    p = .1
+                    while self.pointInClassSpace(rootEnd[0], yf, coList) or self.pointInClassSpace(localLineEnd[0], yf, coList):                        
+                        if p >= .95:
+                            yf = localLineEnd[0] + (yd * .50) 
+                            break
+                        yop1 = yf * (1 - p) * (yd/yd)
+                        yop2 = yf * (1 + p) * (yd/yd)
+
+                        if not self.pointInClassSpace(rootEnd[0], yop1, coList) and not self.pointInClassSpace(localLineEnd[0], yop1, coList):
+                            yf = yop1
+                            break
+                        if not self.pointInClassSpace(rootEnd[1], yop2,  coList) and not self.pointInClassSpace(localLineEnd[1], yop2,  coList):
+                            yf = yop2
+                            break
+                        p = p + .1
                     backTrackPoint =  (rootEnd[0], yf)
                     backTrackPoint2 =  (localLineEnd[0], yf)
 
@@ -205,8 +247,12 @@ class MainWindow(Frame):
                     backTrackPoint =  rootEnd
                     backTrackPoint2 =  rootEnd
 
-                CoordinateList = [rootPoint[0], rootPoint[1], rootEnd[0], rootEnd[1], backTrackPoint[0], backTrackPoint[1], backTrackPoint2[0], backTrackPoint2[1], localLineEnd[0], localLineEnd[1], furthestpoint[0] , furthestpoint[1]]
-                
+                beginList = [rootPoint[0], rootPoint[1], rootEnd[0], rootEnd[1]]
+                endList =  [localLineEnd[0], localLineEnd[1], furthestpoint[0] , furthestpoint[1]]
+
+
+                middleList = [backTrackPoint[0], backTrackPoint[1], backTrackPoint2[0], backTrackPoint2[1]]
+                CoordinateList = beginList + middleList + endList                
 
                 if(line[4] == 0 or line[4] == 1 ): #0 - aggregation & 1 - composition
                     if (line[4] == 0 ):
@@ -236,7 +282,6 @@ class MainWindow(Frame):
             temp = self.classDict[firstClassName].widgetCoordinates[0]
             self.lineDict[(firstClassName, secondClassName)] = [temp[0], temp[1], temp[0], temp[1], numericTyp, 0, 0]
 
-
         retVal = self.findShortestDistance(firstClassName, secondClassName)
         bothCoords = retVal[0]
         cord1 = bothCoords[0]
@@ -244,11 +289,9 @@ class MainWindow(Frame):
         destSide = retVal[1]
         srcSide = retVal[2]
         
-        
         self.lineDict[(firstClassName, secondClassName)] = [cord1[0], cord1[1], cord2[0], cord2[1], numericTyp, destSide, srcSide]
         if(drawline):
             self.drawLines()
-            print(self.lineDict)
         self.canvas.update_idletasks
 
     #removes a line from the canvas
@@ -311,7 +354,7 @@ class MainWindow(Frame):
                     s2x = 0
                     s2y = 24
                 self.currentDistance = math.dist([coord1[0] + s1x, coord1[1] + s1y],[coord2[0] + s2x, coord2[1] + s2y ])
-                #self.currentDistance = abs(YDis) + abs(XDis)
+                
                 #check if any previous points were closer, it not. Replace it with the current distance
                 if (round(self.currentDistance) + 3 < self.shortestDistance):
                     destSide = destIteration
@@ -325,10 +368,10 @@ class MainWindow(Frame):
         #return the closet points between the two classes
         return [(firstClassCoord, secondClassCoord), self.sideToString(destSide), self.sideToString(srcSide) ]
 
+    #converts a numeric acchment point to a string
     def sideToString(self, sideNumber):
         leftList = [1, 4, 6]
         rightList = [2, 5, 7] 
-
         if(sideNumber in leftList):
             returnSide = 'left'
         elif(sideNumber in rightList):
@@ -337,13 +380,32 @@ class MainWindow(Frame):
             returnSide = 'top'
         else:
             returnSide = 'bottom'   
-
         return returnSide
 
+    #returns a list of the upper left and lower right indecies of all classes
     def ClassSpaces(self):
         usedSpaces = []
-        for className, classObj in self.lineDict.items():
+        for className, classObj in self.classDict.items():
             temp = self.classDict[className].widgetCoordinates
             usedSpaces.append(temp[4])
             usedSpaces.append(temp[7])
         return usedSpaces
+    
+    #Checks if a single point is within the bounds of a class
+    def pointInClassSpace(self, x, y, colist):
+        index = 0
+        while len(colist) > index:
+            
+            c1 = colist[index]
+            c2 = colist[index + 1]
+        
+            if c1[0] -4 <= x and x <= c2[0] + 4:
+                if c1[1] - 4 <= y and y <= c2[1] + 4:
+                    
+                    return True
+            index = index + 2 
+        return False
+    
+    
+
+        
