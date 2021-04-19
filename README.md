@@ -4,6 +4,21 @@ This command line program creates a text representation of a UML diagram though 
 
 ## Prerequisites
 1. To run the program, [Python 3.9.1](https://www.python.org/downloads/) needs to be installed.
+1. The program "ghostscript" must be installed on your machine. Downloads and installation instructions can be found here.
+   https://www.ghostscript.com/download/gsdnld.html
+
+   On Windows, you have to add ghostscript to your path. 
+      * Press Windows Key + S to open the windows search bar (or click the search bar in the bottom left).
+      * type "environment variables" into the search bar and press enter.
+      * In the system properties menu that opens up, click "environment variables" near the bottom.
+      * In the system variables section (lower half of window), double click on the row labled "Path"
+      * In the edit environment variables window, click "new" on the right side.
+      * In the new empty row created, paste the path to the installation of your ghostscript.
+            Example path (64 bit) C:\Program Files\gs\gs9.54.0\bin\
+   
+      NOTE: On mac, the easiest way to install is to use homebrew.
+      "brew install ghostscript"
+
 1. During installation in Windows, check the box labeled "Add Python 3.9 to PATH" so Python programs can be run by typing `python` in a terminal.
 
 ## Package Installation

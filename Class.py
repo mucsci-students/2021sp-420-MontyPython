@@ -117,7 +117,7 @@ class Class():
             
             # Check if removing the parameter causes identical method signatures (illegal)
             testList = self.methodDict[methodName][methodIndex].parameters.copy()
-            testList.remove((typ, name))           
+            testList.remove((typ, name))
             for i in range(len(self.methodDict[methodName])):
                 if self.methodDict[methodName][i].parameters == testList:   
                     raise KeyError(f'Removing \'{name}\' will cause a duplicate method signature.')
@@ -172,16 +172,12 @@ class Class():
                         found = True
                 if not found:
                     raise KeyError(f'Parameter {name} does not belong to {methodName}')
-                print(f'Before {parameters}')
                 c = parameters.copy()
                 self.removeParameter(methodName, c, name)
-                print(f'Before {parameters}')
                 c.remove((typ, name))
-                print(f'{parameters} After')
                 self.addParameter(methodName, c, newType, newName)
       
             except Exception as e:
-                print(self.methodDict)
                 raise KeyError(f'Error changing parameter')
 
         def changeAllParameters(self, methodName, parameters, newParameters):

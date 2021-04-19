@@ -1,31 +1,59 @@
 import sys
 from ClassCollection import ClassCollection
+from tkinter import filedialog
 import Interface
 from PopupBoxes import *
-import GUIMenuBar
+import GUIMenuBar, MoveClass
 import traceback
+from PIL import Image
+import math
+from Command import Command
+from Momento import Momento
+from ActionStack import ActionStack
 
 # A default collection
 collection = ClassCollection()
 
 class GUIController:
-    def __init__(self, model, view):
+    def __init__(self, model, view, debug):
         self.model = model
         self.view = view
         self.root = self.view.master
-
+        self.debug = debug
         # Creates the view's menu bar
         self.createMenuBar()
 
-        # TODO: Delete this and related code once classes can move
-        self.coordinateList = [[50, 100], [50, 400], [400, 100], [400, 400], [750, 100], [750, 400], [50, 750], [400, 750], [750, 750]]
-        self.usedCoordinateDict = {}
-        self.classWidgetCount = 0
+        self.classOffset = 0
+
+        self.moveClass = MoveClass.MoveClass(self, self.view, self.view.canvas)
+
+        self.saveStates = ActionStack(Momento(Command("",""), self.model))
 
 
     def load(self, name):
-        print(name)
+        if self.debug:
+            print(name)
         Interface.loadFile(self.model, name, "GUI", self.view)
+        #Interface doesn't have access to any GUI class directly.
+        #As such, it returns the class widget dict as a dictionary
+        #with the values as lists.
+        #Copying this dictionary allow editing the original
+        #while iterating through.
+        guiClassDictReplica = self.view.classDict.copy()
+        for key, value in guiClassDictReplica.items():
+            self.view.addClass(key, value[0], value[1])
+
+        #guiLineDictReplica = self.view.lineDict.copy()
+        #self.view.lineDict = {}
+        #for key, value in guiLineDictReplica.items():
+        #    print(key)
+        #    print(value)
+        #    self.deleteRelationship(key[0], key[1])
+        #    self.addRelationship(key[0], key[1], value[4])
+
+
+        self.saveStates.reset(Momento(Command("",""), self.model))
+        self.refreshCanvas()
 
     def save(self, name):
         Interface.saveFile(self.model, name, "GUI", self.view)
@@ -40,29 +68,34 @@ class GUIController:
         if name == '':
             alertBox = self.windowFactory("alertBox", "Please provide a class name")
             return
-
-        # TODO: Once classes are able to be moved, remove this
-        if self.classWidgetCount == 9:
-                alertBox = self.windowFactory("alertBox", "Only 9 classes are able to be added to the GUI verison of this program.")
-                return
+        if (' ' in name) == True:
+            alertBox = self.windowFactory("alertBox", "Class names cannot have spaces")
+            return
 
         try:
             self.model.addClass(name)
-            # Update number of widgets on screen
-            self.classWidgetCount = self.classWidgetCount + 1
-            # Get the coordinates from the coordinateList at index 0
-            coordinates = self.coordinateList[0]
-            # Add class based on thoes coordinates
-            self.view.addClass(name, coordinates[0], coordinates[1])
-            # Move those coordinates to the used coordinate dict, remove them from the normal coordinate list
-            self.usedCoordinateDict[name] = coordinates
-            self.coordinateList.remove(coordinates)
+
+            if (self.classOffset == 20):
+                self.classOffset = 1
+            else:
+                self.classOffset = self.classOffset + 1
+
+            defaultCoord = self.classOffset * 40
+
+            self.view.addClass(name, defaultCoord, defaultCoord)
+            self.model.setClassCoordinates(name, defaultCoord, defaultCoord)
+
+            self.moveClass.setBinds(name)
             
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
 
-        print(self.model.classDict)
+        if self.debug:
+            print(self.model.classDict)
+
+        self.saveStates.add(Momento(Command("",""), self.model))
      
     def deleteClass(self, name):
         if name == '':
@@ -71,19 +104,16 @@ class GUIController:
 
         try:
             self.model.deleteClass(name)
-            # Remove the class from the view
             self.view.deleteClass(name)
-            # Update number of classes on screen
-            self.classWidgetCount = self.classWidgetCount - 1
-            # Remove coords from used coord dict, add back to coordinate list
-            coords = self.usedCoordinateDict.pop(name)
-            self.coordinateList.append(coords)
 
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)       
+        if self.debug:
+            print(self.model.classDict)
 
-        print(self.model.classDict)
+        self.saveStates.add(Momento(Command("",""), self.model))
         
     def renameClass(self, oldName, newName):
         errorFlag = False
@@ -96,6 +126,10 @@ class GUIController:
         if newName == '':
             errorFlag = True
             errorString += '\nPlease provide a new class name'
+
+        if (' ' in newName) == True:
+            errorFlag = True
+            errorString += '\nClass names cannot have spaces'
         
         if errorFlag:
             alertBox = self.windowFactory("alertBox", errorString)
@@ -109,15 +143,18 @@ class GUIController:
             self.view.classDict[oldName].updateWidget()
             self.view.classDict[newName] = self.view.classDict.pop(oldName)
 
-            # Change coordinate dict name to match new class name
-            coords = self.usedCoordinateDict.pop(oldName)
-            self.usedCoordinateDict[newName] = coords
+            self.view.renameClass(oldName, newName)
+            self.moveClass.changeBinds(oldName, newName)
 
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
 
-        print(self.model.classDict)
+        if self.debug:
+            print(self.model.classDict)
+
+        self.saveStates.add(Momento(Command("",""), self.model))
 
     def addRelationship(self, firstClassName, secondClassName, typ):
         errorFlag = False
@@ -141,12 +178,15 @@ class GUIController:
         
         try:
             self.model.addRelationship(firstClassName, secondClassName, typ)
-            self.view.addLine(firstClassName, secondClassName, typ)
+            self.view.addLine(firstClassName, secondClassName, typ, True)
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
+        if self.debug:
+            print(self.model.relationshipDict)
 
-        print(self.model.relationshipDict)
+        self.saveStates.add(Momento(Command("",""), self.model))
 
     def deleteRelationship(self, firstClassName, secondClassName):
         errorFlag = False
@@ -166,12 +206,15 @@ class GUIController:
 
         try:
             self.model.deleteRelationship(firstClassName, secondClassName)
-            self.view.deleteLine(firstClassName, secondClassName)
+            self.view.deleteLine(firstClassName, secondClassName, True)
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
+        if self.debug:
+            print(self.model.relationshipDict)
 
-        print(self.model.relationshipDict)
+        self.saveStates.add(Momento(Command("",""), self.model))
 
 
     def renameRelationship(self, firstClassName, secondClassName, typ):
@@ -197,94 +240,90 @@ class GUIController:
             self.model.renameRelationship(firstClassName, secondClassName, typ)
             self.view.renameLine(firstClassName, secondClassName, typ)
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
-
-        print(self.model.relationshipDict)
+        if self.debug:
+            print(self.model.relationshipDict)
+        
+        self.saveStates.add(Momento(Command("",""), self.model))
 
     def addMethod(self, className, methodName, returnType, parameters):
         try:
             self.model.addMethod(className, methodName, returnType, parameters)
-            
-            # Update the class widget
-            # TODO: Stopped here. This isn't working
-            # methodStr = ""
-            # for m in self.model.classDict[className].methodDict:
-            #     methodStr += m[0] 
-            #     if len(m) > 1:
-            #         for param in m[1]:
-            #             methodStr += param + " "
-            #     methodStr += "\n"
-            # self.view.classDict[className].setMethodText(methodStr)
-            # self.view.classDict[className].updateWidget()
-
             self.updateWidgetMethod(className)
 
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
+        if self.debug:
+            print(self.model.classDict[className].methodDict)
 
-        print(self.model.classDict[className].methodDict)
-
-    def deleteMethod(self, className, methodName, methodNum):
+    def deleteMethod(self, className, methodName, params):
         try:
-            idx = int(methodNum) - 1
-            params = self.model.getMethod(className, methodName, idx).parameters
             self.model.deleteMethod(className, methodName, params)
             self.updateWidgetMethod(className)
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
+        if self.debug:
+            print(self.model.classDict)    
 
-        print(self.model.classDict)    
+        self.saveStates.add(Momento(Command("",""), self.model))
 
-    def renameMethod(self, className, methodName, methodNum, newName):
+    def renameMethod(self, className, methodName, params, newName):
         try:
-            idx = int(methodNum) - 1
-            params = self.model.getMethod(className, methodName, idx).parameters
             self.model.renameMethod(className, methodName, params, newName)
             self.updateWidgetMethod(className)
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
+        if self.debug:
+            print(self.model.classDict)
 
-        print(self.model.classDict)
+        self.saveStates.add(Momento(Command("",""), self.model))
 
-    def addParameter(self, className, methodName, methodNum, typ, name):
+    def addParameter(self, className, methodName, params, typ, name):
         try:
-            idx = int(methodNum) - 1
-            params = self.model.getMethod(className, methodName, idx).parameters
             self.model.addParameter(className, methodName, params, typ, name)
             self.updateWidgetMethod(className)
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
-        
-        print(self.model.classDict[className].methodDict)
+        if self.debug:
+            print(self.model.classDict[className].methodDict)
 
-    def removeParameter(self, className, methodName, methodNum, name):
+        self.saveStates.add(Momento(Command("",""), self.model))
+
+    def removeParameter(self, className, methodName, params, name):
         try:
-            idx = int(methodNum) - 1
-            params = self.model.getMethod(className, methodName, idx).parameters
             self.model.removeParameter(className, methodName, params, name)
             self.updateWidgetMethod(className)
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
+        if self.debug:
+            print(self.model.classDict)
 
-        print(self.model.classDict)
+        self.saveStates.add(Momento(Command("",""), self.model))
 
-    def changeParameter(self, className, methodName, methodNum, name, newType, newName):
+    def changeParameter(self, className, methodName, params, name, newType, newName):
         try:
-            idx = int(methodNum) - 1
-            params = self.model.getMethod(className, methodName, idx).parameters
             self.model.changeParameter(className, methodName, params, name, newType, newName)
             self.updateWidgetMethod(className)
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
+        if self.debug:
+            print(self.model.classDict)
 
-        print(self.model.classDict)
+        self.saveStates.add(Momento(Command("",""), self.model))
 
     def addField(self, className, name, dataType):
         errorFlag = False
@@ -308,15 +347,16 @@ class GUIController:
 
         try:
             self.model.addField(className, name, dataType)
-            # This has to be called twice for it to work
-            self.updateWidgetField(className)
             self.updateWidgetField(className)
             
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
+        if self.debug:
+            print(self.model.classDict)
 
-        print(self.model.classDict)
+        self.saveStates.add(Momento(Command("",""), self.model))
 
     def deleteField(self, className, name):
         errorFlag = False
@@ -336,14 +376,15 @@ class GUIController:
 
         try:
             self.model.deleteField(className, name)
-            # This has to be called twice for it to work
-            self.updateWidgetField(className)
             self.updateWidgetField(className)
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
+        if self.debug:
+            print(self.model.classDict)
 
-        print(self.model.classDict)
+        self.saveStates.add(Momento(Command("",""), self.model))
 
     def renameField(self, className, oldName, newName):
         errorFlag = False
@@ -367,13 +408,25 @@ class GUIController:
 
         try:
             self.model.renameField(className, oldName, newName)
-            # This has to be called twice for it to work
             self.updateWidgetField(className)
         except Exception as e:
-            print(traceback.format_exc())
+            if self.debug:
+                print(traceback.format_exc())
             errorBox = self.windowFactory("alertBox", e)
+        if self.debug:
+            print(self.model.classDict)
 
-        print(self.model.classDict)
+        self.saveStates.add(Momento(Command("",""), self.model))
+
+    def undo(self):
+        self.saveStates.undoPop()
+        self.model = self.saveStates.currentObj.state
+        self.refreshCanvas()
+
+    def redo(self):
+        self.saveStates.redoPop()
+        self.model = self.saveStates.currentObj.state
+        self.refreshCanvas()
     
     def listMethods(self, className, methodName, numbered=True):
         if className in self.model.classDict and methodName in self.model.getAllMethods(className):
@@ -389,6 +442,21 @@ class GUIController:
     
     def getClasses(self):
         return list(self.model.classDict.keys())
+    
+    def getFields(self, className):
+        return list(self.model.getFields(className))
+    
+    def getMethodsByName(self, className, methodName):
+        return list(self.model.getMethodsByName(className, methodName))
+    
+    def getAllMethodsString(self, className):
+        names = self.model.getAllMethods(className)
+        lst = []
+        for name in names:
+            for method in self.model.getMethodsByName(className, name):
+                lst.append(method)
+        return lst
+
 
     # --------------------------------
     # Menu Methods
@@ -447,3 +515,46 @@ class GUIController:
         methodStr = methodStr.rstrip()
         self.view.classDict[className].setMethodText(methodStr)  
 
+    # Export the canvas as an image using the postscript file.
+    def exportImage(self):
+        # update the postscript file.
+        self.view.updatePsFile()
+
+        try:
+            filename = filedialog.asksaveasfilename(defaultextension=".jpg", filetypes=[("jpg", "*.jpg"), ("png", "*.png"), ("PDF", "*.pdf")])
+        except Exception as e:
+            print("Error saving file")
+
+        if filename == '':
+             return
+             
+        try:
+            image = Image.open("postscript.ps")
+            image.save(filename, quality=99)
+        except Exception as e:
+            errorBox = self.windowFactory("alertBox", "Error saving file")
+            return
+        
+    def updateClassCoordinates(self, className, x, y):
+        self.model.setClassCoordinates(className, x, y)
+
+    # Current issues:
+    # class locations don't save correctly after drag
+
+    def refreshCanvas(self):
+        for className in list(self.view.classDict):
+            self.moveClass.removeBinds(className)
+            self.view.deleteClass(className)
+
+        self.view.lineDict = {}
+
+        for className in self.model.classDict:
+            coords = self.model.getClassCoordinates(className)
+            self.view.addClass(className, coords[0], coords[1])
+            self.moveClass.setBinds(className)
+
+        for theTuple in self.model.relationshipDict:
+            (class1, class2) = theTuple
+            typ = self.model.getRelationship(class1, class2).getRelationshipTyp()
+            self.view.addLine(class1, class2, typ, False)
+        self.view.drawLines()

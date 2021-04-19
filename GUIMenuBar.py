@@ -13,6 +13,8 @@ def menu(controller, view, root):
     file.add_command(label="Open", command= lambda: controller.windowFactory("Open")) 
     file.add_command(label="Save", command= lambda: controller.windowFactory("Save"))
     file.add_separator()
+    file.add_command(label="Export As Image", command= lambda: controller.exportImage())
+    file.add_separator()
     file.add_command(label="Help", command=lambda: controller.windowFactory("Help"))
     file.add_separator()
     file.add_command(label="Exit", command=exit)
@@ -20,6 +22,11 @@ def menu(controller, view, root):
     menu.add_cascade(label="File", menu=file) 
 
     # Do the same for the rest of the menus
+    edit = Menu(menu, tearoff = False)
+    edit.add_command(label="Undo", command= lambda: controller.undo())
+    edit.add_command(label="Redo", command= lambda: controller.redo())
+    menu.add_cascade(label="Edit", menu=edit)
+
     classes = Menu(menu, tearoff = False)
     classes.add_command(label="Add Class", command= lambda: controller.windowFactory("Add Class"))
     classes.add_command(label="Delete Class", command= lambda: controller.windowFactory("Delete Class"))
