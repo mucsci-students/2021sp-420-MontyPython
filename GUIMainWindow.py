@@ -1,13 +1,6 @@
 from tkinter import *
 from ClassWidget import ClassWidget
 import math
-
-import numpy as np
-
-from pathfinding.core.diagonal_movement import DiagonalMovement
-from pathfinding.core.grid import Grid
-from pathfinding.finder.a_star import AStarFinder
-
 from PIL import Image
 import time
 
