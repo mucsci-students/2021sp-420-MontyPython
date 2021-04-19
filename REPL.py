@@ -1,25 +1,25 @@
 import cmd
 import os
 import sys
+from copy import copy
 from functools import reduce
 from colorama import init, Fore
 
 from ClassCollection import ClassCollection
 from Command import Command
 from Momento import Momento
+from ActionStack import ActionStack
 import Interface
 
-if os.name == 'nt':
-    import pyreadline
-else:
-    import readline
+import readline
 
 class MontyREPL(cmd.Cmd):
     def __init__(self, completekey='tab', stdin=None, stdout=None):
+        self.default_delims = readline.get_completer_delims()
         super().__init__(completekey, stdin, stdout)
         init(autoreset=True)
-        self.saveStates = []
         self.model = ClassCollection()
+        self.saveStates = ActionStack(Momento(Command("",""), self.model))
         self.intro = (Fore.GREEN + '\nMontyPython UML Editor\n' + '='*80 + 
             '\nType help [verbose|<command-name>] or ? for help on commands.\n' + Fore.RESET)
 
@@ -47,6 +47,7 @@ class MontyREPL(cmd.Cmd):
                         l += 1
                     self.cmd_desc[command.split()[0]] = desc.rstrip()
                 l += 1
+        self.root_dir = copy(os.curdir)
 
     # Interface
     #
@@ -105,15 +106,24 @@ class MontyREPL(cmd.Cmd):
 
     def do_save(self, args):
         if len(args) > 0:
-            Interface.saveFile(self.model, args)
+            Interface.saveFile(self.model, os.path.expanduser(args))
         else:
             self.help_save()
     
     def do_load(self, args):
         if len(args) > 0:
-            Interface.loadFile(self.model, args)
+            Interface.loadFile(self.model, os.path.expanduser(args))
+            self.saveStates.reset(Momento(Command("",""), self.model))
         else:
             self.help_load()
+
+    def do_undo(self, args):
+        self.saveStates.undoPop()
+        self.model = self.saveStates.currentObj.state
+
+    def do_redo(self, args):
+        self.saveStates.redoPop()
+        self.model = self.saveStates.currentObj.state
 
     # Classes
     def do_add_class(self, args):
@@ -209,6 +219,10 @@ class MontyREPL(cmd.Cmd):
         self.print_cmd_help('save')
     def help_load(self):
         self.print_cmd_help('load')
+    def help_undo(self):
+        self.print_cmd_help('undo')
+    def help_redo(self):
+        self.print_cmd_help('redo')
 
     def help_add_class(self):
         self.print_cmd_help('add_class')
@@ -392,14 +406,82 @@ class MontyREPL(cmd.Cmd):
                     else self.model.getFields(curr_args[1]))
         }
         return self.arg_complete(text, line, arg_completions)
-    
-    # TODO: Use os.walk, and some fancy way of autocompleting directory paths
-    # based on the user's OS...
+
     def complete_save(self, text, line, begidx, endidx):
-        pass
+        try:
+            readline.set_completer_delims('~\\/')
+            curr_args = line.split()
+
+            if len(curr_args) > 2:
+                prev = curr_args[1]
+                for rest in curr_args[2:]:
+                    curr_args[1] += f' {rest}'
+                    prev = rest
+
+            path = ''
+            if len(curr_args) > 1:
+                if curr_args[1][0] == '~':
+                    path = os.path.join(os.path.expanduser(curr_args[1]))
+                else:
+                    path = os.path.join('.', curr_args[1])
+            else:
+                path = os.path.join('.', '')
+
+            files_and_dirs = []
+            prediction = ''
+            if len(curr_args) != 1:
+                _, prediction = os.path.split(path)
+            if not os.path.exists(path):
+                path = os.path.dirname(path)
+
+            if os.path.isdir(path):
+                for f in os.listdir(path):
+                    if f.startswith(prediction):
+                        if os.path.isdir(os.path.join(path, f)):
+                            files_and_dirs.append(os.path.join(f, ''))
+                        else:
+                            files_and_dirs.append(f)
+            return files_and_dirs
+        except Exception as e:
+            return ['**Error, cannot save here', 'please try another directory**']
 
     def complete_load(self, text, line, begidx, endidx):
-        pass
+        try:
+            readline.set_completer_delims('~\\/')
+            curr_args = line.split()
+
+            if len(curr_args) > 2:
+                prev = curr_args[1]
+                for rest in curr_args[2:]:
+                    curr_args[1] += f' {rest}'
+                    prev = rest
+
+            path = ''
+            if len(curr_args) > 1:
+                if curr_args[1][0] == '~':
+                    path = os.path.join(os.path.expanduser(curr_args[1]))
+                else:
+                    path = os.path.join('.', curr_args[1])
+            else:
+                path = os.path.join('.', '')
+
+            files_and_dirs = []
+            prediction = ''
+            if len(curr_args) != 1:
+                _, prediction = os.path.split(path)
+            if not os.path.exists(path):
+                path = os.path.dirname(path)
+
+            if os.path.isdir(path):
+                for f in os.listdir(path):
+                    if f.startswith(prediction):
+                        if os.path.isdir(os.path.join(path, f)):
+                            files_and_dirs.append(os.path.join(f, ''))
+                        else:
+                            files_and_dirs.append(f)
+            return files_and_dirs
+        except Exception as e:
+            return ['**Error, cannot save here', 'please try another directory**']
 
     # Helpers
     def print_cmd_help(self, command):
@@ -416,9 +498,16 @@ class MontyREPL(cmd.Cmd):
             args = args.split()
         command = Command(function, *args)
         command.execute()
-        self.saveStates.append(Momento(command, self.model))
+
+        #Prior version had a list of commands to check against
+        #Which A) didn't work as intended and B) would be redundant
+        #as excluded functions already weren't added.
+        self.saveStates.add(Momento(command, self.model))
+
+
     
     def onecmd(self, line):
+        readline.set_completer_delims(self.default_delims)
         try:
             return super().onecmd(line)
         except Exception as e:
