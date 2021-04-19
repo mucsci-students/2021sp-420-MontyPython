@@ -206,7 +206,7 @@ def saveFile(collection, fileName=None, GUI="CLI", mainWindow=None):
         #Uncomment, changed to proper formatting once GUI coordinates are ironed out
         #coordsDictionary = coords
         for classesTuple, lineCoords in mainWindow.lineDict.items():
-            classesString = ', '.join(str(s) for s in key)  
+            classesString = ', '.join(str(s) for s in classesTuple)  
             linesDictionary[classesString] = lineCoords
 
     #classesDictionary, relationshipsDicttionary, coordsDictionary, and linesDictionary
@@ -270,7 +270,10 @@ def loadFile(collection, fileName=None, GUI="CLI", mainWindow=None):
         #Within each class, creates an attribute class for each attribute
         #entry in the attributes dictionary
         for name, methodField in classesDictionary.items():
+            coords = coordsDictionary[name]
             collection.addClass(name)
+            collection.classDict[name].xCor = coords[0]
+            collection.classDict[name].yCor = coords[1]
             
             methodsDictionary = methodField[0]
             fieldsDictionary = methodField[1]
@@ -295,7 +298,7 @@ def loadFile(collection, fileName=None, GUI="CLI", mainWindow=None):
             for name, loc in coordsDictionary.items():
                 mainWindow.classDict[name] = loc
             for key, value in linesDictionary.items():
-                classes = key.split(", ")
+                classes = tuple(key.split(", "))
                 mainWindow.lineDict[classes] = value
 
         
