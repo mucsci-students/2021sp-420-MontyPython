@@ -181,43 +181,42 @@ class MainWindow(Frame):
                 elif(line[6] == 'right'):
                     rootEnd = (rootPoint[0] + 5, rootPoint[1])
                 
-
                 #X and Y distsances between the two points
                 xd = rootEnd[0] - localLineEnd[0] 
                 yd = rootEnd[1] - localLineEnd[1]  
 
                 if(abs(xd) > abs(yd)):
                     xf = localLineEnd[0] + (xd * .50)
-                    p = .1
+                    p = .01
                     #Checking if first center point is in class space
-                    while self.pointInClassSpace(xf, rootEnd[1], coList) or self.pointInClassSpace(xf, localLineEnd[1], coList) : 
+                    while self.pointInClassSpace(xf, rootEnd[1], coList) or self.pointInClassSpace(xf, localLineEnd[1], coList): 
                         #p indicates how far from the center we're moving the connection                 
-                        if p >= .95:
+                        if p > 1:
                             xf = localLineEnd[0] + (xd * .50) 
                             break
-                        xop1 = xf * (1 - p) * (xd/xd)
-                        xop2 = xf * (1 + p) * (xd/xd)
-
+                        xop1 = localLineEnd[0] + (xd * (.5 - p))
+                        xop2 = localLineEnd[0] + (xd * (.5 + p))
+                        
                         if not self.pointInClassSpace(xop1, rootEnd[1], coList) and not self.pointInClassSpace(xop1, localLineEnd[1], coList):
                             xf = xop1
                             break
                         if not self.pointInClassSpace(xop2, rootEnd[1], coList) and not self.pointInClassSpace(xop2, localLineEnd[1], coList):
                             xf = xop2
                             break
-                        p = p + .1
+                        p = p + .01
                     backTrackPoint =  (xf, rootEnd[1])
                     backTrackPoint2 =  (xf, localLineEnd[1])
                     
                 else:
                     #Checking if second center point is in class space
                     yf = localLineEnd[1] + (yd * .50)
-                    p = .1
+                    p = .03
                     while self.pointInClassSpace(rootEnd[0], yf, coList) or self.pointInClassSpace(localLineEnd[0], yf, coList):                        
-                        if p >= .95:
+                        if p >= 1:
                             yf = localLineEnd[0] + (yd * .50) 
                             break
-                        yop1 = yf * (1 - p) * (yd/yd)
-                        yop2 = yf * (1 + p) * (yd/yd)
+                        yop1 = localLineEnd[1] + (yd * (.5 - p))
+                        yop2 = localLineEnd[1] + (yd * (.5 + p))
 
                         if not self.pointInClassSpace(rootEnd[0], yop1, coList) and not self.pointInClassSpace(localLineEnd[0], yop1, coList):
                             yf = yop1
@@ -225,7 +224,7 @@ class MainWindow(Frame):
                         if not self.pointInClassSpace(rootEnd[1], yop2,  coList) and not self.pointInClassSpace(localLineEnd[1], yop2,  coList):
                             yf = yop2
                             break
-                        p = p + .1
+                        p = p + .01
                     backTrackPoint =  (rootEnd[0], yf)
                     backTrackPoint2 =  (localLineEnd[0], yf)
 
