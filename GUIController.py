@@ -41,8 +41,16 @@ class GUIController:
         #while iterating through.
         guiClassDictReplica = self.view.classDict.copy()
         for key, value in guiClassDictReplica.items():
-            self.view.addClass(key, value[0], value[1])
-
+            if (value[0] == -1):
+                if (self.classOffset == 20):
+                    self.classOffset = 1
+                else:
+                    self.classOffset = self.classOffset + 1
+                    defaultCoord = self.classOffset * 40
+                    self.view.addClass(key, defaultCoord, defaultCoord)
+            else:
+                self.view.addClass(key, value[0], value[1])
+           
         #guiLineDictReplica = self.view.lineDict.copy()
         #self.view.lineDict = {}
         #for key, value in guiLineDictReplica.items():
@@ -50,10 +58,15 @@ class GUIController:
         #    print(value)
         #    self.deleteRelationship(key[0], key[1])
         #    self.addRelationship(key[0], key[1], value[4])
+        
 
 
         self.saveStates.reset(Momento(Command("",""), self.model))
         self.refreshCanvas()
+
+        for key, value in guiClassDictReplica.items():
+            self.updateWidgetMethod(key)
+            self.updateWidgetField(key)
 
     def save(self, name):
         Interface.saveFile(self.model, name, "GUI", self.view)
@@ -250,6 +263,9 @@ class GUIController:
 
     def addMethod(self, className, methodName, returnType, parameters):
         try:
+            if '(' in methodName or ')' in methodName:
+                errorBox = self.windowFactory("alertBox", 'No parentheses allowed in method name')
+                return
             self.model.addMethod(className, methodName, returnType, parameters)
             self.updateWidgetMethod(className)
 
@@ -275,6 +291,9 @@ class GUIController:
 
     def renameMethod(self, className, methodName, params, newName):
         try:
+            if '(' in methodName or ')' in methodName:
+                errorBox = self.windowFactory("alertBox", 'No parentheses allowed in method name')
+                return
             self.model.renameMethod(className, methodName, params, newName)
             self.updateWidgetMethod(className)
         except Exception as e:
