@@ -30,9 +30,16 @@ class MainWindow(Frame):
         self.master.title("UML Editor")
 
         # Create canvas for objects to be drawn on
-        self.canvas = Canvas(self.master)
+        self.canvas = Canvas(self.master, scrollregion=(0,0,5000,5000))
         
         # Both: Fills horizontally and vertically, expand: widget expands to fill extra space
+        xbar = Scrollbar(self.master, orient=HORIZONTAL, command=self.canvas.xview)
+        xbar.pack(side=BOTTOM, fill=X)
+
+        ybar = Scrollbar(self.master, orient=VERTICAL, command=self.canvas.yview)
+        ybar.pack(side=RIGHT, fill=Y)
+
+        self.canvas.config(xscrollcommand=xbar.set, yscrollcommand=ybar.set)
         self.canvas.pack(fill=BOTH, expand=1)
 
         self.drawLines()
