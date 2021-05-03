@@ -49,8 +49,11 @@ If the installation script does not work for whatever reason, you can try runnin
 1. Follow the program’s prompts to create, load, or save a text representation of a UML diagram. Type `help` to view possible commands, or click `File > Help` in GUI mode.
 
 ### Example Images:  
+
+#### CLI
 ![CLI](Images/cli.png)
 
+#### GUI
 ![GUI](Images/gui.png)
 
 ## Authors
