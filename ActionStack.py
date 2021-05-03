@@ -19,7 +19,6 @@ class ActionStack():
     #Called when undo is called. Appends to redo stack
     def undoPop(self):
         if len(self.undoStack) == 0:
-            print("No actions to undo")
             self.currentObj = deepcopy(self.originalObj)
         else:   
             self.redoStack.append(deepcopy(self.currentObj))
@@ -33,7 +32,8 @@ class ActionStack():
     #Called when redo is called. Appends to undo stack
     def redoPop(self):
         if len(self.redoStack) == 0:
-            print("No actions to redo")
+            # nothing to see here
+            pass
         else:
             self.undoStack.append(deepcopy(self.currentObj))
             self.currentObj = deepcopy(self.redoStack.pop())

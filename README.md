@@ -48,8 +48,13 @@ If the installation script does not work for whatever reason, you can try runnin
 1. To run the program in GUI mode simply invoke `python Monty.py` within the root project directory. To run in CLI mode, add the `--cli` flag (`python Monty.py --cli`).
 1. Follow the program’s prompts to create, load, or save a text representation of a UML diagram. Type `help` to view possible commands, or click `File > Help` in GUI mode.
 
-### Example Image:  
-![Example Image](https://i.imgur.com/3SAMIFe.png)
+### Example Images:  
+
+#### CLI
+![CLI](Images/cli.png)
+
+#### GUI
+![GUI](Images/gui.png)
 
 ## Authors
 [Quinn Lehman](https://github.com/qlehman)
