@@ -92,7 +92,7 @@ class HelpBox(GenericBox):
 
         lbl = self.addLabel('To interact with the UML diagram, use the menu at the top of the window.' +
                             '\nTo start, create a class.\nOnce a class is created, other elements can be added, ' +
-                            'deleted, and modified.\nUp to nine classes can exist in the current form of this program.', 0, 0)
+                            'deleted, and modified.\nClick and drag classes to move them.', 0, 0)
         lbl.configure(justify=LEFT)
         self.addButton('OK', 1, 1, S, self.top.destroy)
 
